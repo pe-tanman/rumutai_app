@@ -43,11 +43,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   const Text(
-                    "1. 招集する情報",
+                    "1. 収集する情報",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                   _indentedText("a.",
-                      "本アプリでは、基本的に利用者の個人情報を収集しません。しかし、不具合発生状況などの詳細な情報を収集する際、利用者の情報や使用するデバイスの情報、アプリの使用方法などを求める場合があります。"),
+                      "本アプリでは、基本的にユーザーの個人情報を収集しません。しかし、不具合発生状況などの詳細な情報を収集する際、ユーザーの情報や使用するデバイスの情報、アプリの使用方法などを求める場合があります。"),
                   _indentedText("b.", "収集した個人情報はアプリの機能改善以外の目的では使用しません。"),
                   const SizedBox(height: 5),
                   const Text(
@@ -68,13 +68,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                   _indentedText(
-                      "a.", "利用者の情報など機密性が高い情報については利用者が提供するか選択できるようにします。"),
+                      "a.", "ユーザーの情報など機密性が高い情報についてはユーザーが提供するか選択できるようにします。"),
                   const SizedBox(height: 5),
                   const Text(
                     "5. 制定日",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  _indentedText("a.", "2023年3月2日"),
+                  _indentedText("a.", "制定　2023年3月2日"),
+                  _indentedText("b.", "変更(1) 2023年3月29日"),
                   const SizedBox(height: 5),
                   const Text(
                     "6. 問い合わせ先",

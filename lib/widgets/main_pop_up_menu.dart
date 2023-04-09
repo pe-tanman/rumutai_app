@@ -34,7 +34,7 @@ class MainPopUpMenu extends StatelessWidget {
         color: Colors.brown.shade50,
         onSelected: (selectedValue) {
           switch (selectedValue) {
-            case "設定":
+            case "法的事項":
               Navigator.of(context).pushNamed(SettingScreen.routeName);
               return;
             case "マップ":
@@ -50,8 +50,8 @@ class MainPopUpMenu extends StatelessWidget {
         position: PopupMenuPosition.under,
         itemBuilder: (BuildContext context) => <PopupMenuEntry>[
           PopupMenuItem(
-            value: "設定",
-            child: _popUpMenuChild(text: "設定", icon: Icons.settings_outlined),
+            value: "法的事項",
+            child: _popUpMenuChild(text: "法的事項", icon: Icons.settings_outlined),
           ),
           PopupMenuItem(
             value: "マップ",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:rumutai_app/screens/staff/timeline_screen.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -105,6 +106,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown)
               .copyWith(secondary: Colors.indigoAccent),
         ),
+        themeMode: ThemeMode.system,
         initialRoute: HomeScreen.routeName,
         routes: {
           HomeScreen.routeName: (ctx) => const HomeScreen(),
@@ -134,6 +136,7 @@ class MyApp extends StatelessWidget {
           PickOmikujiScreen.routeName: (ctx) => const PickOmikujiScreen(),
           DrawOmikujiScreen.routeName: (ctx) => const DrawOmikujiScreen(),
           MakeOmikujiScreen.routeName: (ctx) => const MakeOmikujiScreen(),
+          TimelineScreen.routeName: (ctx) => const TimelineScreen(),
 
           //PredictScreen.routeName: (ctx) => const PredictScreen(),
         },

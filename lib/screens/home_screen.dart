@@ -17,6 +17,7 @@ import 'omikuji/pick_omikuji_screen.dart';
 
 import '../utilities/local_notification.dart';
 import '../widgets/main_drawer.dart';
+import "staff/timeline_screen.dart";
 
 final FlutterLocalNotificationsPlugin flnp = FlutterLocalNotificationsPlugin();
 
@@ -263,6 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     bool? isLoggedInAdmin = Provider.of<LocalData>(context).isLoggedInAdmin;
+    bool? isLoggedInStaff = Provider.of<LocalData>(context).isLoggedInRumutaiStaff;
     final double buttonWidth = MediaQuery.of(context).size.width * 4 / 5;
 
     return Scaffold(
@@ -362,47 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  /*
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _subButton(
-                        text: "おみくじ",
-                        icon: FontAwesomeIcons.wandMagicSparkles,
-                        iconSize: 18,
-                        width: buttonWidth / 2 - 5,
-                        onPressed: () {},
-                      ),
-                      const SizedBox(width: 10),
-                      _subButton(
-                        text: "表彰",
-                        icon: Icons.workspace_premium_outlined,
-                        width: buttonWidth / 2 - 5,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _subButton(
-                        text: "クラス",
-                        icon: Icons.diversity_3_outlined,
-                        width: buttonWidth / 2 - 5,
-                        onPressed: () {},
-                      ),
-                      const SizedBox(width: 10),
-                      _subButton(
-                        text: "表彰",
-                        icon: Icons.workspace_premium_outlined,
-                        width: buttonWidth / 2 - 5,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                  */
+
                   if (isLoggedInAdmin == true)
                     Column(
                       children: [
@@ -418,12 +380,36 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                ],
+
+                  if(isLoggedInStaff == true)
+                    Column(
+                      children: [
+                        const SizedBox(height: 25),
+                        _dividerWithText("スタッフ機能"),
+                        const SizedBox(height: 15),
+                        _tonalButton(
+                          text: "タイムライン",
+                          icon: Icons.view_timeline_outlined,
+                          width: buttonWidth,
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(TimelineScreen.routeName),
+                        ),
+                        const SizedBox(height: 15),
+                        _tonalButton(
+                          text: "ダッシュボード",
+                          icon: Icons.map,
+                          width: buttonWidth,
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(SendNotificationScreen.routeName),
+                        )
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

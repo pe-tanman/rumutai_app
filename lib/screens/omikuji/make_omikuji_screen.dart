@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'pick_omikuji_screen.dart';
 
 enum OmikujiCategory {

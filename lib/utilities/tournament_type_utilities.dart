@@ -1,3 +1,4 @@
+
 enum TournamentType { four, five, six, seven }
 
 class TournamentTypeUtilities {

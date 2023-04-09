@@ -2,12 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rumutai_app/utilities/lable_utilities.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 import '../utilities/tournament_type_utilities.dart';
 
 import '../providers/game_data.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class RumutaiStaffScreen extends StatefulWidget {
   static const routeName = "/game-rumutai-staff-screen";
@@ -24,6 +29,9 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   bool _canFinishGame = true;
   bool _isReverse = false;
   late Map _gameData;
+  late  Map<String, dynamic> data;
+
+
   final TextEditingController _scoreDetail1Controller = TextEditingController();
   final TextEditingController _scoreDetail2Controller = TextEditingController();
   final TextEditingController _scoreDetail3Controller = TextEditingController();
@@ -32,6 +40,8 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   final TextEditingController _scoreDetail6Controller = TextEditingController();
 
   late String _selectedExtraTime;
+
+  late DateTime dateTime;
 
   Widget _textField({
     required double width,
@@ -231,6 +241,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     }
     return scoreList;
   }
+
 
   int _strToInt(String str) {
     if (str == "") {
@@ -661,6 +672,9 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     final String gameDataId = gotData.gameDataId;
     _isReverse = gotData.isReverse;
 
+
+
+
     if (gotData.classNumber != null) {
       _gameData = (Provider.of<GameData>(context)
               .getGameDataForSchedule(classNumber: gotData.classNumber!)
@@ -672,6 +686,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     }
 
     if (_isInit) {
+
       _scoreDetail1Controller.text =
           _gameData["scoreDetail"]["0"][0].toString();
       _scoreDetail2Controller.text =
@@ -750,6 +765,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                       builder: (_) {
                         final String currentGameStatus =
                             _gameData["gameStatus"];
+
                         return StatefulBuilder(
                           builder: (context, setState) => AlertDialog(
                             title: const Text("確認"),
@@ -849,7 +865,9 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                   onPressed: (_gameData["gameStatus"] == "now" &&
                           !_canFinishGame)
                       ? null
-                      : () => showDialog(
+                      : () {
+                    dateTime = DateTime.now();
+                    showDialog(
                           context: context,
                           builder: (_) {
                             final String currentGameStatus =
@@ -865,9 +883,42 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                         ),
                                       )
                                     : (currentGameStatus == "before"
-                                        ? const Text("試合を開始します。")
+                                        ? SizedBox(
+                                          height: 100,
+                                          child: Column(
+                                            children: [
+                                              const Text("試合を開始します。"),
+                                              Text("開始時刻 ${dateTime.hour.toString()}時${dateTime.minute.toString()}分"),
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                textStyle: const TextStyle(fontSize:15),
+                                                ),
+                                                child: const Text("開始時間変更"),
+                                                onPressed: () async {
+                                                  Picker(
+                                                      adapter: DateTimePickerAdapter(
+                                                          type: PickerDateTimeType
+                                                              .kHM,
+                                                          value: dateTime,
+                                                          customColumnType: [
+                                                            3,
+                                                            4
+                                                          ]),
+                                                      title: Text("Select Time"),
+                                                      onConfirm: (Picker picker,
+                                                          List value) {
+                                                        setState(() =>
+                                                        {
+                                                          dateTime = DateTime.utc(
+                                                              0, 0, 0, value[0],
+                                                              value[1], 0)});
+                                                      }).showModal(context);
+                                                })
+                                            ],
+                                          ),
+                                        )
                                         : SizedBox(
-                                            height: 200,
+                                            height: 220,
                                             child: SingleChildScrollView(
                                               child: Column(
                                                 children: [
@@ -904,6 +955,25 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                                   const Divider(),
                                                   const SizedBox(height: 10),
                                                   const Text("試合を終了します。"),
+                                                  Text("終了時刻 ${dateTime.hour.toString()}時${dateTime.minute.toString()}分"),
+                                                  TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      textStyle: const TextStyle(fontSize:15),
+                                                    ),
+                                                    onPressed: () async{
+                                                      Picker(adapter: DateTimePickerAdapter(type: PickerDateTimeType.kHM, value: dateTime, customColumnType: [3, 4]),
+                                                          title: Text("Select Time"),
+                                                          onConfirm: (Picker picker, List value) {
+                                                            setState(() => {
+                                                              dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0)});
+
+                                                          }).showModal(context);
+                                                    },
+                                                    child: const Text("終了時刻変更"),
+                                                  ),
+
+
+
                                                 ],
                                               ),
                                             ),
@@ -942,18 +1012,28 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                             currentGameStatus == "before"
                                                 ? "開始"
                                                 : "終了"),
-                                        onPressed: () async {
+                                        onPressed: () async{
                                           setState(() {
                                             _isLoadingDialog = true;
+
                                           });
 
+
+
                                           if (currentGameStatus == "before") {
+                                            data = {
+                                            "title":"${_gameData["place"]}) ${dateTime.hour.toString()}時${dateTime.minute.toString()}分 ${gameDataId} 開始",
+                                            "timeStamp": DateTime.now()};
                                             await gameDataProvider.updateData(
                                                 doc: gameDataId,
                                                 newData: {"gameStatus": "now"},
                                                 teams: _gameData["team"]);
+
                                           } else if (currentGameStatus ==
                                               "now") {
+                                            data = {
+                                              "title":"${_gameData["place"]}) ${dateTime.hour.toString()}時${dateTime.minute.toString()}分 ${gameDataId} 終了",
+                                              "timeStamp": DateTime.now()};
                                             await gameDataProvider.updateData(
                                                 doc: gameDataId,
                                                 newData: _selectedExtraTime ==
@@ -1043,6 +1123,10 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                             }
                                           }
 
+                                          await FirebaseFirestore.instance
+                                              .collection('Timeline')
+                                              .add(data);
+
                                           setState(() {
                                             _isLoadingDialog = false;
                                           });
@@ -1064,7 +1148,8 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                 ],
                               ),
                             );
-                          }),
+                          });
+                      },
                   label: _gameData["gameStatus"] == "before"
                       ? const Text("試合開始")
                       : const Text("試合終了"),

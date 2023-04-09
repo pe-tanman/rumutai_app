@@ -42,7 +42,7 @@ class MainDrawer extends StatelessWidget {
         ),
         const Divider(),
         ListTile(
-          title: const Text("設定", style: TextStyle(fontSize: 20)),
+          title: const Text("法的事項", style: TextStyle(fontSize: 20)),
           onTap: () => Navigator.of(context).pushNamed(SettingScreen.routeName),
         ),
       ]),

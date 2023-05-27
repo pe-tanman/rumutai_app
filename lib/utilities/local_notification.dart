@@ -80,7 +80,8 @@ class LocalNotification {
         ),
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true);
+        androidAllowWhileIdle: true,
+        payload: gameId);
 
     await LocalData.saveLocalData<bool>(gameId, true);
   }

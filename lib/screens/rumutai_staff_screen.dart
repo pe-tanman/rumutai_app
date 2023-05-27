@@ -904,7 +904,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                                             3,
                                                             4
                                                           ]),
-                                                      title: Text("Select Time"),
+                                                      title: Text("時間選択"),
                                                       onConfirm: (Picker picker,
                                                           List value) {
                                                         setState(() =>
@@ -962,7 +962,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                                     ),
                                                     onPressed: () async{
                                                       Picker(adapter: DateTimePickerAdapter(type: PickerDateTimeType.kHM, value: dateTime, customColumnType: [3, 4]),
-                                                          title: Text("Select Time"),
+                                                          title: Text("時間選択"),
                                                           onConfirm: (Picker picker, List value) {
                                                             setState(() => {
                                                               dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0)});

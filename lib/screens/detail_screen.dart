@@ -14,7 +14,9 @@ import '../widgets/main_pop_up_menu.dart';
 class DetailScreen extends StatefulWidget {
   static const routeName = "/detail-screen";
 
-  const DetailScreen({super.key});
+  //通知から開いたときのgameID
+  final String? recievedGameID;
+  const DetailScreen({required this.recievedGameID});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -220,8 +222,16 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final DataToPass gotData =
-        ModalRoute.of(context)!.settings.arguments as DataToPass;
+    final DataToPass gotData;
+    if (widget.recievedGameID == null) {
+      gotData = ModalRoute.of(context)!.settings.arguments as DataToPass;
+    } else {
+      gotData = DataToPass(
+        gameDataId: widget.recievedGameID!,
+        isMyGame: true,
+      );
+    }
+
     Map gameData = {};
     final bool isReverse = gotData.isReverse;
     if (gotData.isMyGame == true) {

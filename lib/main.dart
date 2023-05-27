@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:rumutai_app/screens/staff/dahboard_detail_screen.dart';
+import 'package:rumutai_app/screens/staff/dashboard_screen.dart';
 import 'package:rumutai_app/screens/staff/timeline_screen.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,6 +14,7 @@ import 'screens/home_screen.dart';
 
 import 'providers/local_data.dart';
 import 'providers/game_data.dart';
+import "providers/dashboard_data.dart";
 
 import 'screens/schedule/pick_schedule_screen.dart';
 import 'screens/notification/notifications_screen.dart';
@@ -36,14 +40,23 @@ import 'screens/omikuji/pick_omikuji_screen.dart';
 import 'screens/omikuji/draw_omikuji_screen.dart';
 import 'screens/omikuji/make_omikuji_screen.dart';
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  var notificationLaunchDetail =
+      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(const MyApp());
+  runApp(MyApp(
+      isNotificationLaunch: notificationLaunchDetail?.didNotificationLaunchApp,
+      notificationPayload: notificationLaunchDetail?.payload));
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -72,7 +85,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool? isNotificationLaunch;
+  final String? notificationPayload;
+  MyApp(
+      {required this.isNotificationLaunch, required this.notificationPayload});
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +96,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => LocalData()),
         ChangeNotifierProvider(create: (ctx) => GameData()),
+        ChangeNotifierProvider(create: (ctx) => DashboardNotifier())
       ],
       child: MaterialApp(
         title: 'Rumutai',
@@ -107,13 +124,16 @@ class MyApp extends StatelessWidget {
               .copyWith(secondary: Colors.indigoAccent),
         ),
         themeMode: ThemeMode.system,
-        initialRoute: HomeScreen.routeName,
+        initialRoute: (isNotificationLaunch == true)
+            ? HomeScreen.routeName
+            : DetailScreen.routeName,
         routes: {
           HomeScreen.routeName: (ctx) => const HomeScreen(),
           PickScheduleScreen.routeName: (ctx) => const PickScheduleScreen(),
           SignInScreen.routeName: (ctx) => const SignInScreen(),
           NotificationsScreen.routeName: (ctx) => const NotificationsScreen(),
-          DetailScreen.routeName: (ctx) => const DetailScreen(),
+          DetailScreen.routeName: (ctx) =>
+              DetailScreen(recievedGameID: notificationPayload),
           ScheduleScreen.routeName: (ctx) => const ScheduleScreen(),
           PickCategoryScreen.routeName: (ctx) => const PickCategoryScreen(),
           GameResultsScreen.routeName: (ctx) => const GameResultsScreen(),
@@ -137,6 +157,9 @@ class MyApp extends StatelessWidget {
           DrawOmikujiScreen.routeName: (ctx) => const DrawOmikujiScreen(),
           MakeOmikujiScreen.routeName: (ctx) => const MakeOmikujiScreen(),
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
+          DashboardScreen.routeName: (ctx) => DashboardScreen(),
+          DashboardDetailScreen.routeName: (ctx) =>
+              const DashboardDetailScreen(),
 
           //PredictScreen.routeName: (ctx) => const PredictScreen(),
         },

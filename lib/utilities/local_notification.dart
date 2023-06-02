@@ -18,7 +18,7 @@ class LocalNotification {
             requestBadgePermission: false,
             requestSoundPermission: false);
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('ic_notification');
+        AndroidInitializationSettings('notification_icon');
 
     // ignore: unused_local_variable
     const InitializationSettings initializationSettings =
@@ -58,7 +58,8 @@ class LocalNotification {
     required String team2,
   }) async {
     //日時指定
-    var date = tz.TZDateTime(tz.local, 2023, 3, 14 + int.parse(day),
+    //for test
+    var date = tz.TZDateTime(tz.local, 2023, 6, 28 - 1 + int.parse(day),
         int.parse(hour), int.parse(minute) - 10);
     String message = "10分前：$place";
     //通知設定
@@ -67,6 +68,7 @@ class LocalNotification {
         "${team1}vs$team2（${_sport(gameId)}）",
         message,
         date,
+        payload: gameId,
         NotificationDetails(
           android: AndroidNotificationDetails(
             'channel id',
@@ -75,13 +77,14 @@ class LocalNotification {
             priority: Priority.high,
             ongoing: true,
             styleInformation: BigTextStyleInformation(message),
-            icon: 'ic_notification',
+            icon: 'notification_icon',
           ),
         ),
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true,
-        payload: gameId);
+        androidAllowWhileIdle: true);
+    //for test
+    print("notification registered");
 
     await LocalData.saveLocalData<bool>(gameId, true);
   }

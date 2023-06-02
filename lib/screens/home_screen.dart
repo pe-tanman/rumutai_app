@@ -265,7 +265,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     bool? isLoggedInAdmin = Provider.of<LocalData>(context).isLoggedInAdmin;
-    bool? isLoggedInStaff = Provider.of<LocalData>(context).isLoggedInRumutaiStaff;
+    bool? isLoggedInStaff =
+        Provider.of<LocalData>(context).isLoggedInRumutaiStaff;
     final double buttonWidth = MediaQuery.of(context).size.width * 4 / 5;
 
     return Scaffold(
@@ -365,7 +366,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-
                   if (isLoggedInAdmin == true)
                     Column(
                       children: [
@@ -381,8 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-
-                  if(isLoggedInStaff == true)
+                  if (isLoggedInStaff == true)
                     Column(
                       children: [
                         const SizedBox(height: 25),
@@ -403,14 +402,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () => Navigator.of(context)
                               .pushNamed(DashboardScreen.routeName),
                         )
-                        ],
-                      ),
-                  ],
-                ),
+                      ],
+                    ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }

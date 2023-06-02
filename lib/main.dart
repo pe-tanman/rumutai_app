@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rumutai_app/screens/staff/dahboard_detail_screen.dart';
 import 'package:rumutai_app/screens/staff/dashboard_screen.dart';
 import 'package:rumutai_app/screens/staff/timeline_screen.dart';
 import 'firebase_options.dart';
@@ -43,20 +44,17 @@ import 'screens/omikuji/make_omikuji_screen.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  var notificationLaunchDetail =
-      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(MyApp(
-      isNotificationLaunch: notificationLaunchDetail?.didNotificationLaunchApp,
-      notificationPayload: notificationLaunchDetail?.payload));
+  runApp(MyApp());
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -84,14 +82,41 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   );
 }
 
+InitializationSettings initializeLocNotification() {
+//現在時刻設定
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation("Asia/Tokyo"));
+//権限設定
+  const DarwinInitializationSettings initSettingsIOS =
+      DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false);
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('notification_icon');
+
+// ignore: unused_local_variable
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initSettingsIOS,
+  );
+  return initializationSettings;
+}
+
 class MyApp extends StatelessWidget {
-  final bool? isNotificationLaunch;
-  final String? notificationPayload;
-  MyApp(
-      {required this.isNotificationLaunch, required this.notificationPayload});
+  MyApp();
 
   @override
   Widget build(BuildContext context) {
+//通知をタップして起動したときの設定＆local_notificationの初期化
+    flutterLocalNotificationsPlugin.initialize(initializeLocNotification(),
+        onDidReceiveNotificationResponse: (NotificationResponse res) {
+      navigatorKey.currentState?.pushNamed(DetailScreen.routeName,
+          arguments: DataToPass(
+            gameDataId: res.payload!,
+            isMyGame: true,
+          ));
+    });
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => LocalData()),
@@ -99,6 +124,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => DashboardNotifier())
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'Rumutai',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -124,16 +150,13 @@ class MyApp extends StatelessWidget {
               .copyWith(secondary: Colors.indigoAccent),
         ),
         themeMode: ThemeMode.system,
-        initialRoute: (isNotificationLaunch == true)
-            ? HomeScreen.routeName
-            : DetailScreen.routeName,
+        initialRoute: HomeScreen.routeName,
         routes: {
           HomeScreen.routeName: (ctx) => const HomeScreen(),
           PickScheduleScreen.routeName: (ctx) => const PickScheduleScreen(),
           SignInScreen.routeName: (ctx) => const SignInScreen(),
           NotificationsScreen.routeName: (ctx) => const NotificationsScreen(),
-          DetailScreen.routeName: (ctx) =>
-              DetailScreen(recievedGameID: notificationPayload),
+          DetailScreen.routeName: (ctx) => const DetailScreen(),
           ScheduleScreen.routeName: (ctx) => const ScheduleScreen(),
           PickCategoryScreen.routeName: (ctx) => const PickCategoryScreen(),
           GameResultsScreen.routeName: (ctx) => const GameResultsScreen(),
@@ -158,8 +181,6 @@ class MyApp extends StatelessWidget {
           MakeOmikujiScreen.routeName: (ctx) => const MakeOmikujiScreen(),
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
-          DashboardDetailScreen.routeName: (ctx) =>
-              const DashboardDetailScreen(),
 
           //PredictScreen.routeName: (ctx) => const PredictScreen(),
         },

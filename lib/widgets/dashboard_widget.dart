@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import '/providers/local_data.dart';
 import 'package:provider/provider.dart';
 import "/providers/dashboard_data.dart";
@@ -35,27 +36,26 @@ class _DashboardState extends State<DashboardWidget> {
   }
 
   Future<void> ChangeButtonColor() async {
-    var globalData =
-        await FirebaseFirestore.instance.collection("StaffDashboard").get();
-    var d = globalData.docs[0].data();
+    var globalData = await FirebaseFirestore.instance
+        .collection("StaffDashboard")
+        .doc(staffPlace)
+        .get();
+    int currentStaffs = globalData.get("staffs");
 
     if (staffPlace == "本部") {
-      if (d[staffPlace] > 8) {
+      if (currentStaffs > 8) {
         signColor = Colors.green;
-      } else if (d[staffPlace] > 5) {
+      } else if (currentStaffs > 5) {
         signColor = Colors.yellow;
       } else {
         signColor = Colors.red;
       }
     } else {
-      if (d[staffPlace] > 0) {
+      if (currentStaffs > 0) {
         signColor = Colors.green;
       } else {
         signColor = Colors.red;
       }
-    }
-    if ((localPlace != staffPlace) && (localPlace != "None")) {
-      signColor = Colors.grey;
     }
     setState(() {
       isloading = false;
@@ -77,11 +77,7 @@ class _DashboardState extends State<DashboardWidget> {
           insetPadding: const EdgeInsets.all(10),
           title: const Text("確認"),
           content: SizedBox(
-              height: 50,
-              width: 200,
-              child: dialogIsLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Text("$staffPlace　のスタッフを担当します")),
+              height: 50, width: 200, child: Text("$staffPlace　のスタッフを担当します")),
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             if (!dialogIsLoading)
@@ -111,97 +107,102 @@ class _DashboardState extends State<DashboardWidget> {
                     onPressed: () async {
                       await LocalData.saveLocalData<String>(
                           "staffPlace", staffPlace);
-                      var globalData = await FirebaseFirestore.instance
+
+                      var d = await FirebaseFirestore.instance
                           .collection("StaffDashboard")
+                          .doc(staffPlace)
                           .get();
-                      var d = globalData.docs[0].data();
-                      var data = {staffPlace: d[staffPlace] + 1};
+                      var data = {"staffs": d.get("staffs") + 1};
                       await FirebaseFirestore.instance
                           .collection('StaffDashboard')
-                          .doc("Place")
+                          .doc(staffPlace)
                           .set(data, SetOptions(merge: true));
-                      setState(() {
-                        LoadPlace();
-                        ChangeButtonColor();
-                      });
 
-                      Provider.of<DashboardNotifier>(context, listen: false)
-                          .updateDashboard();
+                      Navigator.pop(context);
+
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (_) {
+                            return _dialogOut(staffPlace: staffPlace);
+                          });
                       Navigator.of(context).pushNamed(
-                          '/dashboard-detail-screen',
+                          MyPlaceGameScreen.routeName,
                           arguments: staffPlace);
                     }),
-              ),
+              )
           ],
         );
       },
     );
   }
 
-  static Widget _dialogOut({required String staffPlace}) {
+  Widget _dialogOut({required String staffPlace}) {
     bool dialogIsLoading = false;
     return StatefulBuilder(
       builder: (context, setStateInDialog) {
-        return AlertDialog(
-          insetPadding: const EdgeInsets.all(10),
-          title: const Text("確認"),
-          content: SizedBox(
-              height: 50,
-              width: 200,
-              child: dialogIsLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Text("$staffPlace　のスタッフを外れます")),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: <Widget>[
-            if (!dialogIsLoading)
-              SizedBox(
-                width: 140,
-                height: 40,
-                child: OutlinedButton(
-                  style:
-                      OutlinedButton.styleFrom(foregroundColor: Colors.black),
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("キャンセル"),
-                ),
-              ),
-            if (!dialogIsLoading)
-              SizedBox(
-                width: 140,
-                height: 40,
-                child: FilledButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
+        return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              insetPadding: const EdgeInsets.all(10),
+              title: const Text("確認"),
+              content: SizedBox(
+                  height: 50, width: 200, child: Text("$staffPlace　の担当を外れます")),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: <Widget>[
+                if (!dialogIsLoading)
+                  SizedBox(
+                    width: 140,
+                    height: 40,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.black),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                            MyPlaceGameScreen.routeName,
+                            arguments: staffPlace);
+                      },
+                      child: const Text("キャンセル"),
                     ),
-                    child: const Text("確認"),
-                    onPressed: () async {
-                      LocalData.saveLocalData<String>("staffPlace", "None");
-                      var globalData = await FirebaseFirestore.instance
-                          .collection("StaffDashboard")
-                          .get();
-                      var d = globalData.docs[0].data();
-                      var data = {staffPlace: d[staffPlace] - 1};
-                      await FirebaseFirestore.instance
-                          .collection('StaffDashboard')
-                          .doc("Place")
-                          .set(data, SetOptions(merge: true));
-                      Provider.of<DashboardNotifier>(context, listen: false)
-                          .updateDashboard();
-                      Navigator.of(context).pushNamed('/home-screen');
-                    }),
-              ),
-          ],
-        );
+                  ),
+                if (!dialogIsLoading)
+                  SizedBox(
+                    width: 140,
+                    height: 40,
+                    child: FilledButton(
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        ),
+                        child: const Text("確認"),
+                        onPressed: () async {
+                          LocalData.saveLocalData<String>("staffPlace", "None");
+                          var d = await FirebaseFirestore.instance
+                              .collection("StaffDashboard")
+                              .doc(staffPlace)
+                              .get();
+                          var data = {"staffs": d.get("staffs") - 1};
+                          if (d.get("staffs") >= 1) {
+                            await FirebaseFirestore.instance
+                                .collection('StaffDashboard')
+                                .doc(staffPlace)
+                                .set(data, SetOptions(merge: true));
+                          }
+                          Navigator.pop(context);
+                        }),
+                  )
+              ],
+            ));
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    print("built");
     return Consumer<DashboardNotifier>(
         builder: (context, dashboardNotifier, child) {
       // 必要に応じて状態を更新する
@@ -215,33 +216,36 @@ class _DashboardState extends State<DashboardWidget> {
       if (isloading) {
         return const Center(child: CircularProgressIndicator());
       } else {
-        return Align(
-            alignment: Alignment(x, y),
-            child: TextButton(
-                onPressed: (localPlace == "None" || localPlace == staffPlace)
-                    ? () {
-                        if (localPlace == "None") {
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return _dialogIn(staffPlace: staffPlace);
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (_) {
-                              return _dialogOut(staffPlace: staffPlace);
-                            },
-                          );
-                        }
-                      }
-                    : null,
-                child: Text(
-                  (staffPlace == localPlace) ? "$staffPlace(担当中)" : staffPlace,
-                  style: TextStyle(color: signColor, fontSize: 20),
-                )));
+        if (localPlace == staffPlace) {
+          print("dialog_out");
+          return _dialogOut(staffPlace: staffPlace);
+        }
+        ;
       }
+      return Align(
+          alignment: Alignment(x, y),
+          child: ElevatedButton(
+            onPressed: () {
+              if (localPlace == "None") {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return _dialogIn(staffPlace: staffPlace);
+                    });
+              } else if (localPlace == staffPlace) {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return _dialogOut(staffPlace: staffPlace);
+                    });
+              } else {
+                null;
+              }
+            },
+            child: Text(
+                (staffPlace == localPlace) ? "$staffPlace(担当中)" : staffPlace),
+            style: ElevatedButton.styleFrom(backgroundColor: signColor),
+          ));
     });
   }
 }

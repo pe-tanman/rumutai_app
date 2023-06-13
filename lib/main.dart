@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
@@ -181,6 +182,7 @@ class MyApp extends StatelessWidget {
           MakeOmikujiScreen.routeName: (ctx) => const MakeOmikujiScreen(),
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
+          MyPlaceGameScreen.routeName: (ctx) => const MyPlaceGameScreen(),
 
           //PredictScreen.routeName: (ctx) => const PredictScreen(),
         },

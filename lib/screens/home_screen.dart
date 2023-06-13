@@ -396,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 15),
                         _tonalButton(
-                          text: "ダッシュボード",
+                          text: "人手確認",
                           icon: Icons.map,
                           width: buttonWidth,
                           onPressed: () => Navigator.of(context)

@@ -1,52 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:rumutai_app/widgets/dashboard_widget.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   static const routeName = "/dashboard-screen";
 
-  DashboardScreen({
-    super.key,
-  });
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
 
+class _DashboardScreenState extends State<DashboardScreen> {
   final _viewTransformationController = TransformationController();
-
-  void _setMapToView(String? place) {
-    if (place == null) {
-      return;
-    }
-    late double zoomFactor;
-    late double xTranslate;
-    late double yTranslate;
-    if (place.contains("運動場")) {
-      zoomFactor = 2.3;
-      xTranslate = 395.0;
-      yTranslate = 540.0;
-    } else if (place.contains("鯱光館")) {
-      zoomFactor = 2.4;
-      xTranslate = 380.0;
-      yTranslate = 300.0;
-    } else if (place.contains("外バレ")) {
-      zoomFactor = 3.0;
-      xTranslate = 450.0;
-      yTranslate = 380.0;
-    } else if (place.contains("小体育館")) {
-      zoomFactor = 3.0;
-      xTranslate = 0.0;
-      yTranslate = 700.0;
-    } else {
-      return;
-    }
-    _viewTransformationController.value.setEntry(0, 0, zoomFactor);
-    _viewTransformationController.value.setEntry(1, 1, zoomFactor);
-    _viewTransformationController.value.setEntry(2, 2, zoomFactor);
-    _viewTransformationController.value.setEntry(0, 3, -xTranslate);
-    _viewTransformationController.value.setEntry(1, 3, -yTranslate);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("ダッシュボード")),
+        appBar: AppBar(title: const Text("人手確認")),
         body: Stack(children: [
           Center(
             child: InteractiveViewer(
@@ -57,7 +27,17 @@ class DashboardScreen extends StatelessWidget {
           ),
           DashboardWidget("外バレーコート北", -0.6, -0.95),
           DashboardWidget("外バレーコート南", -0.6, -0.80),
-          DashboardWidget("鯱光館東", 0.3, -0.25),
+          DashboardWidget("本部", 0.3, -0.25),
+          DashboardWidget("鯱光館東", 0.6, -0.55),
+          DashboardWidget("鯱光館西", 0, -0.55),
+          DashboardWidget("小体育館", -0.8, -0.3),
+          DashboardWidget("小体育館Ⅰ", -0.8, -0.15),
+          DashboardWidget("小体育館Ⅱ", -0.8, 0),
+          DashboardWidget("小体育館Ⅲ", -0.8, 0.15),
+          DashboardWidget("ハンドボールコート", -0.8, 0.4),
+          DashboardWidget("運動場A", 0.3, 0.4),
+          DashboardWidget("運動場B", 0.3, 0.6),
+          DashboardWidget("運動場C", 0.3, 0.8),
         ]));
   }
 }

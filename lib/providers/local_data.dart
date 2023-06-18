@@ -7,12 +7,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class LocalData with ChangeNotifier {
   bool? isLoggedInAdmin;
   bool? isLoggedInRumutaiStaff;
+  bool? isLoggedInResultEditor;
   String? pickedPersonForMyGame;
 
   Future setDataFromLocal() async {
     isLoggedInAdmin = await readLocalData<bool>("isLoggedInAdmin");
     isLoggedInRumutaiStaff =
         await readLocalData<bool>("isLoggedInRumutaiStaff");
+    isLoggedInResultEditor =
+        await readLocalData<bool>("isLoggedInResultEditor");
     pickedPersonForMyGame =
         await readLocalData<String>("pickedPersonForMyGame");
     notifyListeners();

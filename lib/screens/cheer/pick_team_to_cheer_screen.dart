@@ -165,15 +165,20 @@ class _PickTeamToCheerScreenState extends State<PickTeamToCheerScreen> {
         final dataMap = data.value as Map;
         int maxCheerPoint1 = 0;
         int maxCheerPoint2 = 0;
+        int maxCheerPoint3 = 0;
         dataMap.forEach((classStr, cheerPoint) {
           cheerPoint ??= 0;
           if (classStr[0] == "1") {
             if (cheerPoint > maxCheerPoint1) {
               maxCheerPoint1 = cheerPoint;
             }
-          } else {
+          } else if (classStr[0] == "2") {
             if (cheerPoint > maxCheerPoint2) {
               maxCheerPoint2 = cheerPoint;
+            }
+          } else {
+            if (cheerPoint > maxCheerPoint3) {
+              maxCheerPoint3 = cheerPoint;
             }
           }
           _cheerPointMap[classStr] = cheerPoint;
@@ -184,8 +189,12 @@ class _PickTeamToCheerScreenState extends State<PickTeamToCheerScreen> {
             if (cheerPoint == maxCheerPoint1) {
               _topCheerPointClassList.add(classStr);
             }
-          } else {
+          } else if (classStr[0] == "2") {
             if (cheerPoint == maxCheerPoint2) {
+              _topCheerPointClassList.add(classStr);
+            }
+          } else {
+            if (cheerPoint == maxCheerPoint3) {
               _topCheerPointClassList.add(classStr);
             }
           }
@@ -293,68 +302,145 @@ class _PickTeamToCheerScreenState extends State<PickTeamToCheerScreen> {
                 GridView.count(
                   primary: true,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   crossAxisCount: 3,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: <Widget>[
                     _coloredCardWithText(
                         text: "2年", color: Colors.brown.shade300),
-                    _coloredCard(color: Colors.brown.shade200),
-                    _coloredCard(color: Colors.brown.shade100),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "201",
-                      color: Colors.brown.shade300,
+                      color: Colors.brown.shade200,
                       cheerPoint: _cheerPointMap["201"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "202",
-                      color: Colors.brown.shade200,
+                      color: Colors.brown.shade100,
                       cheerPoint: _cheerPointMap["202"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "203",
-                      color: Colors.brown.shade100,
+                      color: Colors.brown.shade300,
                       cheerPoint: _cheerPointMap["203"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "204",
-                      color: Colors.brown.shade300,
+                      color: Colors.brown.shade200,
                       cheerPoint: _cheerPointMap["204"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "205",
-                      color: Colors.brown.shade200,
+                      color: Colors.brown.shade100,
                       cheerPoint: _cheerPointMap["205"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "206",
-                      color: Colors.brown.shade100,
+                      color: Colors.brown.shade300,
                       cheerPoint: _cheerPointMap["206"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "207",
-                      color: Colors.brown.shade300,
+                      color: Colors.brown.shade200,
                       cheerPoint: _cheerPointMap["207"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "208",
-                      color: Colors.brown.shade200,
+                      color: Colors.brown.shade100,
                       cheerPoint: _cheerPointMap["208"],
                     ),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "209",
-                      color: Colors.brown.shade100,
+                      color: Colors.brown.shade300,
                       cheerPoint: _cheerPointMap["209"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "210",
+                      color: Colors.brown.shade200,
+                      cheerPoint: _cheerPointMap["210"],
+                    ),
+                    _coloredCard(color: Colors.brown.shade100),
+                    /*_coloredCardWithIcon(
+                      color: Colors.brown.shade300,
+                      icon: Icons.campaign_outlined,
+                    ),*/
+                  ],
+                ),
+                GridView.count(
+                  primary: true,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  crossAxisCount: 3,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    _coloredCardWithText(
+                        text: "3年", color: Colors.brown.shade100),
+                    _coloredCard(color: Colors.brown.shade200),
+                    _coloredCard(color: Colors.brown.shade300),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "301",
+                      color: Colors.brown.shade100,
+                      cheerPoint: _cheerPointMap["301"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "302",
+                      color: Colors.brown.shade200,
+                      cheerPoint: _cheerPointMap["302"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "303",
+                      color: Colors.brown.shade300,
+                      cheerPoint: _cheerPointMap["303"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "304",
+                      color: Colors.brown.shade100,
+                      cheerPoint: _cheerPointMap["304"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "305",
+                      color: Colors.brown.shade200,
+                      cheerPoint: _cheerPointMap["305"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "306",
+                      color: Colors.brown.shade300,
+                      cheerPoint: _cheerPointMap["306"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "307",
+                      color: Colors.brown.shade100,
+                      cheerPoint: _cheerPointMap["307"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "308",
+                      color: Colors.brown.shade200,
+                      cheerPoint: _cheerPointMap["308"],
+                    ),
+                    _teamToCheerWidget(
+                      context: context,
+                      classStr: "309",
+                      color: Colors.brown.shade300,
+                      cheerPoint: _cheerPointMap["309"],
                     ),
                   ],
                 ),

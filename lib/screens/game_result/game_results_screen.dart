@@ -36,20 +36,27 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
     }
   }
 
+//not flexible
   String _title(CategoryToGet gameInfoDetail) {
     switch (gameInfoDetail) {
-      case CategoryToGet.b1:
+      case CategoryToGet.d1:
         return "1年　男子　フットサル";
-      case CategoryToGet.g1:
-        return "1年　女子　バスケット";
-      case CategoryToGet.m1:
-        return "1年　混合　バレー";
-      case CategoryToGet.b2:
+      case CategoryToGet.j1:
+        return "1年　女子　バレー";
+      case CategoryToGet.k1:
+        return "1年　混合　ドッジボール";
+      case CategoryToGet.d2:
         return "2年　男子　フットサル";
-      case CategoryToGet.g2:
-        return "2年　女子　ドッチビー";
-      case CategoryToGet.m2:
+      case CategoryToGet.j2:
+        return "2年　女子　バスケット";
+      case CategoryToGet.k2:
         return "2年　混合　バレー";
+      case CategoryToGet.d3:
+        return "3年　男子　フットサル";
+      case CategoryToGet.j3:
+        return "3年　女子　ドッジビー";
+      case CategoryToGet.k3:
+        return "3年　混合　バレー";
     }
   }
 
@@ -101,8 +108,9 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                   ),
                                 ),
                                 LeagueWidget(
-                                    title: "リーグB",
-                                    leagueData: _gameDataAll["b"]),
+                                  title: "リーグB",
+                                  leagueData: _gameDataAll["b"],
+                                ),
                               ],
                             ),
                           ),

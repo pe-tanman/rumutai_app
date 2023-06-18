@@ -154,17 +154,17 @@ class _DetailScreenState extends State<DetailScreen> {
 
   CategoryToGet? _categoryToGet(String gameDataId) {
     if (gameDataId.contains("1b")) {
-      return CategoryToGet.b1;
+      return CategoryToGet.d1;
     } else if (gameDataId.contains("1g")) {
-      return CategoryToGet.g1;
+      return CategoryToGet.j1;
     } else if (gameDataId.contains("1m")) {
-      return CategoryToGet.m1;
+      return CategoryToGet.k1;
     } else if (gameDataId.contains("2b")) {
-      return CategoryToGet.b2;
+      return CategoryToGet.d2;
     } else if (gameDataId.contains("2g")) {
-      return CategoryToGet.g2;
+      return CategoryToGet.j2;
     } else if (gameDataId.contains("2m")) {
-      return CategoryToGet.m2;
+      return CategoryToGet.k2;
     }
     return null;
   }

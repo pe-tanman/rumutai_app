@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import '/providers/local_data.dart';
-import 'package:provider/provider.dart';
-import "/providers/dashboard_data.dart";
 
 class DashboardWidget extends StatefulWidget {
   String staffPlace;
@@ -17,7 +15,7 @@ class DashboardWidget extends StatefulWidget {
 }
 
 class _DashboardState extends State<DashboardWidget> {
-  bool isloading = true;
+  bool isloading = false;
   late String staffPlace;
   late double x;
   late double y;
@@ -30,12 +28,19 @@ class _DashboardState extends State<DashboardWidget> {
     staffPlace = widget.staffPlace;
     x = widget.x;
     y = widget.y;
-
-    LoadPlace();
-    ChangeButtonColor();
+    LoadPlaceAndColor();
   }
 
-  Future<void> ChangeButtonColor() async {
+  Future<void> LoadPlaceAndColor() async {
+    setState(() {
+      isloading = true;
+    });
+    if (await LocalData.readLocalData<String?>("staffPlace") == null) {
+      localPlace = "None";
+    } else {
+      localPlace = await LocalData.readLocalData<String>("staffPlace");
+    }
+
     var globalData = await FirebaseFirestore.instance
         .collection("StaffDashboard")
         .doc(staffPlace)
@@ -60,13 +65,6 @@ class _DashboardState extends State<DashboardWidget> {
     setState(() {
       isloading = false;
     });
-    print("$staffPlace  $signColor");
-  }
-
-  Future<void> LoadPlace() async {
-    localPlace = await LocalData.readLocalData<String>("staffPlace");
-
-    print("$staffPlace  $localPlace");
   }
 
   Widget _dialogIn({required String staffPlace}) {
@@ -207,49 +205,36 @@ class _DashboardState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DashboardNotifier>(
-        builder: (context, dashboardNotifier, child) {
-      // 必要に応じて状態を更新する
-      if (dashboardNotifier.needsUpdate) {
-        isloading = true;
-        LoadPlace();
-        ChangeButtonColor();
-
-        dashboardNotifier.resetNeedsUpdate();
-      }
-      if (isloading) {
-        return const Center(child: CircularProgressIndicator());
-      } else {
-        if (localPlace == staffPlace) {
-          print("dialog_out");
-          return _dialogOut(staffPlace: staffPlace);
-        }
-        ;
-      }
-      return Align(
-          alignment: Alignment(x, y),
-          child: ElevatedButton(
-            onPressed: () {
-              if (localPlace == "None") {
-                showDialog(
-                    context: context,
-                    builder: (_) {
-                      return _dialogIn(staffPlace: staffPlace);
-                    });
-              } else if (localPlace == staffPlace) {
-                showDialog(
-                    context: context,
-                    builder: (_) {
-                      return _dialogOut(staffPlace: staffPlace);
-                    });
-              } else {
-                null;
-              }
-            },
-            child: Text(
-                (staffPlace == localPlace) ? "$staffPlace(担当中)" : staffPlace),
-            style: ElevatedButton.styleFrom(backgroundColor: signColor),
-          ));
-    });
+    if (isloading) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return (localPlace == staffPlace)
+          ? _dialogOut(staffPlace: staffPlace)
+          : Align(
+              alignment: Alignment(x, y),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (localPlace == "None") {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return _dialogIn(staffPlace: staffPlace);
+                        });
+                  } else if (localPlace == staffPlace) {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return _dialogOut(staffPlace: staffPlace);
+                        });
+                  } else {
+                    null;
+                  }
+                },
+                child: Text((staffPlace == localPlace)
+                    ? "$staffPlace(担当中)"
+                    : staffPlace),
+                style: ElevatedButton.styleFrom(backgroundColor: signColor),
+              ));
+    }
   }
 }

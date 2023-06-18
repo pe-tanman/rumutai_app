@@ -11,7 +11,7 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("設定")),
+      appBar: AppBar(title: const Text("法的事項")),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
         child: Column(children: [

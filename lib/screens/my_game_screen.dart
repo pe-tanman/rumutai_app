@@ -207,66 +207,6 @@ class _MyGameScreenState extends State<MyGameScreen> {
     }
     return myGameListWidget;
   }
-/*
-  void _search(String text, void Function(void Function()) setStateInDialog) {
-    setStateInDialog(() {
-      if (text.trim().isEmpty) {
-        _searchedNames = [];
-      } else {
-        _searchedNames =
-            _nameList.where((element) => element.contains(text)).toList();
-      }
-    });
-  }*/
-
-/*
-  Widget _nameWidget(
-      String text, void Function(void Function()) setStateInDialog) {
-    return SizedBox(
-      width: double.infinity,
-      height: 40,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(0),
-            ),
-          ),
-          foregroundColor: Colors.black,
-          backgroundColor:
-              _pickedPersonInDialog == text ? Colors.brown.shade100 : null,
-        ),
-        onPressed: () {
-          setStateInDialog(() {
-            if (_pickedPersonInDialog == text) {
-              _pickedPersonInDialog = null;
-            } else {
-              _pickedPersonInDialog = text;
-            }
-          });
-        },
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.brown.shade900),
-        ),
-      ),
-    );
-  }
-*/
-/*
-  List<Widget> _listOfNameWidgets(
-      List<String> nameListToShow, setStateInDialog) {
-
-    List<Widget> listOfNameWidgets = [];
-    for (var name in nameListToShow) {
-      listOfNameWidgets.add(_nameWidget(name, setStateInDialog));
-      listOfNameWidgets.add(Divider(
-        height: 1,
-        color: Colors.brown.shade900,
-      ));
-    }
-    return listOfNameWidgets;
-  }*/
 
   Widget _dialog() {
     _targetPersonController.text = _targetPerson ?? "";
@@ -314,48 +254,6 @@ class _MyGameScreenState extends State<MyGameScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                /*
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            _pickedPersonInDialog == null
-                                ? "選択中："
-                                : "選択中：$_pickedPersonInDialog",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),*/
-                /*
-                Expanded(
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 5,
-                        vertical: 10,
-                      ),
-                      child: SizedBox(),
-                      /*
-                              child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: _listOfNameWidgets(
-                                        _searchedNames.isEmpty
-                                            ? _nameList
-                                            : _searchedNames,
-                                        setStateInDialog),
-                                  ),
-                                ),
-                              ),*/
-                    ),
-                  ),
-                ),
-           */
               ],
             ),
           ),

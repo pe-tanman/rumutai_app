@@ -2,17 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rumutai_app/utilities/lable_utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 import '../utilities/tournament_type_utilities.dart';
 
 import '../providers/game_data.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import "../providers/local_data.dart";
 
 class RumutaiStaffScreen extends StatefulWidget {
   static const routeName = "/game-rumutai-staff-screen";
@@ -25,12 +23,13 @@ class RumutaiStaffScreen extends StatefulWidget {
 
 class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   bool _isLoadingDialog = false;
+  bool _isLoadingLocalData = true;
   bool _isInit = true;
   bool _canFinishGame = true;
   bool _isReverse = false;
   late Map _gameData;
-  late  Map<String, dynamic> data;
-
+  late Map<String, dynamic> data;
+  bool? _isLoggedInResultEditor = false;
 
   final TextEditingController _scoreDetail1Controller = TextEditingController();
   final TextEditingController _scoreDetail2Controller = TextEditingController();
@@ -50,41 +49,46 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   }) {
     return SizedBox(
       width: width,
-      child: TextField(
-          keyboardType: Platform.isAndroid
-              ? TextInputType.number
-              : const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: inputDecoration ?? const InputDecoration(isDense: true),
-          style: const TextStyle(fontSize: 30),
-          onChanged: (text) {
-            if (_scoreDetail1Controller.text == "" ||
-                _scoreDetail2Controller.text == "" ||
-                _scoreDetail3Controller.text == "" ||
-                _scoreDetail4Controller.text == "" ||
-                _scoreDetail5Controller.text == "" ||
-                _scoreDetail6Controller.text == "") {
-              if (_canFinishGame == true) {
-                setState(() {
-                  _canFinishGame = false;
-                });
-              }
-            } else {
-              if (_canFinishGame == false) {
-                setState(() {
-                  _canFinishGame = true;
-                });
-              }
-            }
-            if (text != "") {
-              setState(() {});
-            }
-          },
-          controller: controller),
+      child: (_isLoadingLocalData)
+          ? const Center(child: CircularProgressIndicator())
+          : TextField(
+              enabled: _isLoggedInResultEditor,
+              keyboardType: Platform.isAndroid
+                  ? TextInputType.number
+                  : const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration:
+                  inputDecoration ?? const InputDecoration(isDense: true),
+              style: const TextStyle(fontSize: 30),
+              onChanged: (text) {
+                if (_scoreDetail1Controller.text == "" ||
+                    _scoreDetail2Controller.text == "" ||
+                    _scoreDetail3Controller.text == "" ||
+                    _scoreDetail4Controller.text == "" ||
+                    _scoreDetail5Controller.text == "" ||
+                    _scoreDetail6Controller.text == "") {
+                  if (_canFinishGame == true) {
+                    setState(() {
+                      _canFinishGame = false;
+                    });
+                  }
+                } else {
+                  if (_canFinishGame == false) {
+                    setState(() {
+                      _canFinishGame = true;
+                    });
+                  }
+                }
+                if (text != "") {
+                  setState(() {});
+                }
+              },
+              controller: controller),
     );
   }
 
   List<String> get _scoreDetailLableList {
+    //要変更
     if (_gameData["gameId"][1] == "b") {
       return ["前半", "後半"];
     } else if (_gameData["gameId"][1] == "m") {
@@ -241,7 +245,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     }
     return scoreList;
   }
-
 
   int _strToInt(String str) {
     if (str == "") {
@@ -575,43 +578,47 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
         _lable(LableUtilities.extraTimeLable(gameDataId)),
         SizedBox(
           width: 150,
-          child: DropdownButton(
-            style: const TextStyle(fontSize: 20, color: Colors.black),
-            isExpanded: true,
-            items: [
-              DropdownMenuItem(
-                value: team1,
-                child: Text("$team1 勝利"),
-              ),
-              DropdownMenuItem(
-                value: team2,
-                child: Text("$team2 勝利"),
-              ),
-              const DropdownMenuItem(
-                value: "",
-                child: Text("なし"),
-              ),
-            ],
-            onChanged: (String? value) {
-              if ((_scoreList[0] == _scoreList[1]) && value == "") {
-                if (_canFinishGame == true) {
-                  setState(() {
-                    _canFinishGame = false;
-                  });
-                }
-              } else {
-                if (_canFinishGame == false) {
-                  setState(() {
-                    _canFinishGame = true;
-                  });
-                }
-              }
-              setState(() {
-                _selectedExtraTime = value as String;
-              });
-            },
-            value: _selectedExtraTime,
-          ),
+          child: (_isLoadingLocalData)
+              ? const Center(child: CircularProgressIndicator())
+              : DropdownButton(
+                  style: const TextStyle(fontSize: 20, color: Colors.black),
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem(
+                      value: team1,
+                      child: Text("$team1 勝利"),
+                    ),
+                    DropdownMenuItem(
+                      value: team2,
+                      child: Text("$team2 勝利"),
+                    ),
+                    const DropdownMenuItem(
+                      value: "",
+                      child: Text("なし"),
+                    ),
+                  ],
+                  onChanged: (_isLoggedInResultEditor!)
+                      ? (String? value) {
+                          if ((_scoreList[0] == _scoreList[1]) && value == "") {
+                            if (_canFinishGame == true) {
+                              setState(() {
+                                _canFinishGame = false;
+                              });
+                            }
+                          } else {
+                            if (_canFinishGame == false) {
+                              setState(() {
+                                _canFinishGame = true;
+                              });
+                            }
+                          }
+                          setState(() {
+                            _selectedExtraTime = value as String;
+                          });
+                        }
+                      : null,
+                  value: _selectedExtraTime,
+                ),
         )
       ],
     );
@@ -663,6 +670,14 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     });
   }
 
+  Future _LoadLoginData() async {
+    _isLoggedInResultEditor =
+        Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
+    setState(() {
+      _isLoadingLocalData = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<GameData>(context);
@@ -671,9 +686,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
         ModalRoute.of(context)!.settings.arguments as DataToPass;
     final String gameDataId = gotData.gameDataId;
     _isReverse = gotData.isReverse;
-
-
-
+    _LoadLoginData();
 
     if (gotData.classNumber != null) {
       _gameData = (Provider.of<GameData>(context)
@@ -686,7 +699,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     }
 
     if (_isInit) {
-
       _scoreDetail1Controller.text =
           _gameData["scoreDetail"]["0"][0].toString();
       _scoreDetail2Controller.text =
@@ -862,294 +874,329 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
               const SizedBox(width: 10),
               if (_gameData["gameStatus"] != "after")
                 ElevatedButton.icon(
-                  onPressed: (_gameData["gameStatus"] == "now" &&
-                          !_canFinishGame)
-                      ? null
-                      : () {
-                    dateTime = DateTime.now();
-                    showDialog(
-                          context: context,
-                          builder: (_) {
-                            final String currentGameStatus =
-                                _gameData["gameStatus"];
-                            return StatefulBuilder(
-                              builder: (context, setState) => AlertDialog(
-                                title: const Text("確認"),
-                                content: _isLoadingDialog
-                                    ? const SizedBox(
-                                        height: 180,
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      )
-                                    : (currentGameStatus == "before"
-                                        ? SizedBox(
-                                          height: 100,
-                                          child: Column(
-                                            children: [
-                                              const Text("試合を開始します。"),
-                                              Text("開始時刻 ${dateTime.hour.toString()}時${dateTime.minute.toString()}分"),
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                textStyle: const TextStyle(fontSize:15),
+                  onPressed:
+                      (_gameData["gameStatus"] == "now" && !_canFinishGame)
+                          ? null
+                          : () {
+                              dateTime = DateTime.now();
+                              showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    final String currentGameStatus =
+                                        _gameData["gameStatus"];
+                                    return StatefulBuilder(
+                                      builder: (context, setState) =>
+                                          AlertDialog(
+                                        title: const Text("確認"),
+                                        content: _isLoadingDialog
+                                            ? const SizedBox(
+                                                height: 180,
+                                                child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 ),
-                                                child: const Text("開始時間変更"),
-                                                onPressed: () async {
-                                                  Picker(
-                                                      adapter: DateTimePickerAdapter(
-                                                          type: PickerDateTimeType
-                                                              .kHM,
-                                                          value: dateTime,
-                                                          customColumnType: [
-                                                            3,
-                                                            4
-                                                          ]),
-                                                      title: Text("時間選択"),
-                                                      onConfirm: (Picker picker,
-                                                          List value) {
-                                                        setState(() =>
-                                                        {
-                                                          dateTime = DateTime.utc(
-                                                              0, 0, 0, value[0],
-                                                              value[1], 0)});
-                                                      }).showModal(context);
-                                                })
-                                            ],
-                                          ),
-                                        )
-                                        : SizedBox(
-                                            height: 220,
-                                            child: SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  _scoreDetailWidget({
-                                                    "score": [
-                                                      _scoreList[0],
-                                                      _scoreList[1],
-                                                    ],
-                                                    "scoreDetail": {
-                                                      "0": [
-                                                        _scoreDetail1Controller
-                                                            .text,
-                                                        _scoreDetail2Controller
-                                                            .text,
+                                              )
+                                            : (currentGameStatus == "before"
+                                                ? SizedBox(
+                                                    height: 100,
+                                                    child: Column(
+                                                      children: [
+                                                        const Text("試合を開始します。"),
+                                                        Text(
+                                                            "開始時刻 ${dateTime.hour.toString()}時${dateTime.minute.toString()}分"),
+                                                        TextButton(
+                                                            style: TextButton
+                                                                .styleFrom(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          15),
+                                                            ),
+                                                            child: const Text(
+                                                                "開始時間変更"),
+                                                            onPressed:
+                                                                () async {
+                                                              Picker(
+                                                                  adapter: DateTimePickerAdapter(
+                                                                      type: PickerDateTimeType
+                                                                          .kHM,
+                                                                      value: dateTime,
+                                                                      customColumnType: [
+                                                                        3,
+                                                                        4
+                                                                      ]),
+                                                                  title: Text(
+                                                                      "時間選択"),
+                                                                  onConfirm: (Picker
+                                                                          picker,
+                                                                      List
+                                                                          value) {
+                                                                    setState(
+                                                                        () => {
+                                                                              dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0)
+                                                                            });
+                                                                  }).showModal(context);
+                                                            })
                                                       ],
-                                                      "1": [
-                                                        _scoreDetail3Controller
-                                                            .text,
-                                                        _scoreDetail4Controller
-                                                            .text,
-                                                      ],
-                                                      "2": [
-                                                        _scoreDetail5Controller
-                                                            .text,
-                                                        _scoreDetail6Controller
-                                                            .text,
-                                                      ],
-                                                    },
-                                                  }),
-                                                  const SizedBox(height: 10),
-                                                  if (_selectedExtraTime != "")
-                                                    _extraTimeWidget(
-                                                        _gameData["gameId"]),
-                                                  const Divider(),
-                                                  const SizedBox(height: 10),
-                                                  const Text("試合を終了します。"),
-                                                  Text("終了時刻 ${dateTime.hour.toString()}時${dateTime.minute.toString()}分"),
-                                                  TextButton(
-                                                    style: TextButton.styleFrom(
-                                                      textStyle: const TextStyle(fontSize:15),
                                                     ),
-                                                    onPressed: () async{
-                                                      Picker(adapter: DateTimePickerAdapter(type: PickerDateTimeType.kHM, value: dateTime, customColumnType: [3, 4]),
-                                                          title: Text("時間選択"),
-                                                          onConfirm: (Picker picker, List value) {
-                                                            setState(() => {
-                                                              dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0)});
-
-                                                          }).showModal(context);
-                                                    },
-                                                    child: const Text("終了時刻変更"),
+                                                  )
+                                                : SizedBox(
+                                                    height: 220,
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      child: Column(
+                                                        children: [
+                                                          _scoreDetailWidget({
+                                                            "score": [
+                                                              _scoreList[0],
+                                                              _scoreList[1],
+                                                            ],
+                                                            "scoreDetail": {
+                                                              "0": [
+                                                                _scoreDetail1Controller
+                                                                    .text,
+                                                                _scoreDetail2Controller
+                                                                    .text,
+                                                              ],
+                                                              "1": [
+                                                                _scoreDetail3Controller
+                                                                    .text,
+                                                                _scoreDetail4Controller
+                                                                    .text,
+                                                              ],
+                                                              "2": [
+                                                                _scoreDetail5Controller
+                                                                    .text,
+                                                                _scoreDetail6Controller
+                                                                    .text,
+                                                              ],
+                                                            },
+                                                          }),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          if (_selectedExtraTime !=
+                                                              "")
+                                                            _extraTimeWidget(
+                                                                _gameData[
+                                                                    "gameId"]),
+                                                          const Divider(),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          const Text(
+                                                              "試合を終了します。"),
+                                                          Text(
+                                                              "終了時刻 ${dateTime.hour.toString()}時${dateTime.minute.toString()}分"),
+                                                          TextButton(
+                                                            style: TextButton
+                                                                .styleFrom(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          15),
+                                                            ),
+                                                            onPressed:
+                                                                () async {
+                                                              Picker(
+                                                                  adapter: DateTimePickerAdapter(
+                                                                      type: PickerDateTimeType
+                                                                          .kHM,
+                                                                      value: dateTime,
+                                                                      customColumnType: [
+                                                                        3,
+                                                                        4
+                                                                      ]),
+                                                                  title: Text(
+                                                                      "時間選択"),
+                                                                  onConfirm: (Picker
+                                                                          picker,
+                                                                      List
+                                                                          value) {
+                                                                    setState(
+                                                                        () => {
+                                                                              dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0)
+                                                                            });
+                                                                  }).showModal(context);
+                                                            },
+                                                            child: const Text(
+                                                                "終了時刻変更"),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )),
+                                        actionsAlignment:
+                                            MainAxisAlignment.center,
+                                        actions: <Widget>[
+                                          if (!_isLoadingDialog)
+                                            SizedBox(
+                                              width: 110,
+                                              height: 40,
+                                              child: OutlinedButton(
+                                                style: ButtonStyle(
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Colors.black),
+                                                ),
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: const Text("キャンセル"),
+                                              ),
+                                            ),
+                                          if (!_isLoadingDialog)
+                                            SizedBox(
+                                              width: 110,
+                                              height: 40,
+                                              child: FilledButton(
+                                                style: ButtonStyle(
+                                                  shape:
+                                                      MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
                                                   ),
+                                                ),
+                                                child: Text(currentGameStatus ==
+                                                        "before"
+                                                    ? "開始"
+                                                    : "終了"),
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    _isLoadingDialog = true;
+                                                  });
 
+                                                  if (currentGameStatus ==
+                                                      "before") {
+                                                    data = {
+                                                      "title":
+                                                          "${_gameData["place"]}) ${dateTime.hour.toString()}時${dateTime.minute.toString()}分 ${gameDataId} 開始",
+                                                      "timeStamp":
+                                                          DateTime.now()
+                                                    };
+                                                    await gameDataProvider
+                                                        .updateData(
+                                                            doc: gameDataId,
+                                                            newData: {
+                                                              "gameStatus":
+                                                                  "now"
+                                                            },
+                                                            teams: _gameData[
+                                                                "team"]);
+                                                  } else if (currentGameStatus ==
+                                                      "now") {
+                                                    data = {
+                                                      "title":
+                                                          "${_gameData["place"]}) ${dateTime.hour.toString()}時${dateTime.minute.toString()}分 ${gameDataId} 終了",
+                                                      "timeStamp":
+                                                          DateTime.now()
+                                                    };
+                                                    await gameDataProvider
+                                                        .updateData(
+                                                            doc: gameDataId,
+                                                            newData:
+                                                                _selectedExtraTime ==
+                                                                        ""
+                                                                    ? {
+                                                                        "gameStatus":
+                                                                            "after",
+                                                                        "score":
+                                                                            [
+                                                                          int.parse(
+                                                                              _scoreList[0]),
+                                                                          int.parse(
+                                                                              _scoreList[1]),
+                                                                        ],
+                                                                        "scoreDetail":
+                                                                            {
+                                                                          "0": [
+                                                                            int.parse(_scoreDetail1Controller.text),
+                                                                            int.parse(_scoreDetail2Controller.text),
+                                                                          ],
+                                                                          "1": [
+                                                                            int.parse(_scoreDetail3Controller.text),
+                                                                            int.parse(_scoreDetail4Controller.text),
+                                                                          ],
+                                                                          "2": [
+                                                                            int.parse(_scoreDetail5Controller.text),
+                                                                            int.parse(_scoreDetail6Controller.text),
+                                                                          ],
+                                                                        },
+                                                                      }
+                                                                    : {
+                                                                        "gameStatus":
+                                                                            "after",
+                                                                        "score":
+                                                                            [
+                                                                          int.parse(
+                                                                              _scoreList[0]),
+                                                                          int.parse(
+                                                                              _scoreList[1]),
+                                                                        ],
+                                                                        "scoreDetail":
+                                                                            {
+                                                                          "0": [
+                                                                            int.parse(_scoreDetail1Controller.text),
+                                                                            int.parse(_scoreDetail2Controller.text),
+                                                                          ],
+                                                                          "1": [
+                                                                            int.parse(_scoreDetail3Controller.text),
+                                                                            int.parse(_scoreDetail4Controller.text),
+                                                                          ],
+                                                                          "2": [
+                                                                            int.parse(_scoreDetail5Controller.text),
+                                                                            int.parse(_scoreDetail6Controller.text),
+                                                                          ],
+                                                                        },
+                                                                        "extraTime":
+                                                                            _selectedExtraTime,
+                                                                      },
+                                                            teams: _gameData[
+                                                                "team"]);
 
+                                                    //トーナメントの更新
+                                                    if (gameDataId
+                                                            .contains("f") ||
+                                                        gameDataId
+                                                            .contains("l")) {
+                                                      _updateTournament(
+                                                        gameDataProvider:
+                                                            gameDataProvider,
+                                                        gameId: gameDataId,
+                                                      );
+                                                    }
+                                                  }
 
-                                                ],
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('Timeline')
+                                                      .add(data);
+
+                                                  setState(() {
+                                                    _isLoadingDialog = false;
+                                                  });
+                                                  if (!mounted) return;
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        currentGameStatus ==
+                                                                "before"
+                                                            ? "試合を開始しました。"
+                                                            : "試合を終了しました。",
+                                                      ),
+                                                    ),
+                                                  );
+                                                  Navigator.pop(context);
+                                                },
                                               ),
                                             ),
-                                          )),
-                                actionsAlignment: MainAxisAlignment.center,
-                                actions: <Widget>[
-                                  if (!_isLoadingDialog)
-                                    SizedBox(
-                                      width: 110,
-                                      height: 40,
-                                      child: OutlinedButton(
-                                        style: ButtonStyle(
-                                          foregroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.black),
-                                        ),
-                                        onPressed: () => Navigator.pop(context),
-                                        child: const Text("キャンセル"),
+                                        ],
                                       ),
-                                    ),
-                                  if (!_isLoadingDialog)
-                                    SizedBox(
-                                      width: 110,
-                                      height: 40,
-                                      child: FilledButton(
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                          ),
-                                        ),
-                                        child: Text(
-                                            currentGameStatus == "before"
-                                                ? "開始"
-                                                : "終了"),
-                                        onPressed: () async{
-                                          setState(() {
-                                            _isLoadingDialog = true;
-
-                                          });
-
-
-
-                                          if (currentGameStatus == "before") {
-                                            data = {
-                                            "title":"${_gameData["place"]}) ${dateTime.hour.toString()}時${dateTime.minute.toString()}分 ${gameDataId} 開始",
-                                            "timeStamp": DateTime.now()};
-                                            await gameDataProvider.updateData(
-                                                doc: gameDataId,
-                                                newData: {"gameStatus": "now"},
-                                                teams: _gameData["team"]);
-
-                                          } else if (currentGameStatus ==
-                                              "now") {
-                                            data = {
-                                              "title":"${_gameData["place"]}) ${dateTime.hour.toString()}時${dateTime.minute.toString()}分 ${gameDataId} 終了",
-                                              "timeStamp": DateTime.now()};
-                                            await gameDataProvider.updateData(
-                                                doc: gameDataId,
-                                                newData: _selectedExtraTime ==
-                                                        ""
-                                                    ? {
-                                                        "gameStatus": "after",
-                                                        "score": [
-                                                          int.parse(
-                                                              _scoreList[0]),
-                                                          int.parse(
-                                                              _scoreList[1]),
-                                                        ],
-                                                        "scoreDetail": {
-                                                          "0": [
-                                                            int.parse(
-                                                                _scoreDetail1Controller
-                                                                    .text),
-                                                            int.parse(
-                                                                _scoreDetail2Controller
-                                                                    .text),
-                                                          ],
-                                                          "1": [
-                                                            int.parse(
-                                                                _scoreDetail3Controller
-                                                                    .text),
-                                                            int.parse(
-                                                                _scoreDetail4Controller
-                                                                    .text),
-                                                          ],
-                                                          "2": [
-                                                            int.parse(
-                                                                _scoreDetail5Controller
-                                                                    .text),
-                                                            int.parse(
-                                                                _scoreDetail6Controller
-                                                                    .text),
-                                                          ],
-                                                        },
-                                                      }
-                                                    : {
-                                                        "gameStatus": "after",
-                                                        "score": [
-                                                          int.parse(
-                                                              _scoreList[0]),
-                                                          int.parse(
-                                                              _scoreList[1]),
-                                                        ],
-                                                        "scoreDetail": {
-                                                          "0": [
-                                                            int.parse(
-                                                                _scoreDetail1Controller
-                                                                    .text),
-                                                            int.parse(
-                                                                _scoreDetail2Controller
-                                                                    .text),
-                                                          ],
-                                                          "1": [
-                                                            int.parse(
-                                                                _scoreDetail3Controller
-                                                                    .text),
-                                                            int.parse(
-                                                                _scoreDetail4Controller
-                                                                    .text),
-                                                          ],
-                                                          "2": [
-                                                            int.parse(
-                                                                _scoreDetail5Controller
-                                                                    .text),
-                                                            int.parse(
-                                                                _scoreDetail6Controller
-                                                                    .text),
-                                                          ],
-                                                        },
-                                                        "extraTime":
-                                                            _selectedExtraTime,
-                                                      },
-                                                teams: _gameData["team"]);
-
-                                            //トーナメントの更新
-                                            if (gameDataId.contains("f") ||
-                                                gameDataId.contains("l")) {
-                                              _updateTournament(
-                                                gameDataProvider:
-                                                    gameDataProvider,
-                                                gameId: gameDataId,
-                                              );
-                                            }
-                                          }
-
-                                          await FirebaseFirestore.instance
-                                              .collection('Timeline')
-                                              .add(data);
-
-                                          setState(() {
-                                            _isLoadingDialog = false;
-                                          });
-                                          if (!mounted) return;
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                currentGameStatus == "before"
-                                                    ? "試合を開始しました。"
-                                                    : "試合を終了しました。",
-                                              ),
-                                            ),
-                                          );
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            );
-                          });
-                      },
+                                    );
+                                  });
+                            },
                   label: _gameData["gameStatus"] == "before"
                       ? const Text("試合開始")
                       : const Text("試合終了"),

@@ -192,6 +192,10 @@ class _DashboardState extends State<DashboardWidget> {
                                 .doc(staffPlace)
                                 .set(data, SetOptions(merge: true));
                           }
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text('担当を外れました'),
+                          ));
                           Navigator.pop(context);
                         }),
                   )

@@ -41,9 +41,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     bool isNotify =
         await LocalData.readLocalData<bool>(widget.gameData["gameId"]) ?? false;
     return Future<bool>.value(isNotify);
-
   }
-
 
   String _otherTeam(Map team, String classNumber) {
     if (team["0"] == _myTeam(team, classNumber)) {
@@ -151,15 +149,19 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                             onPressed: () {
                               setState(() {
                                 _notify = !_notify;
-                                //changing
                                 if (_notify) {
+                                  print("startTime:" +
+                                      widget.gameData["startTime"]["date"] +
+                                      widget.gameData["startTime"]["hour"] +
+                                      widget.gameData["startTime"]["minute"]);
                                   //通知予約
                                   LocalNotification.registerLocNotification(
                                     place: widget.gameData["place"],
                                     gameId: widget.gameData["gameId"],
-                                    day: "1",
-                                    hour: "20",
-                                    minute: "04",
+                                    day: widget.gameData["startTime"]["date"],
+                                    hour: widget.gameData["startTime"]["hour"],
+                                    minute: widget.gameData["startTime"]
+                                        ["minute"],
                                     team1: _myTeam(widget.gameData["team"],
                                         widget.classNumber),
                                     team2: _otherTeam(widget.gameData["team"],

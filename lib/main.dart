@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
+import 'package:rumutai_app/utilities/local_notification.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
@@ -83,35 +84,15 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   );
 }
 
-InitializationSettings initializeLocNotification() {
-//現在時刻設定
-  tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation("Asia/Tokyo"));
-//権限設定
-  const DarwinInitializationSettings initSettingsIOS =
-      DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false);
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('notification_icon');
-
-// ignore: unused_local_variable
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: initSettingsIOS,
-  );
-  return initializationSettings;
-}
-
 class MyApp extends StatelessWidget {
   MyApp();
 
   @override
   Widget build(BuildContext context) {
 //通知をタップして起動したときの設定＆local_notificationの初期化
-    flutterLocalNotificationsPlugin.initialize(initializeLocNotification(),
-        onDidReceiveNotificationResponse: (NotificationResponse res) {
+    flutterLocalNotificationsPlugin
+        .initialize(LocalNotification.initializeLocNotification(),
+            onDidReceiveNotificationResponse: (NotificationResponse res) {
       navigatorKey.currentState?.pushNamed(DetailScreen.routeName,
           arguments: DataToPass(
             gameDataId: res.payload!,

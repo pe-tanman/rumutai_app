@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import "../providers/local_data.dart";
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rumutai_app/utilities/lable_utilities.dart';
@@ -10,7 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utilities/tournament_type_utilities.dart';
 
 import '../providers/game_data.dart';
-import "../providers/local_data.dart";
+import 'package:intl/date_symbol_data_local.dart';
 
 class RumutaiStaffScreen extends StatefulWidget {
   static const routeName = "/game-rumutai-staff-screen";
@@ -281,17 +282,17 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
 
   CategoryToGet? _gameDataToGet(String gameDataId) {
     if (gameDataId.contains("1b")) {
-      return CategoryToGet.b1;
+      return CategoryToGet.d1;
     } else if (gameDataId.contains("1g")) {
-      return CategoryToGet.g1;
+      return CategoryToGet.j1;
     } else if (gameDataId.contains("1m")) {
-      return CategoryToGet.m1;
+      return CategoryToGet.k1;
     } else if (gameDataId.contains("2b")) {
-      return CategoryToGet.b2;
+      return CategoryToGet.d2;
     } else if (gameDataId.contains("2g")) {
-      return CategoryToGet.g2;
+      return CategoryToGet.j2;
     } else if (gameDataId.contains("2m")) {
-      return CategoryToGet.m2;
+      return CategoryToGet.k2;
     }
     return null;
   }

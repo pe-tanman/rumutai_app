@@ -299,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "2023  3/15〜16",
+                    "2023  6/28〜29",
                     style: TextStyle(
                       color: Colors.brown.shade800,
                     ),

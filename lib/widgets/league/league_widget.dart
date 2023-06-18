@@ -443,7 +443,7 @@ class LeagueWidget extends StatelessWidget {
       //勝ち点が同じ場合
       if (compare == 0) {
         //バレーの場合
-        if (leagueData.values.first[1] == "m") {
+        if (leagueData.values.first["gameId"][1] == "m") {
           if (teamSetDifference[teamA] > teamSetDifference[teamB]) {
             return -1;
           } else if (teamSetDifference[teamA] < teamSetDifference[teamB]) {

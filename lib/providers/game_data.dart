@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum CategoryToGet { b1, g1, m1, b2, g2, m2 }
+enum CategoryToGet { d1, j1, k1, d2, j2, k2, d3, j3, k3 }
 
 class DataToPass {
   final String gameDataId;
@@ -240,17 +240,17 @@ class GameData with ChangeNotifier {
 
   Object? getGameDataForResult({required CategoryToGet categoryToGet}) {
     switch (categoryToGet) {
-      case CategoryToGet.b1:
+      case CategoryToGet.d1:
         return _gameDataForResult["1b"];
-      case CategoryToGet.g1:
+      case CategoryToGet.j1:
         return _gameDataForResult["1g"];
-      case CategoryToGet.m1:
+      case CategoryToGet.k1:
         return _gameDataForResult["1m"];
-      case CategoryToGet.b2:
+      case CategoryToGet.d2:
         return _gameDataForResult["2b"];
-      case CategoryToGet.g2:
+      case CategoryToGet.j2:
         return _gameDataForResult["2g"];
-      case CategoryToGet.m2:
+      case CategoryToGet.k2:
         return _gameDataForResult["2m"];
     }
   }
@@ -331,22 +331,22 @@ class GameData with ChangeNotifier {
   Future loadGameDataForResult({required CategoryToGet categoryToGet}) async {
     late String docId;
     switch (categoryToGet) {
-      case CategoryToGet.b1:
+      case CategoryToGet.d1:
         docId = "1b";
         break;
-      case CategoryToGet.g1:
+      case CategoryToGet.j1:
         docId = "1g";
         break;
-      case CategoryToGet.m1:
+      case CategoryToGet.k1:
         docId = "1m";
         break;
-      case CategoryToGet.b2:
+      case CategoryToGet.d2:
         docId = "2b";
         break;
-      case CategoryToGet.g2:
+      case CategoryToGet.j2:
         docId = "2g";
         break;
-      case CategoryToGet.m2:
+      case CategoryToGet.k2:
         docId = "2m";
         break;
     }

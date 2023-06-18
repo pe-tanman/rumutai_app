@@ -97,23 +97,23 @@ class PickCategoryScreen extends StatelessWidget {
                         title: "男子",
                         icon: Icons.sports_soccer,
                         text: "フットサル",
-                        categoryToGet: CategoryToGet.b1,
+                        categoryToGet: CategoryToGet.d1,
                       ),
                       const SizedBox(width: 10),
                       _gameInfoButton(
                         context: context,
                         title: "女子",
-                        icon: Icons.sports_basketball_outlined,
-                        text: "バスケット",
-                        categoryToGet: CategoryToGet.g1,
+                        icon: Icons.sports_volleyball_outlined,
+                        text: "バレーボール",
+                        categoryToGet: CategoryToGet.j1,
                       ),
                       const SizedBox(width: 10),
                       _gameInfoButton(
                         context: context,
                         title: "混合",
                         icon: Icons.sports_volleyball_outlined,
-                        text: "バレー",
-                        categoryToGet: CategoryToGet.m1,
+                        text: "ドッジボール",
+                        categoryToGet: CategoryToGet.k1,
                       )
                     ],
                   ),
@@ -139,7 +139,49 @@ class PickCategoryScreen extends StatelessWidget {
                         title: "男子",
                         icon: Icons.sports_soccer,
                         text: "フットサル",
-                        categoryToGet: CategoryToGet.b2,
+                        categoryToGet: CategoryToGet.d2,
+                      ),
+                      const SizedBox(width: 10),
+                      _gameInfoButton(
+                        context: context,
+                        title: "女子",
+                        icon: Icons.sports_basketball_outlined,
+                        text: "バスケット",
+                        categoryToGet: CategoryToGet.j2,
+                      ),
+                      const SizedBox(width: 10),
+                      _gameInfoButton(
+                        context: context,
+                        title: "混合",
+                        icon: Icons.sports_volleyball_outlined,
+                        text: "バレー",
+                        categoryToGet: CategoryToGet.k2,
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(
+                        left: 10, right: 10, top: 10, bottom: 5),
+                    child: Divider(),
+                  ),
+                  Text(
+                    "3年",
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.brown.shade900,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _gameInfoButton(
+                        context: context,
+                        title: "男子",
+                        icon: Icons.sports_soccer,
+                        text: "フットサル",
+                        categoryToGet: CategoryToGet.d3,
                       ),
                       const SizedBox(width: 10),
                       Column(
@@ -159,7 +201,7 @@ class PickCategoryScreen extends StatelessWidget {
                             ),
                             onPressed: () => Navigator.of(context).pushNamed(
                                 GameResultsScreen.routeName,
-                                arguments: CategoryToGet.g2),
+                                arguments: CategoryToGet.j3),
                             child: SizedBox(
                               width: 90,
                               height: 100,
@@ -192,7 +234,7 @@ class PickCategoryScreen extends StatelessWidget {
                         title: "混合",
                         icon: Icons.sports_volleyball_outlined,
                         text: "バレー",
-                        categoryToGet: CategoryToGet.m2,
+                        categoryToGet: CategoryToGet.k3,
                       ),
                     ],
                   ),

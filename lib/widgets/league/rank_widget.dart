@@ -33,23 +33,30 @@ class RankWidget extends StatelessWidget {
             height: 18,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: Text(
-                "位",
-                style: TextStyle(
-                  fontSize: 15,
-                  height: 1.0,
-                  fontWeight: FontWeight.w300,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 1),
+                child: Text(
+                  "位",
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.0,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 33,
-            child: Text(
-              team,
-              style: const TextStyle(fontSize: 18, height: 1.0),
-              textAlign: TextAlign.center,
+          const SizedBox(width: 6),
+          Expanded(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 18),
+              child: FittedBox(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  team,
+                  style: const TextStyle(fontSize: 18, height: 1.0),
+                ),
+              ),
             ),
           ),
         ]),
@@ -62,13 +69,28 @@ class RankWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: rank.isEmpty ? 0 : 68,
-      height: 230,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: rankWidget(rank),
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Card(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.brown.shade800, width: 2),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 10,
+              bottom: 20,
+              left: 5,
+              right: 5,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: rankWidget(rank),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

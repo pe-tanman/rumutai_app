@@ -120,6 +120,10 @@ flutter:
      fonts:
        - asset: assets/fonts/YujiSyuku-Regular.ttf
          weight: 400
+   - family: Anton
+     fonts:
+       - asset: assets/fonts/Anton-Regular.ttf
+         weight: 400
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

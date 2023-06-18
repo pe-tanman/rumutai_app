@@ -486,6 +486,7 @@ class LeagueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gridSize = MediaQuery.of(context).size.width * 7 / 10;
+    final rankWidgetWidth = MediaQuery.of(context).size.width * 2.4 / 10;
     late int crossAxisCount;
     if (_leagueData.length == 6) {
       crossAxisCount = 5;
@@ -503,7 +504,7 @@ class LeagueWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SizedBox(
               width: gridSize,
@@ -514,8 +515,11 @@ class LeagueWidget extends StatelessWidget {
                 children: _leagueBlocks(_leagueData, gridSize / crossAxisCount),
               ),
             ),
-            const SizedBox(width: 15),
-            RankWidget(_rankList(_leagueData)),
+            SizedBox(
+              height: gridSize,
+              width: rankWidgetWidth,
+              child: RankWidget(_rankList(_leagueData)),
+            ),
           ],
         ),
         SizedBox(

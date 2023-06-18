@@ -108,8 +108,9 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                   ),
                                 ),
                                 LeagueWidget(
-                                    title: "リーグB",
-                                    leagueData: _gameDataAll["b"]),
+                                  title: "リーグB",
+                                  leagueData: _gameDataAll["b"],
+                                ),
                               ],
                             ),
                           ),

@@ -74,7 +74,7 @@ class RankWidget extends StatelessWidget {
       children: [
         Card(
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.brown.shade800, width: 2),
+            side: BorderSide(color: Colors.brown.shade800, width: 1.5),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Padding(

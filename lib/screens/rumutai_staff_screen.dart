@@ -11,7 +11,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utilities/tournament_type_utilities.dart';
 
 import '../providers/game_data.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class RumutaiStaffScreen extends StatefulWidget {
   static const routeName = "/game-rumutai-staff-screen";
@@ -61,29 +60,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
               decoration:
                   inputDecoration ?? const InputDecoration(isDense: true),
               style: const TextStyle(fontSize: 30),
-              onChanged: (text) {
-                if (_scoreDetail1Controller.text == "" ||
-                    _scoreDetail2Controller.text == "" ||
-                    _scoreDetail3Controller.text == "" ||
-                    _scoreDetail4Controller.text == "" ||
-                    _scoreDetail5Controller.text == "" ||
-                    _scoreDetail6Controller.text == "") {
-                  if (_canFinishGame == true) {
-                    setState(() {
-                      _canFinishGame = false;
-                    });
-                  }
-                } else {
-                  if (_canFinishGame == false) {
-                    setState(() {
-                      _canFinishGame = true;
-                    });
-                  }
-                }
-                if (text != "") {
-                  setState(() {});
-                }
-              },
               controller: controller),
     );
   }
@@ -600,19 +576,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                   ],
                   onChanged: (_isLoggedInResultEditor!)
                       ? (String? value) {
-                          if ((_scoreList[0] == _scoreList[1]) && value == "") {
-                            if (_canFinishGame == true) {
-                              setState(() {
-                                _canFinishGame = false;
-                              });
-                            }
-                          } else {
-                            if (_canFinishGame == false) {
-                              setState(() {
-                                _canFinishGame = true;
-                              });
-                            }
-                          }
                           setState(() {
                             _selectedExtraTime = value as String;
                           });
@@ -671,7 +634,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     });
   }
 
-  Future _LoadLoginData() async {
+  Future LoadLogInData() async {
     _isLoggedInResultEditor =
         Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
     setState(() {
@@ -687,7 +650,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
         ModalRoute.of(context)!.settings.arguments as DataToPass;
     final String gameDataId = gotData.gameDataId;
     _isReverse = gotData.isReverse;
-    _LoadLoginData();
+    LoadLogInData();
 
     if (gotData.classNumber != null) {
       _gameData = (Provider.of<GameData>(context)
@@ -713,9 +676,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
       _scoreDetail6Controller.text =
           _gameData["scoreDetail"]["2"][1].toString();
       _selectedExtraTime = _gameData["extraTime"];
-      if (gameDataId.contains("f") || gameDataId.contains("l")) {
-        _canFinishGame = false;
-      }
       _isInit = false;
     }
 

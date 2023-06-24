@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumutai_app/screens/drawer/publish_drive.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/drawer/map_screen.dart';
@@ -39,6 +40,11 @@ class MainDrawer extends StatelessWidget {
         ListTile(
           title: const Text("お問い合わせ", style: TextStyle(fontSize: 20)),
           onTap: () => Navigator.of(context).pushNamed(ContactScreen.routeName),
+        ),
+        ListTile(
+          title: const Text("情報公開", style: TextStyle(fontSize: 20)),
+          onTap: () =>
+              Navigator.of(context).pushNamed(PublishDriveScreen.routeName),
         ),
         const Divider(),
         ListTile(

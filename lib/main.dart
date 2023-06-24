@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rumutai_app/screens/drawer/publish_drive.dart';
 import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import 'package:rumutai_app/utilities/local_notification.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest_all.dart' as tz;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:rumutai_app/screens/staff/dashboard_screen.dart';
@@ -164,7 +163,7 @@ class MyApp extends StatelessWidget {
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
           MyPlaceGameScreen.routeName: (ctx) => const MyPlaceGameScreen(),
-
+          PublishDriveScreen.routeName: (ctx) => const PublishDriveScreen(),
           //PredictScreen.routeName: (ctx) => const PredictScreen(),
         },
       ),

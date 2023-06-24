@@ -11,7 +11,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utilities/tournament_type_utilities.dart';
 
 import '../providers/game_data.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class RumutaiStaffScreen extends StatefulWidget {
   static const routeName = "/game-rumutai-staff-screen";
@@ -85,7 +84,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
 //not flexible
   List<String> get _scoreDetailLableList {
     if (_gameData["sport"] == "futsal" || _gameData["sport"] == "dodgebee" || _gameData["sport"] == "dodgeball") {
-
       return ["前半", "後半"];
     } else if (_gameData["sport"] == "volleyball") {
       if ((_scoreList[0] == "1" && _scoreList[1] == "1") || (int.parse(_scoreList[0]) + int.parse(_scoreList[1]) == 3)) {
@@ -609,8 +607,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   }
 
   Future _LoadLoginData() async {
-    _isLoggedInResultEditor =
-        Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
+    _isLoggedInResultEditor = Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
     setState(() {
       _isLoadingLocalData = false;
     });

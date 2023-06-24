@@ -12,25 +12,19 @@ class LocalData with ChangeNotifier {
 
   Future setDataFromLocal() async {
     isLoggedInAdmin = await readLocalData<bool>("isLoggedInAdmin");
-    isLoggedInRumutaiStaff =
-        await readLocalData<bool>("isLoggedInRumutaiStaff");
-    isLoggedInResultEditor =
-        await readLocalData<bool>("isLoggedInResultEditor");
-    pickedPersonForMyGame =
-        await readLocalData<String>("pickedPersonForMyGame");
+    isLoggedInRumutaiStaff = await readLocalData<bool>("isLoggedInRumutaiStaff");
+    isLoggedInResultEditor = await readLocalData<bool>("isLoggedInResultEditor");
+    pickedPersonForMyGame = await readLocalData<String>("pickedPersonForMyGame");
     notifyListeners();
   }
 
   static Future<List<String>> listOfStringThatPasswordDidChange() async {
     bool? adminIsLoggedIn = await readLocalData<bool>("isLoggedInAdmin");
-    bool? rumutaiStaffIsLoggedIn =
-        await readLocalData<bool>("isLoggedInRumutaiStaff");
+    bool? rumutaiStaffIsLoggedIn = await readLocalData<bool>("isLoggedInRumutaiStaff");
+    bool? resultEditorIsLoggedIn = await readLocalData<bool>("isLoggedInResultEditor");
     final List<String> listToReturn = [];
-    if (adminIsLoggedIn == true || rumutaiStaffIsLoggedIn == true) {
-      var passwordData = await FirebaseFirestore.instance
-          .collection("password")
-          .doc("passwordDoc")
-          .get();
+    if (adminIsLoggedIn == true || rumutaiStaffIsLoggedIn == true || resultEditorIsLoggedIn == true) {
+      var passwordData = await FirebaseFirestore.instance.collection("password").doc("passwordDoc").get();
 
       if (adminIsLoggedIn == true) {
         final oldAdminPassword = await readLocalData<String>("adminPassword");
@@ -40,11 +34,17 @@ class LocalData with ChangeNotifier {
         }
       }
       if (rumutaiStaffIsLoggedIn == true) {
-        final oldRumutaiStaffPassword =
-            await readLocalData<String>("rumutaiStaffPassword");
+        final oldRumutaiStaffPassword = await readLocalData<String>("rumutaiStaffPassword");
         if (passwordData["RumutaiStaff"] != oldRumutaiStaffPassword) {
           await saveLocalData<bool>("isLoggedInRumutaiStaff", false);
           listToReturn.add("ルム対スタッフ");
+        }
+      }
+      if (resultEditorIsLoggedIn == true) {
+        final oldRumutaiStaffPassword = await readLocalData<String>("resultEditorPassword");
+        if (passwordData["ResultEditor"] != oldRumutaiStaffPassword) {
+          await saveLocalData<bool>("isLoggedInResultEditor", false);
+          listToReturn.add("試合結果編集者");
         }
       }
     }

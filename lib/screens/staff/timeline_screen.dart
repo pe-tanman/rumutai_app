@@ -54,6 +54,81 @@ class _TimelineScreenState extends State<TimelineScreen> {
     });
   }
 
+  Widget _dialog({required timelineData}) {
+    bool dialogIsLoading = false;
+    return StatefulBuilder(
+      builder: (context, setStateInDialog) {
+        return AlertDialog(
+          insetPadding: const EdgeInsets.all(10),
+          title: const Text("確認"),
+          content: SizedBox(
+            height: 200,
+            width: 200,
+            child: dialogIsLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(timelineData["title"]),
+                      ),
+                      const Divider(),
+                      const Text(
+                        "を消去します。",
+                      )
+                    ],
+                  ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            if (!dialogIsLoading)
+              SizedBox(
+                width: 140,
+                height: 40,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("キャンセル"),
+                ),
+              ),
+            if (!dialogIsLoading)
+              SizedBox(
+                width: 140,
+                height: 40,
+                child: FilledButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  ),
+                  child: const Text("消去"),
+                  onPressed: () async {
+                    setStateInDialog(() {
+                      dialogIsLoading = true;
+                    });
+                    await FirebaseFirestore.instance.collection("Timeline").doc(timelineData["id"]).delete();
+                    dialogIsLoading = false;
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('タイムラインを消去しました。'),
+                      ),
+                    );
+                    Navigator.popUntil(
+                      context,
+                      ModalRoute.withName(HomeScreen.routeName),
+                    );
+                  },
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _timelineWidget({
     required timelineData,
     required int index,
@@ -86,7 +161,21 @@ class _TimelineScreenState extends State<TimelineScreen> {
                         style: const TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ],
-                  )
+                  ),
+                  if (isLoggedInAdmin == true) const Expanded(child: SizedBox()),
+                  if (isLoggedInAdmin == true)
+                    IconButton(
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (_) {
+                          return _dialog(timelineData: timelineData);
+                        },
+                      ),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.grey,
+                      ),
+                    ),
                 ],
               ),
             ),

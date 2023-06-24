@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class MapScreen extends StatelessWidget {
@@ -57,7 +56,7 @@ class MapScreen extends StatelessWidget {
               child: InteractiveViewer(
                 transformationController: _viewTransformationController,
                 maxScale: 5,
-                child: Image.asset("assets/images/map.jpg"),
+                child: Image.asset("assets/images/map.png"),
               ),
             ),
           ],

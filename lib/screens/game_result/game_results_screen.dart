@@ -69,7 +69,6 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
       _gameDataAll = Provider.of<GameData>(context)
           .getGameDataForResult(categoryToGet: categoryToGet) as Map;
     }
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -128,17 +127,24 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                 title: "決勝",
                                 tournamentData: _gameDataAll["f"],
                               ),
-                              const SizedBox(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Divider(),
+                              if (categoryToGet == CategoryToGet.d2 ||
+                                  categoryToGet == CategoryToGet.d3)
+                                Column(
+                                  children: [
+                                    const SizedBox(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Divider(),
+                                      ),
+                                    ),
+                                    TournamentWidget(
+                                      title: "下位",
+                                      tournamentData: _gameDataAll["l"],
+                                    ),
+                                    const SizedBox(height: 30),
+                                  ],
                                 ),
-                              ),
-                              TournamentWidget(
-                                title: "下位",
-                                tournamentData: _gameDataAll["l"],
-                              ),
-                              const SizedBox(height: 30),
                             ],
                           ),
                         ),

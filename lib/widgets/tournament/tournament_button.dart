@@ -38,11 +38,14 @@ class TournamentButton extends StatelessWidget {
           DetailScreen.routeName,
           arguments: DataToPass(gameDataId: gameData["gameId"]),
         ),
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: Text(
-            text,
-            style: TextStyle(color: textColor, fontSize: 16),
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: Text(
+              text,
+              style: TextStyle(color: textColor, fontSize: 16),
+            ),
           ),
         ),
       ),

@@ -69,12 +69,12 @@ class LeagueWidget extends StatelessWidget {
       required String gameIdNumber,
       required Map teams,
     }) {
-      if (gameIdNumber == "00") {
+      if (gameIdNumber == "01") {
         setTextLeagueBlock(coordinate: "10", text: teams["0"]!);
         setTextLeagueBlock(coordinate: "20", text: teams["1"]!);
       } else {
         setTextLeagueBlock(
-            coordinate: "${int.parse(gameIdNumber) + 2}0", text: teams["1"]!);
+            coordinate: "${int.parse(gameIdNumber) + 1}0", text: teams["1"]!);
       }
     }
 
@@ -112,43 +112,43 @@ class LeagueWidget extends StatelessWidget {
     late Map coordinateMap;
     if (leagueData.length == 6) {
       coordinateMap = {
-        "00": "21",
-        "01": "31",
-        "02": "41",
-        "03": "32",
-        "04": "42",
-        "05": "43",
+        "01": "21",
+        "02": "31",
+        "03": "41",
+        "04": "32",
+        "05": "42",
+        "06": "43",
       };
     } else if (leagueData.length == 10) {
       coordinateMap = {
-        "00": "21",
-        "01": "31",
-        "02": "41",
-        "03": "51",
-        "04": "32",
-        "05": "42",
-        "06": "52",
-        "07": "43",
-        "08": "53",
-        "09": "54",
-      };
-    } else if (leagueData.length == 15) {
-      coordinateMap = {
-        "00": "21",
-        "01": "31",
-        "02": "41",
-        "03": "51",
-        "04": "61",
+        "01": "21",
+        "02": "31",
+        "03": "41",
+        "04": "51",
         "05": "32",
         "06": "42",
         "07": "52",
-        "08": "62",
-        "09": "43",
-        "10": "53",
-        "11": "63",
-        "12": "54",
-        "13": "64",
-        "14": "65",
+        "08": "43",
+        "09": "53",
+        "10": "54",
+      };
+    } else if (leagueData.length == 15) {
+      coordinateMap = {
+        "01": "21",
+        "02": "31",
+        "03": "41",
+        "04": "51",
+        "05": "61",
+        "06": "32",
+        "07": "42",
+        "08": "52",
+        "09": "62",
+        "10": "43",
+        "11": "53",
+        "12": "63",
+        "13": "54",
+        "14": "64",
+        "15": "65",
       };
     }
 
@@ -167,20 +167,20 @@ class LeagueWidget extends StatelessWidget {
 
       //リーグのチームを設定
       if (leagueData.length == 6) {
-        doSetLeagueTeam = (gameIdNumber == "00" ||
-            gameIdNumber == "01" ||
-            gameIdNumber == "02");
-      } else if (leagueData.length == 10) {
-        doSetLeagueTeam = (gameIdNumber == "00" ||
-            gameIdNumber == "01" ||
+        doSetLeagueTeam = (gameIdNumber == "01" ||
             gameIdNumber == "02" ||
             gameIdNumber == "03");
-      } else if (leagueData.length == 15) {
-        doSetLeagueTeam = (gameIdNumber == "00" ||
-            gameIdNumber == "01" ||
+      } else if (leagueData.length == 10) {
+        doSetLeagueTeam = (gameIdNumber == "01" ||
             gameIdNumber == "02" ||
             gameIdNumber == "03" ||
             gameIdNumber == "04");
+      } else if (leagueData.length == 15) {
+        doSetLeagueTeam = (gameIdNumber == "01" ||
+            gameIdNumber == "02" ||
+            gameIdNumber == "03" ||
+            gameIdNumber == "04" ||
+            gameIdNumber == "05");
       }
       if (doSetLeagueTeam) {
         setLeagueTeams(gameIdNumber: gameIdNumber, teams: gameData["team"]);
@@ -213,7 +213,6 @@ class LeagueWidget extends StatelessWidget {
         blockSize: blockSize,
       );
     });
-
     //leagueBlocksDataToReturn の設定
     List<LeagueBlock> leagueBlocksDataToReturn = [];
     if (leagueData.length == 6) {
@@ -327,7 +326,7 @@ class LeagueWidget extends StatelessWidget {
         _convertToOpposite(leagueBlocksDataMap["54"] as LeagueBlock),
         leagueBlocksDataMap["55"] as LeagueBlock,
         leagueBlocksDataMap["65"] as LeagueBlock,
-        leagueBlocksDataMap["50"] as LeagueBlock,
+        leagueBlocksDataMap["60"] as LeagueBlock,
         _convertToOpposite(leagueBlocksDataMap["61"] as LeagueBlock),
         _convertToOpposite(leagueBlocksDataMap["62"] as LeagueBlock),
         _convertToOpposite(leagueBlocksDataMap["63"] as LeagueBlock),

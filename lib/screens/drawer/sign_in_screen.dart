@@ -17,9 +17,11 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _adminController = TextEditingController();
   final TextEditingController _rumutaiStaffController = TextEditingController();
+  final TextEditingController _resultEditorController = TextEditingController();
 
   var _isLoadingAdmin = false;
   var _isLoadingRumutaiStaff = false;
+  var _isLoadingResultEditor = false;
 
   Widget _signInWidget({
     required bool? isLoggedIn,
@@ -31,6 +33,8 @@ class _SignInScreenState extends State<SignInScreen> {
       text = "管理者";
     } else if (loginAs == "RumutaiStaff") {
       text = "ルム対スタッフ";
+    } else if (loginAs == "ResultEditor") {
+      text = "試合結果編集者";
     }
     return Column(
       children: [
@@ -66,6 +70,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         _isLoadingAdmin = true;
                       } else if (loginAs == "RumutaiStaff") {
                         _isLoadingRumutaiStaff = true;
+                      } else if (loginAs == "ResultEditor") {
+                        _isLoadingResultEditor = true;
                       }
                     });
                     await LocalData.saveLocalData<bool>(
@@ -86,6 +92,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         _isLoadingAdmin = false;
                       } else if (loginAs == "RumutaiStaff") {
                         _isLoadingRumutaiStaff = false;
+                      } else if (loginAs == "ResultEditor") {
+                        _isLoadingResultEditor = false;
                       }
                     });
                   },
@@ -126,6 +134,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               _isLoadingAdmin = true;
                             } else if (loginAs == "RumutaiStaff") {
                               _isLoadingRumutaiStaff = true;
+                            } else if (loginAs == "ResultEditor") {
+                              _isLoadingResultEditor = true;
                             }
                           });
                           var data = await FirebaseFirestore.instance
@@ -135,28 +145,30 @@ class _SignInScreenState extends State<SignInScreen> {
                           if (data[loginAs] == textController.text) {
                             await LocalData.saveLocalData<bool>(
                                 "isLoggedIn$loginAs", true);
-                            if (loginAs == "RumutaiStaff") {
-                              await LocalData.saveLocalData<String>(
-                                "rumutaiStaffPassword",
-                                data[loginAs],
-                              );
-                            } else {
+                            if (loginAs == "Admin") {
                               await LocalData.saveLocalData<String>(
                                 "adminPassword",
                                 data[loginAs],
                               );
+                            } else if (loginAs == "RumutaiStaff") {
+                              await LocalData.saveLocalData<String>(
+                                "rumutaiStaffPassword",
+                                data[loginAs],
+                              );
+                            } else if (loginAs == "ResultEditor") {
+                              await LocalData.saveLocalData<String>(
+                                "resultEditorPassword",
+                                data[loginAs],
+                              );
                             }
+
                             if (!mounted) return;
                             await Provider.of<LocalData>(context, listen: false)
                                 .setDataFromLocal();
                             textController.text = "";
                             if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: loginAs == "RumutaiStaff"
-                                    ? const Text('ルム対スタッフとして、サインインしました。')
-                                    : const Text('管理者として、サインインしました。'),
-                              ),
+                              SnackBar(content: Text("$textとして、サインインしました。")),
                             );
                           } else {
                             if (!mounted) return;
@@ -172,6 +184,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               _isLoadingAdmin = false;
                             } else if (loginAs == "RumutaiStaff") {
                               _isLoadingRumutaiStaff = false;
+                            } else if (loginAs == "ResultEditor") {
+                              _isLoadingResultEditor = false;
                             }
                           });
                         },
@@ -195,6 +209,14 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: 20,
                 child: CircularProgressIndicator(),
               ),
+            if (_isLoadingResultEditor && loginAs == "ResultEditor")
+              const SizedBox(width: 10),
+            if (_isLoadingResultEditor && loginAs == "ResultEditor")
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(),
+              ),
           ],
         ),
       ],
@@ -207,6 +229,8 @@ class _SignInScreenState extends State<SignInScreen> {
         Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
     bool? isLoggedInRumutaiStaff =
         Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
+    bool? isLoggedInResultEditor =
+        Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
     return Scaffold(
       appBar: AppBar(title: const Text("サインイン")),
       body: GestureDetector(
@@ -224,7 +248,7 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(
                 width: 300,
                 child: Text(
-                  "ルム対スタッフ、管理者は、\n認証コードでサインインできます。",
+                  "ルム対スタッフ、試合結果編集者、管理者は、\n認証コードでサインインできます。",
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -240,6 +264,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 isLoggedIn: isLoggedInAdmin,
                 loginAs: "Admin",
                 textController: _adminController,
+              ),
+              Divider(color: Colors.brown.shade900),
+              _signInWidget(
+                isLoggedIn: isLoggedInResultEditor,
+                loginAs: "ResultEditor",
+                textController: _resultEditorController,
               ),
             ]),
           ),

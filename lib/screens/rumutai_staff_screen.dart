@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import "../providers/local_data.dart";
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rumutai_app/utilities/lable_utilities.dart';
@@ -24,11 +24,13 @@ class RumutaiStaffScreen extends StatefulWidget {
 
 class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   bool _isLoadingDialog = false;
+  bool _isLoadingLocalData = true;
   bool _isInit = true;
   bool _canFinishGame = true;
   bool _isReverse = false;
   late Map _gameData;
   late Map<String, dynamic> data;
+  bool? _isLoggedInResultEditor = false;
 
   final TextEditingController _scoreDetail1Controller = TextEditingController();
   final TextEditingController _scoreDetail2Controller = TextEditingController();
@@ -83,6 +85,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
 //not flexible
   List<String> get _scoreDetailLableList {
     if (_gameData["sport"] == "futsal" || _gameData["sport"] == "dodgebee" || _gameData["sport"] == "dodgeball") {
+
       return ["前半", "後半"];
     } else if (_gameData["sport"] == "volleyball") {
       if ((_scoreList[0] == "1" && _scoreList[1] == "1") || (int.parse(_scoreList[0]) + int.parse(_scoreList[1]) == 3)) {
@@ -515,43 +518,47 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
         _lable(LableUtilities.extraTimeLable(sport)),
         SizedBox(
           width: 150,
-          child: DropdownButton(
-            style: const TextStyle(fontSize: 20, color: Colors.black),
-            isExpanded: true,
-            items: [
-              DropdownMenuItem(
-                value: team1,
-                child: Text("$team1 勝利"),
-              ),
-              DropdownMenuItem(
-                value: team2,
-                child: Text("$team2 勝利"),
-              ),
-              const DropdownMenuItem(
-                value: "",
-                child: Text("なし"),
-              ),
-            ],
-            onChanged: (String? value) {
-              if ((_scoreList[0] == _scoreList[1]) && value == "") {
-                if (_canFinishGame == true) {
-                  setState(() {
-                    _canFinishGame = false;
-                  });
-                }
-              } else {
-                if (_canFinishGame == false) {
-                  setState(() {
-                    _canFinishGame = true;
-                  });
-                }
-              }
-              setState(() {
-                _selectedExtraTime = value as String;
-              });
-            },
-            value: _selectedExtraTime,
-          ),
+          child: (_isLoadingLocalData)
+              ? const Center(child: CircularProgressIndicator())
+              : DropdownButton(
+                  style: const TextStyle(fontSize: 20, color: Colors.black),
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem(
+                      value: team1,
+                      child: Text("$team1 勝利"),
+                    ),
+                    DropdownMenuItem(
+                      value: team2,
+                      child: Text("$team2 勝利"),
+                    ),
+                    const DropdownMenuItem(
+                      value: "",
+                      child: Text("なし"),
+                    ),
+                  ],
+                  onChanged: (_isLoggedInResultEditor!)
+                      ? (String? value) {
+                          if ((_scoreList[0] == _scoreList[1]) && value == "") {
+                            if (_canFinishGame == true) {
+                              setState(() {
+                                _canFinishGame = false;
+                              });
+                            }
+                          } else {
+                            if (_canFinishGame == false) {
+                              setState(() {
+                                _canFinishGame = true;
+                              });
+                            }
+                          }
+                          setState(() {
+                            _selectedExtraTime = value as String;
+                          });
+                        }
+                      : null,
+                  value: _selectedExtraTime,
+                ),
         )
       ],
     );
@@ -601,6 +608,14 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     });
   }
 
+  Future _LoadLoginData() async {
+    _isLoggedInResultEditor =
+        Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
+    setState(() {
+      _isLoadingLocalData = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<GameData>(context);
@@ -608,6 +623,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     final DataToPass gotData = ModalRoute.of(context)!.settings.arguments as DataToPass;
     final String gameDataId = gotData.gameDataId;
     _isReverse = gotData.isReverse;
+    _LoadLoginData();
 
     if (gotData.classNumber != null) {
       _gameData = (Provider.of<GameData>(context).getGameDataForSchedule(classNumber: gotData.classNumber!) as Map)[gotData.gameDataId[1]][gotData.gameDataId];

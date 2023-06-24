@@ -69,12 +69,15 @@ class RankWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (rank.isEmpty) {
+      return const SizedBox();
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Card(
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: Colors.brown.shade800, width: 2),
+            side: BorderSide(color: Colors.brown.shade800, width: 1.5),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Padding(

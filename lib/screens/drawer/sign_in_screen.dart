@@ -62,8 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(width: 8),
                 TextButton.icon(
-                  style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all(Colors.black)),
+                  style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Colors.black)),
                   onPressed: () async {
                     setState(() {
                       if (loginAs == "Admin") {
@@ -74,11 +73,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         _isLoadingResultEditor = true;
                       }
                     });
-                    await LocalData.saveLocalData<bool>(
-                        "isLoggedIn$loginAs", false);
+                    await LocalData.saveLocalData<bool>("isLoggedIn$loginAs", false);
                     if (!mounted) return;
-                    await Provider.of<LocalData>(context, listen: false)
-                        .setDataFromLocal();
+                    await Provider.of<LocalData>(context, listen: false).setDataFromLocal();
                     textController.text = "";
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -138,13 +135,9 @@ class _SignInScreenState extends State<SignInScreen> {
                               _isLoadingResultEditor = true;
                             }
                           });
-                          var data = await FirebaseFirestore.instance
-                              .collection("password")
-                              .doc("passwordDoc")
-                              .get();
+                          var data = await FirebaseFirestore.instance.collection("password").doc("passwordDoc").get();
                           if (data[loginAs] == textController.text) {
-                            await LocalData.saveLocalData<bool>(
-                                "isLoggedIn$loginAs", true);
+                            await LocalData.saveLocalData<bool>("isLoggedIn$loginAs", true);
                             if (loginAs == "Admin") {
                               await LocalData.saveLocalData<String>(
                                 "adminPassword",
@@ -163,8 +156,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             }
 
                             if (!mounted) return;
-                            await Provider.of<LocalData>(context, listen: false)
-                                .setDataFromLocal();
+                            await Provider.of<LocalData>(context, listen: false).setDataFromLocal();
                             textController.text = "";
                             if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -193,24 +185,21 @@ class _SignInScreenState extends State<SignInScreen> {
                   icon: const Icon(Icons.login),
                 ),
               ),
-            if (_isLoadingRumutaiStaff && loginAs == "RumutaiStaff")
-              const SizedBox(width: 10),
+            if (_isLoadingRumutaiStaff && loginAs == "RumutaiStaff") const SizedBox(width: 10),
             if (_isLoadingRumutaiStaff && loginAs == "RumutaiStaff")
               const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(),
               ),
-            if (_isLoadingAdmin && loginAs == "Admin")
-              const SizedBox(width: 10),
+            if (_isLoadingAdmin && loginAs == "Admin") const SizedBox(width: 10),
             if (_isLoadingAdmin && loginAs == "Admin")
               const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(),
               ),
-            if (_isLoadingResultEditor && loginAs == "ResultEditor")
-              const SizedBox(width: 10),
+            if (_isLoadingResultEditor && loginAs == "ResultEditor") const SizedBox(width: 10),
             if (_isLoadingResultEditor && loginAs == "ResultEditor")
               const SizedBox(
                 width: 20,
@@ -225,12 +214,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool? isLoggedInAdmin =
-        Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
-    bool? isLoggedInRumutaiStaff =
-        Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
-    bool? isLoggedInResultEditor =
-        Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
+    bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
+    bool? isLoggedInRumutaiStaff = Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
+    bool? isLoggedInResultEditor = Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
     return Scaffold(
       appBar: AppBar(title: const Text("サインイン")),
       body: GestureDetector(
@@ -248,7 +234,7 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(
                 width: 300,
                 child: Text(
-                  "ルム対スタッフ、試合結果編集者、管理者は、\n認証コードでサインインできます。",
+                  "ルム対スタッフ、試合結果編集者、管理者は、認証コードでサインインできます。",
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -261,15 +247,15 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               Divider(color: Colors.brown.shade900),
               _signInWidget(
-                isLoggedIn: isLoggedInAdmin,
-                loginAs: "Admin",
-                textController: _adminController,
-              ),
-              Divider(color: Colors.brown.shade900),
-              _signInWidget(
                 isLoggedIn: isLoggedInResultEditor,
                 loginAs: "ResultEditor",
                 textController: _resultEditorController,
+              ),
+              Divider(color: Colors.brown.shade900),
+              _signInWidget(
+                isLoggedIn: isLoggedInAdmin,
+                loginAs: "Admin",
+                textController: _adminController,
               ),
             ]),
           ),

@@ -38,8 +38,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
     setState(() {
       _isLoading = true;
     });
-    var gotData =
-    await FirebaseFirestore.instance.collection("Timeline").get();
+    var gotData = await FirebaseFirestore.instance.collection("Timeline").get();
     for (var data in gotData.docs) {
       final d = data.data();
       final String id = data.id;
@@ -53,6 +52,81 @@ class _TimelineScreenState extends State<TimelineScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Widget _dialog({required timelineData}) {
+    bool dialogIsLoading = false;
+    return StatefulBuilder(
+      builder: (context, setStateInDialog) {
+        return AlertDialog(
+          insetPadding: const EdgeInsets.all(10),
+          title: const Text("確認"),
+          content: SizedBox(
+            height: 200,
+            width: 200,
+            child: dialogIsLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(timelineData["title"]),
+                      ),
+                      const Divider(),
+                      const Text(
+                        "を消去します。",
+                      )
+                    ],
+                  ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            if (!dialogIsLoading)
+              SizedBox(
+                width: 140,
+                height: 40,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("キャンセル"),
+                ),
+              ),
+            if (!dialogIsLoading)
+              SizedBox(
+                width: 140,
+                height: 40,
+                child: FilledButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  ),
+                  child: const Text("消去"),
+                  onPressed: () async {
+                    setStateInDialog(() {
+                      dialogIsLoading = true;
+                    });
+                    await FirebaseFirestore.instance.collection("Timeline").doc(timelineData["id"]).delete();
+                    dialogIsLoading = false;
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('タイムラインを消去しました。'),
+                      ),
+                    );
+                    Navigator.popUntil(
+                      context,
+                      ModalRoute.withName(HomeScreen.routeName),
+                    );
+                  },
+                ),
+              ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _timelineWidget({
@@ -83,13 +157,25 @@ class _TimelineScreenState extends State<TimelineScreen> {
                         ),
                       ),
                       Text(
-                        DateFormat('yyyy/MM/dd HH:mm')
-                            .format(timelineData["timeStamp"]),
-                        style:
-                        const TextStyle(color: Colors.grey, fontSize: 14),
+                        DateFormat('yyyy/MM/dd HH:mm').format(timelineData["timeStamp"]),
+                        style: const TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ],
-                  )
+                  ),
+                  if (isLoggedInAdmin == true) const Expanded(child: SizedBox()),
+                  if (isLoggedInAdmin == true)
+                    IconButton(
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (_) {
+                          return _dialog(timelineData: timelineData);
+                        },
+                      ),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.grey,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -99,12 +185,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    final bool? isLoggedInAdmin =
-        Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
+    final bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
 
     if (_isInit) {
       _loadData();
@@ -115,24 +198,19 @@ class _TimelineScreenState extends State<TimelineScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-        itemCount:
-        (_timelines.isEmpty) ? 0 : _timelines.length + 1,
-        itemBuilder: ((context, index) {
-          index -= 1;
-          if (index == -1) {
-            return Container(
-              width: double.infinity,
-              padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 5)
-            );
-          }
-          return _timelineWidget(
-            timelineData: _timelines[index],
-            index: index,
-            isLoggedInAdmin: isLoggedInAdmin,
-          );
-        }),
-      ),
+              itemCount: (_timelines.isEmpty) ? 0 : _timelines.length + 1,
+              itemBuilder: ((context, index) {
+                index -= 1;
+                if (index == -1) {
+                  return Container(width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5));
+                }
+                return _timelineWidget(
+                  timelineData: _timelines[index],
+                  index: index,
+                  isLoggedInAdmin: isLoggedInAdmin,
+                );
+              }),
+            ),
     );
   }
 }

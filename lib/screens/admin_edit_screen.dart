@@ -36,7 +36,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
   final TextEditingController _timeHourController = TextEditingController();
   final TextEditingController _timeMinuteController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
-  final TextEditingController _rumutaiStaffController = TextEditingController();
   final TextEditingController _referee1Controller = TextEditingController();
   final TextEditingController _referee2Controller = TextEditingController();
   final TextEditingController _referee3Controller = TextEditingController();
@@ -70,14 +69,8 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     return SizedBox(
       width: width,
       child: TextField(
-          keyboardType: !canEnterOnlyNumber
-              ? null
-              : (Platform.isAndroid
-                  ? TextInputType.number
-                  : const TextInputType.numberWithOptions(decimal: true)),
-          inputFormatters: !canEnterOnlyNumber
-              ? null
-              : [FilteringTextInputFormatter.digitsOnly],
+          keyboardType: !canEnterOnlyNumber ? null : (Platform.isAndroid ? TextInputType.number : const TextInputType.numberWithOptions(decimal: true)),
+          inputFormatters: !canEnterOnlyNumber ? null : [FilteringTextInputFormatter.digitsOnly],
           decoration: inputDecoration ??
               const InputDecoration(
                 isDense: true,
@@ -111,9 +104,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     if (_gameData["place"] != _placeController.text) {
       _dirtyList.add("place");
     }
-    if (_gameData["rumutaiStaff"] != _rumutaiStaffController.text) {
-      _dirtyList.add("rumutaiStaff");
-    }
     if (_gameData["referee"][0] != _referee1Controller.text) {
       _dirtyList.add("referee1");
     }
@@ -123,7 +113,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     if (_gameData["referee"][2] != _referee3Controller.text) {
       _dirtyList.add("referee3");
     }
-    if (_gameData["referee"][3] != _referee4Controller.text) {
+    if ((_gameData["referee"].length >= 4 && _gameData["referee"][3] != _referee4Controller.text)) {
       _dirtyList.add("referee4");
     }
     if (_gameData["gameStatus"] != _newGameStatus) {
@@ -138,28 +128,22 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     if (_gameData["score"][1].toString() != _score2Controller.text) {
       _dirtyList.add("score2");
     }
-    if (_gameData["scoreDetail"]["0"][0].toString() !=
-        _scoreDetail1Controller.text) {
+    if (_gameData["scoreDetail"]["0"][0].toString() != _scoreDetail1Controller.text) {
       _dirtyList.add("scoreDetail1");
     }
-    if (_gameData["scoreDetail"]["0"][1].toString() !=
-        _scoreDetail2Controller.text) {
+    if (_gameData["scoreDetail"]["0"][1].toString() != _scoreDetail2Controller.text) {
       _dirtyList.add("scoreDetail2");
     }
-    if (_gameData["scoreDetail"]["1"][0].toString() !=
-        _scoreDetail3Controller.text) {
+    if (_gameData["scoreDetail"]["1"][0].toString() != _scoreDetail3Controller.text) {
       _dirtyList.add("scoreDetail3");
     }
-    if (_gameData["scoreDetail"]["1"][1].toString() !=
-        _scoreDetail4Controller.text) {
+    if (_gameData["scoreDetail"]["1"][1].toString() != _scoreDetail4Controller.text) {
       _dirtyList.add("scoreDetail4");
     }
-    if (_gameData["scoreDetail"]["2"][0].toString() !=
-        _scoreDetail5Controller.text) {
+    if (_gameData["scoreDetail"]["2"][0].toString() != _scoreDetail5Controller.text) {
       _dirtyList.add("scoreDetail5");
     }
-    if (_gameData["scoreDetail"]["2"][1].toString() !=
-        _scoreDetail6Controller.text) {
+    if (_gameData["scoreDetail"]["2"][1].toString() != _scoreDetail6Controller.text) {
       _dirtyList.add("scoreDetail6");
     }
   }
@@ -180,8 +164,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
         };
       } else if (data == "place") {
         newData["place"] = _placeController.text;
-      } else if (data == "rumutaiStaff") {
-        newData["rumutaiStaff"] = _rumutaiStaffController.text;
       } else if (data.contains("referee")) {
         newData["referee"] = (_gameData["gameId"].contains("1g")
             ? [
@@ -244,6 +226,13 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     }
   }
 
+  int _toInt(String intString) {
+    if (intString == "") {
+      return 0;
+    }
+    return int.parse(intString);
+  }
+
   Map get _newDataForDialog {
     return {
       "team": {"0": _team1Controller.text, "1": _team2Controller.text},
@@ -253,7 +242,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
         "hour": _timeHourController.text,
         "minute": _timeMinuteController.text,
       },
-      "rumutaiStaff": _rumutaiStaffController.text,
       "referee": [
         _referee1Controller.text,
         _referee2Controller.text,
@@ -263,21 +251,21 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
       "gameStatus": _newGameStatus,
       "extraTime": _newExtraTime,
       "score": [
-        int.parse(_score1Controller.text),
-        int.parse(_score2Controller.text),
+        _toInt(_score1Controller.text),
+        _toInt(_score2Controller.text),
       ],
       "scoreDetail": {
         "0": [
-          int.parse(_scoreDetail1Controller.text),
-          int.parse(_scoreDetail2Controller.text),
+          _toInt(_scoreDetail1Controller.text),
+          _toInt(_scoreDetail2Controller.text),
         ],
         "1": [
-          int.parse(_scoreDetail3Controller.text),
-          int.parse(_scoreDetail4Controller.text),
+          _toInt(_scoreDetail3Controller.text),
+          _toInt(_scoreDetail4Controller.text),
         ],
         "2": [
-          int.parse(_scoreDetail5Controller.text),
-          int.parse(_scoreDetail6Controller.text),
+          _toInt(_scoreDetail5Controller.text),
+          _toInt(_scoreDetail6Controller.text),
         ],
       },
       "gameId": _gameData["gameId"],
@@ -287,8 +275,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
   List<Widget> get _scoreDetailList {
     List<Widget> scoreDetailList = [];
     int count = 1;
-    for (var lable
-        in LableUtilities.scoreDetailLableList(_gameData["gameId"])) {
+    for (var lable in LableUtilities.scoreDetailLableList(_gameData["sport"])) {
       scoreDetailList.add(
         Row(
           children: [
@@ -296,25 +283,19 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
             if (count == 1)
               _textField(
                 width: 40,
-                controller: _isReverse
-                    ? _scoreDetail2Controller
-                    : _scoreDetail1Controller,
+                controller: _isReverse ? _scoreDetail2Controller : _scoreDetail1Controller,
                 canEnterOnlyNumber: true,
               )
             else if (count == 2)
               _textField(
                 width: 40,
-                controller: _isReverse
-                    ? _scoreDetail4Controller
-                    : _scoreDetail3Controller,
+                controller: _isReverse ? _scoreDetail4Controller : _scoreDetail3Controller,
                 canEnterOnlyNumber: true,
               )
             else if (count == 3)
               _textField(
                 width: 40,
-                controller: _isReverse
-                    ? _scoreDetail6Controller
-                    : _scoreDetail5Controller,
+                controller: _isReverse ? _scoreDetail6Controller : _scoreDetail5Controller,
                 canEnterOnlyNumber: true,
               ),
             const SizedBox(width: 20),
@@ -323,25 +304,19 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
             if (count == 1)
               _textField(
                 width: 40,
-                controller: _isReverse
-                    ? _scoreDetail1Controller
-                    : _scoreDetail2Controller,
+                controller: _isReverse ? _scoreDetail1Controller : _scoreDetail2Controller,
                 canEnterOnlyNumber: true,
               )
             else if (count == 2)
               _textField(
                 width: 40,
-                controller: _isReverse
-                    ? _scoreDetail3Controller
-                    : _scoreDetail4Controller,
+                controller: _isReverse ? _scoreDetail3Controller : _scoreDetail4Controller,
                 canEnterOnlyNumber: true,
               )
             else if (count == 3)
               _textField(
                 width: 40,
-                controller: _isReverse
-                    ? _scoreDetail5Controller
-                    : _scoreDetail6Controller,
+                controller: _isReverse ? _scoreDetail5Controller : _scoreDetail6Controller,
                 canEnterOnlyNumber: true,
               ),
           ],
@@ -355,7 +330,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
   Column get _refereeInputColumn {
     List<Widget> refereeDetailList = [];
     int count = 1;
-    for (var lable in LableUtilities.refereeLableList(_gameData["gameId"])) {
+    for (var lable in LableUtilities.refereeLableList(_gameData["sport"])) {
       late TextEditingController teController;
       if (count == 1) {
         teController = _referee1Controller;
@@ -404,8 +379,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     return StatefulBuilder(
       builder: (context, setState) => AlertDialog(
         insetPadding: const EdgeInsets.all(10),
-        title:
-            _dialogIsLoading ? const Text("試合情報を変更中") : const Text("変更内容を確認"),
+        title: _dialogIsLoading ? const Text("試合情報を変更中") : const Text("変更内容を確認"),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         content: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -491,14 +465,10 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
                     _dialogIsLoading = true;
                   });
                   final Map<String, Object> newData = _newDataForUpdate;
-                  await Provider.of<GameData>(context, listen: false)
-                      .updateData(
+                  await Provider.of<GameData>(context, listen: false).updateData(
                     doc: _gameData["gameId"],
                     newData: newData,
-                    teams: {
-                      "0": _team1Controller.text,
-                      "1": _team2Controller.text
-                    },
+                    teams: {"0": _team1Controller.text, "1": _team2Controller.text},
                   );
 
                   _dialogIsLoading = false;
@@ -522,8 +492,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    GameDataToPassAdmin gotData =
-        ModalRoute.of(context)!.settings.arguments as GameDataToPassAdmin;
+    GameDataToPassAdmin gotData = ModalRoute.of(context)!.settings.arguments as GameDataToPassAdmin;
     _gameData = gotData.gameData;
     _isReverse = gotData.isReverse;
 
@@ -534,7 +503,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
       _timeHourController.text = _gameData["startTime"]["hour"];
       _timeMinuteController.text = _gameData["startTime"]["minute"];
       _placeController.text = _gameData["place"];
-      _rumutaiStaffController.text = _gameData["rumutaiStaff"];
       _referee1Controller.text = _gameData["referee"][0];
       _referee2Controller.text = _gameData["referee"][1];
       _referee3Controller.text = _gameData["referee"][2];
@@ -545,18 +513,12 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
       }
       _score1Controller.text = _gameData["score"][0].toString();
       _score2Controller.text = _gameData["score"][1].toString();
-      _scoreDetail1Controller.text =
-          _gameData["scoreDetail"]["0"][0].toString();
-      _scoreDetail2Controller.text =
-          _gameData["scoreDetail"]["0"][1].toString();
-      _scoreDetail3Controller.text =
-          _gameData["scoreDetail"]["1"][0].toString();
-      _scoreDetail4Controller.text =
-          _gameData["scoreDetail"]["1"][1].toString();
-      _scoreDetail5Controller.text =
-          _gameData["scoreDetail"]["2"][0].toString();
-      _scoreDetail6Controller.text =
-          _gameData["scoreDetail"]["2"][1].toString();
+      _scoreDetail1Controller.text = _gameData["scoreDetail"]["0"][0].toString();
+      _scoreDetail2Controller.text = _gameData["scoreDetail"]["0"][1].toString();
+      _scoreDetail3Controller.text = _gameData["scoreDetail"]["1"][0].toString();
+      _scoreDetail4Controller.text = _gameData["scoreDetail"]["1"][1].toString();
+      _scoreDetail5Controller.text = _gameData["scoreDetail"]["2"][0].toString();
+      _scoreDetail6Controller.text = _gameData["scoreDetail"]["2"][1].toString();
 
       if (_gameData["gameStatus"] == "before") {
         _selectedGameStatus = "試合前";
@@ -600,68 +562,53 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
                         vertical: 10,
                       ),
                       child: FittedBox(
-                        child: Column(
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Row(
+                            children: [
+                              _lable("チーム："),
+                              _textField(
+                                width: 80,
+                                controller: _isReverse ? _team2Controller : _team1Controller,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text(
+                                "vs",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              const SizedBox(width: 10),
+                              _textField(
+                                width: 80,
+                                controller: _isReverse ? _team1Controller : _team2Controller,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            children: [
+                              _lable("開始時間："),
+                              _textField(width: 40, controller: _timeDateController),
+                              const Text("日目　"),
+                              _textField(width: 40, controller: _timeHourController),
+                              const Text("："),
+                              _textField(width: 40, controller: _timeMinuteController),
+                              const Text("から"),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              _lable("場所："),
+                              _textField(width: 180, controller: _placeController),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  _lable("チーム："),
-                                  _textField(
-                                    width: 80,
-                                    controller: _isReverse
-                                        ? _team2Controller
-                                        : _team1Controller,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Text(
-                                    "vs",
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  _textField(
-                                    width: 80,
-                                    controller: _isReverse
-                                        ? _team1Controller
-                                        : _team2Controller,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                children: [
-                                  _lable("開始時間："),
-                                  _textField(
-                                      width: 40,
-                                      controller: _timeDateController),
-                                  const Text("日目　"),
-                                  _textField(
-                                      width: 40,
-                                      controller: _timeHourController),
-                                  const Text("："),
-                                  _textField(
-                                      width: 40,
-                                      controller: _timeMinuteController),
-                                  const Text("から"),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  _lable("場所："),
-                                  _textField(
-                                      width: 180, controller: _placeController),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(children: [
-                                    const SizedBox(height: 10),
-                                    _lable("審判：")
-                                  ]),
-                                  _refereeInputColumn,
-                                ],
-                              ),
+                              Column(children: [const SizedBox(height: 10), _lable("審判：")]),
+                              _refereeInputColumn,
+                            ],
+                          ),
+                          /*
                               Row(
                                 children: [
                                   _lable("スタッフ："),
@@ -669,165 +616,146 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
                                       width: 180,
                                       controller: _rumutaiStaffController),
                                 ],
-                              ),
-                              const SizedBox(height: 10),
-                              const Divider(),
-                              Row(
-                                children: [
-                                  _lable("試合状況："),
-                                  DropdownButton(
-                                    items: const [
-                                      DropdownMenuItem(
-                                        value: "試合前",
-                                        child: Text("試合前"),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: "試合中",
-                                        child: Text("試合中"),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: "試合終了",
-                                        child: Text("試合終了"),
-                                      ),
-                                    ],
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        _selectedGameStatus = value as String;
-                                      });
-                                      _dirtyCheck();
-                                      setState(() {});
-                                    },
-                                    value: _selectedGameStatus,
+                              ),*/
+                          const SizedBox(height: 10),
+                          const Divider(),
+                          Row(
+                            children: [
+                              _lable("試合状況："),
+                              DropdownButton(
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: "試合前",
+                                    child: Text("試合前"),
                                   ),
-                                  if (!_gameData["gameId"].contains("m") &&
-                                      (_gameData["gameId"].contains("f") ||
-                                          _gameData["gameId"].contains("l")))
-                                    const SizedBox(width: 20),
-                                  if (!_gameData["gameId"].contains("m") &&
-                                      (_gameData["gameId"].contains("f") ||
-                                          _gameData["gameId"].contains("l")))
-                                    Text(
-                                      LableUtilities.extraTimeLable(
-                                          _gameData["gameId"]),
-                                      style: TextStyle(
-                                          color: Colors.grey.shade700),
-                                    ),
-                                  if (!_gameData["gameId"].contains("m") &&
-                                      (_gameData["gameId"].contains("f") ||
-                                          _gameData["gameId"].contains("l")))
-                                    DropdownButton(
-                                      items: [
-                                        DropdownMenuItem(
-                                          value: "team0",
-                                          child: SizedBox(
-                                            width: 80,
-                                            child: Text(
-                                              "${_team1Controller.text} 勝利",
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: "team1",
-                                          child: SizedBox(
-                                            width: 80,
-                                            child: Text(
-                                              "${_team2Controller.text} 勝利",
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                        ),
-                                        const DropdownMenuItem(
-                                          value: "なし",
-                                          child: Text("なし"),
-                                        ),
-                                      ],
-                                      onChanged: (String? value) {
-                                        late String valueToSet;
-                                        if (value == "team0") {
-                                          valueToSet = _team1Controller.text;
-                                        } else if (value == "team1") {
-                                          valueToSet = _team2Controller.text;
-                                        } else {
-                                          valueToSet = "なし";
-                                        }
-                                        setState(() {
-                                          _selectedExtraTimeOnDropButton =
-                                              value;
-                                          _selectedExtraTime = valueToSet;
-                                        });
-                                        _dirtyCheck();
-                                        setState(() {});
-                                      },
-                                      value: _selectedExtraTimeOnDropButton,
-                                    )
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  const SizedBox(width: 100),
-                                  SizedBox(
-                                    width: 85,
-                                    child: Text(
-                                      _isReverse
-                                          ? _team2Controller.text
-                                          : _team1Controller.text,
-                                      style: TextStyle(
-                                        color: Colors.grey.shade700,
-                                        fontSize: 18,
-                                        height: 1.0,
-                                      ),
-                                    ),
+                                  DropdownMenuItem(
+                                    value: "試合中",
+                                    child: Text("試合中"),
                                   ),
-                                  SizedBox(
-                                    width: 85,
-                                    child: Text(
-                                      _isReverse
-                                          ? _team1Controller.text
-                                          : _team2Controller.text,
-                                      style: TextStyle(
-                                        color: Colors.grey.shade700,
-                                        fontSize: 18,
-                                        height: 1.0,
-                                      ),
-                                    ),
+                                  DropdownMenuItem(
+                                    value: "試合終了",
+                                    child: Text("試合終了"),
                                   ),
                                 ],
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _selectedGameStatus = value as String;
+                                  });
+                                  _dirtyCheck();
+                                  setState(() {});
+                                },
+                                value: _selectedGameStatus,
                               ),
+                              if (!_gameData["gameId"].contains("m") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l"))) const SizedBox(width: 20),
+                              if (!_gameData["gameId"].contains("m") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l")))
+                                Text(
+                                  LableUtilities.extraTimeLable(_gameData["sport"]),
+                                  style: TextStyle(color: Colors.grey.shade700),
+                                ),
+                              if (!_gameData["gameId"].contains("m") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l")))
+                                DropdownButton(
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: "team0",
+                                      child: SizedBox(
+                                        width: 80,
+                                        child: Text(
+                                          "${_team1Controller.text} 勝利",
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: "team1",
+                                      child: SizedBox(
+                                        width: 80,
+                                        child: Text(
+                                          "${_team2Controller.text} 勝利",
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    const DropdownMenuItem(
+                                      value: "なし",
+                                      child: Text("なし"),
+                                    ),
+                                  ],
+                                  onChanged: (String? value) {
+                                    late String valueToSet;
+                                    if (value == "team0") {
+                                      valueToSet = _team1Controller.text;
+                                    } else if (value == "team1") {
+                                      valueToSet = _team2Controller.text;
+                                    } else {
+                                      valueToSet = "なし";
+                                    }
+                                    setState(() {
+                                      _selectedExtraTimeOnDropButton = value;
+                                      _selectedExtraTime = valueToSet;
+                                    });
+                                    _dirtyCheck();
+                                    setState(() {});
+                                  },
+                                  value: _selectedExtraTimeOnDropButton,
+                                )
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const SizedBox(width: 100),
+                              SizedBox(
+                                width: 85,
+                                child: Text(
+                                  _isReverse ? _team2Controller.text : _team1Controller.text,
+                                  style: TextStyle(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 18,
+                                    height: 1.0,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 85,
+                                child: Text(
+                                  _isReverse ? _team1Controller.text : _team2Controller.text,
+                                  style: TextStyle(
+                                    color: Colors.grey.shade700,
+                                    fontSize: 18,
+                                    height: 1.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      _lable("点数："),
-                                      _textField(
-                                        width: 40,
-                                        controller: _isReverse
-                                            ? _score2Controller
-                                            : _score1Controller,
-                                        canEnterOnlyNumber: true,
-                                      ),
-                                      const SizedBox(width: 20),
-                                      const Text("-",
-                                          style: TextStyle(fontSize: 20)),
-                                      const SizedBox(width: 20),
-                                      _textField(
-                                        width: 40,
-                                        controller: _isReverse
-                                            ? _score1Controller
-                                            : _score2Controller,
-                                        canEnterOnlyNumber: true,
-                                      ),
-                                    ],
+                                  _lable("点数："),
+                                  _textField(
+                                    width: 40,
+                                    controller: _isReverse ? _score2Controller : _score1Controller,
+                                    canEnterOnlyNumber: true,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  const Text("-", style: TextStyle(fontSize: 20)),
+                                  const SizedBox(width: 20),
+                                  _textField(
+                                    width: 40,
+                                    controller: _isReverse ? _score1Controller : _score2Controller,
+                                    canEnterOnlyNumber: true,
                                   ),
                                 ],
                               ),
-                              Column(
-                                children: _scoreDetailList,
-                              ),
-                              const SizedBox(height: 10),
-                            ]),
+                            ],
+                          ),
+                          Column(
+                            children: _scoreDetailList,
+                          ),
+                          const SizedBox(height: 10),
+                        ]),
                       ),
                     ),
                   ),
@@ -843,8 +771,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
           width: 350,
           child: FilledButton(
             onPressed: (_dirtyList.isEmpty ||
-                    ((_gameData["gameId"].contains("f") ||
-                            _gameData["gameId"].contains("l")) &&
+                    ((_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l")) &&
                         (_newGameStatus == "after") &&
                         (_score1Controller.text == _score2Controller.text) &&
                         (_newExtraTime == "")))

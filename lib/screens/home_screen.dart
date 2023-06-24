@@ -44,8 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     fbm.subscribeToTopic("notification");
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
-      flnp.initialize(const InitializationSettings(
-          android: AndroidInitializationSettings('@mipmap/ic_launcher')));
+      flnp.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
       if (notification == null) {
         return;
       }
@@ -81,6 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('管理者用の認証コードが変更されたので、サインアウトしました。'),
+            ),
+          );
+        }
+        if (list.contains("試合結果編集者")) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('試合結果編集者用の認証コードが変更されたので、サインアウトしました。'),
             ),
           );
         }
@@ -265,16 +271,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     bool? isLoggedInAdmin = Provider.of<LocalData>(context).isLoggedInAdmin;
-    bool? isLoggedInStaff =
-        Provider.of<LocalData>(context).isLoggedInRumutaiStaff;
+    bool? isLoggedInStaff = Provider.of<LocalData>(context).isLoggedInRumutaiStaff;
     final double buttonWidth = MediaQuery.of(context).size.width * 4 / 5;
 
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () =>
-                Navigator.of(context).pushNamed(NotificationsScreen.routeName),
+            onPressed: () => Navigator.of(context).pushNamed(NotificationsScreen.routeName),
             icon: const Icon(Icons.notifications),
           ),
         ],
@@ -309,32 +313,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     text: "試合結果",
                     icon: Icons.scoreboard_outlined,
                     width: buttonWidth,
-                    onPressed: () => Navigator.of(context)
-                        .pushNamed(PickCategoryScreen.routeName),
+                    onPressed: () => Navigator.of(context).pushNamed(PickCategoryScreen.routeName),
                   ),
                   const SizedBox(height: 15),
                   _mainButton(
                     text: "スケジュール",
                     icon: Icons.event_note_outlined,
                     width: buttonWidth,
-                    onPressed: () => Navigator.of(context)
-                        .pushNamed(PickScheduleScreen.routeName),
+                    onPressed: () => Navigator.of(context).pushNamed(PickScheduleScreen.routeName),
                   ),
                   const SizedBox(height: 30),
                   _subButton(
                     text: "るるぶ",
                     icon: Icons.description_outlined,
                     width: buttonWidth,
-                    onPressed: () => Navigator.of(context)
-                        .pushNamed(RuleBookScreen.routeName),
+                    onPressed: () => Navigator.of(context).pushNamed(RuleBookScreen.routeName),
                   ),
                   const SizedBox(height: 15),
-                  _tonalButton(
-                      text: "担当の試合",
-                      icon: Icons.sports_score,
-                      width: buttonWidth,
-                      onPressed: () => Navigator.of(context)
-                          .pushNamed(MyGameScreen.routeName)),
+                  _tonalButton(text: "担当の試合", icon: Icons.sports_score, width: buttonWidth, onPressed: () => Navigator.of(context).pushNamed(MyGameScreen.routeName)),
                   const SizedBox(height: 25),
                   _dividerWithText("その他機能"),
                   const SizedBox(height: 15),
@@ -346,8 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: FontAwesomeIcons.wandMagic,
                         iconSize: 18,
                         width: buttonWidth / 2 - 5,
-                        onPressed: () => Navigator.of(context)
-                            .pushNamed(PickOmikujiScreen.routeName),
+                        onPressed: () => Navigator.of(context).pushNamed(PickOmikujiScreen.routeName),
                       ),
                       const SizedBox(width: 10),
                       _subButtonWithChild(
@@ -361,26 +356,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         width: buttonWidth / 2 - 5,
-                        onPressed: () => Navigator.of(context)
-                            .pushNamed(PickTeamToCheerScreen.routeName),
+                        onPressed: () => Navigator.of(context).pushNamed(PickTeamToCheerScreen.routeName),
                       ),
                     ],
                   ),
-                  if (isLoggedInAdmin == true)
-                    Column(
-                      children: [
-                        const SizedBox(height: 25),
-                        _dividerWithText("管理者機能"),
-                        const SizedBox(height: 15),
-                        _tonalButton(
-                          text: "通知を送る",
-                          icon: Icons.send_outlined,
-                          width: buttonWidth,
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(SendNotificationScreen.routeName),
-                        ),
-                      ],
-                    ),
                   if (isLoggedInStaff == true)
                     Column(
                       children: [
@@ -391,17 +370,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           text: "タイムライン",
                           icon: Icons.view_timeline_outlined,
                           width: buttonWidth,
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(TimelineScreen.routeName),
+                          onPressed: () => Navigator.of(context).pushNamed(TimelineScreen.routeName),
                         ),
                         const SizedBox(height: 15),
                         _tonalButton(
                           text: "人手確認",
                           icon: Icons.map,
                           width: buttonWidth,
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(DashboardScreen.routeName),
+                          onPressed: () => Navigator.of(context).pushNamed(DashboardScreen.routeName),
                         )
+                      ],
+                    ),
+                  if (isLoggedInAdmin == true)
+                    Column(
+                      children: [
+                        const SizedBox(height: 25),
+                        _dividerWithText("管理者機能"),
+                        const SizedBox(height: 15),
+                        _tonalButton(
+                          text: "通知を送る",
+                          icon: Icons.send_outlined,
+                          width: buttonWidth,
+                          onPressed: () => Navigator.of(context).pushNamed(SendNotificationScreen.routeName),
+                        ),
                       ],
                     ),
                 ],

@@ -29,14 +29,25 @@ class TournamentWidget extends StatelessWidget {
           }
         });
         return mapToReturn;
-      case TournamentType.five:
+      case TournamentType.four2:
         tournamentData.forEach((gameId, gameData) {
           if (gameId.substring(4) == "01") {
-            mapToReturn["4"] = gameData["team"]["1"];
-          } else if (gameId.substring(4) == "02") {
             mapToReturn["0"] = gameData["team"]["0"];
             mapToReturn["1"] = gameData["team"]["1"];
-          } else if (gameId.substring(4) == "03") {
+          } else if (gameId.substring(4) == "02") {
+            mapToReturn["2"] = gameData["team"]["0"];
+            mapToReturn["3"] = gameData["team"]["1"];
+          }
+        });
+        return mapToReturn;
+      case TournamentType.five:
+        tournamentData.forEach((gameId, gameData) {
+          if (gameId.substring(4) == "03") {
+            mapToReturn["4"] = gameData["team"]["1"];
+          } else if (gameId.substring(4) == "01") {
+            mapToReturn["0"] = gameData["team"]["0"];
+            mapToReturn["1"] = gameData["team"]["1"];
+          } else if (gameId.substring(4) == "02") {
             mapToReturn["2"] = gameData["team"]["0"];
             mapToReturn["3"] = gameData["team"]["1"];
           }
@@ -44,14 +55,14 @@ class TournamentWidget extends StatelessWidget {
         return mapToReturn;
       case TournamentType.six:
         tournamentData.forEach((gameId, gameData) {
-          if (gameId.substring(4) == "01") {
+          if (gameId.substring(4) == "02") {
             mapToReturn["0"] = gameData["team"]["0"];
-          } else if (gameId.substring(4) == "02") {
-            mapToReturn["5"] = gameData["team"]["1"];
           } else if (gameId.substring(4) == "03") {
+            mapToReturn["5"] = gameData["team"]["1"];
+          } else if (gameId.substring(4) == "04") {
             mapToReturn["1"] = gameData["team"]["0"];
             mapToReturn["2"] = gameData["team"]["1"];
-          } else if (gameId.substring(4) == "04") {
+          } else if (gameId.substring(4) == "05") {
             mapToReturn["3"] = gameData["team"]["0"];
             mapToReturn["4"] = gameData["team"]["1"];
           }
@@ -59,15 +70,15 @@ class TournamentWidget extends StatelessWidget {
         return mapToReturn;
       case TournamentType.seven:
         tournamentData.forEach((gameId, gameData) {
-          if (gameId.substring(4) == "02") {
+          if (gameId.substring(4) == "03") {
             mapToReturn["6"] = gameData["team"]["1"];
-          } else if (gameId.substring(4) == "03") {
+          } else if (gameId.substring(4) == "04") {
             mapToReturn["0"] = gameData["team"]["0"];
             mapToReturn["1"] = gameData["team"]["1"];
-          } else if (gameId.substring(4) == "04") {
+          } else if (gameId.substring(4) == "05") {
             mapToReturn["2"] = gameData["team"]["0"];
             mapToReturn["3"] = gameData["team"]["1"];
-          } else if (gameId.substring(4) == "05") {
+          } else if (gameId.substring(4) == "06") {
             mapToReturn["4"] = gameData["team"]["0"];
             mapToReturn["5"] = gameData["team"]["1"];
           }
@@ -147,6 +158,93 @@ class TournamentWidget extends StatelessWidget {
                       spaceHeight: 40,
                       otherHeight: 50,
                       gameData: tournamentDataMap["01"],
+                      buttonHeight: 50,
+                    ),
+                    const SizedBox(width: 80),
+                    TournamentBlock.normal(
+                      armHeight: 55,
+                      handHeight: 50,
+                      width: 100,
+                      spaceHeight: 40,
+                      otherHeight: 50,
+                      gameData: tournamentDataMap["02"],
+                      buttonHeight: 50,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                TournamentBlock.cover(
+                  height: 50,
+                  width: 180,
+                  gameData: tournamentDataMap["04"],
+                  buttonHeight: 50,
+                ),
+                const SizedBox(height: 92),
+                TournamentBlock.cover(
+                  height: 50,
+                  width: 180,
+                  isDown: true,
+                  gameData: tournamentDataMap["03"],
+                  buttonHeight: 50,
+                ),
+              ],
+            ),
+          ],
+        ),
+        const Text(
+          "３位",
+          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+        ),
+      ],
+    );
+  }
+
+  Widget _tournamentTypeFour2(Map tournamentDataMap, Map teamMap) {
+    return Column(
+      children: [
+        const Text(
+          "5位",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Column(
+              children: [
+                const SizedBox(height: 160),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _teamCard(teamMap["0"]),
+                    const SizedBox(width: 40),
+                    _teamCard(teamMap["1"]),
+                    const SizedBox(width: 30),
+                    _teamCard(teamMap["2"]),
+                    const SizedBox(width: 40),
+                    _teamCard(teamMap["3"]),
+                  ],
+                )
+              ],
+            ),
+            Column(
+              children: [
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TournamentBlock.normal(
+                      armHeight: 55,
+                      handHeight: 50,
+                      width: 100,
+                      spaceHeight: 40,
+                      otherHeight: 50,
+                      gameData: tournamentDataMap["01"],
                       buttonHeight: 40,
                     ),
                     const SizedBox(width: 80),
@@ -168,7 +266,7 @@ class TournamentWidget extends StatelessWidget {
                 TournamentBlock.cover(
                   height: 50,
                   width: 180,
-                  gameData: tournamentDataMap["00"],
+                  gameData: tournamentDataMap["04"],
                   buttonHeight: 40,
                 ),
                 const SizedBox(height: 112),
@@ -184,7 +282,7 @@ class TournamentWidget extends StatelessWidget {
           ],
         ),
         const Text(
-          "３位",
+          "７位",
           style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
         ),
       ],
@@ -239,8 +337,7 @@ class TournamentWidget extends StatelessWidget {
                       handHeight: 45,
                       width: 100,
                       spaceHeight: 40,
-                      otherHeight: 50,
-                      gameData: tournamentDataMap["02"],
+                      gameData: tournamentDataMap["01"],
                       buttonHeight: 40,
                     ),
                     const SizedBox(width: 60),
@@ -252,8 +349,7 @@ class TournamentWidget extends StatelessWidget {
                           handHeight: 45,
                           width: 100,
                           spaceHeight: 40,
-                          otherHeight: 50,
-                          gameData: tournamentDataMap["03"],
+                          gameData: tournamentDataMap["02"],
                           buttonHeight: 40,
                         ),
                       ],
@@ -274,7 +370,7 @@ class TournamentWidget extends StatelessWidget {
                       fingerHeight: 95,
                       width: 120,
                       seedBlockSide: SeedBlockSide.right,
-                      gameData: tournamentDataMap["01"],
+                      gameData: tournamentDataMap["03"],
                       buttonHeight: 40,
                     ),
                   ],
@@ -288,12 +384,12 @@ class TournamentWidget extends StatelessWidget {
                     TournamentBlock.cover(
                       height: 50,
                       width: 220,
-                      gameData: tournamentDataMap["00"],
+                      gameData: tournamentDataMap["04"],
                       buttonHeight: 40,
                     ),
                     const SizedBox(width: 20),
                   ],
-                ),
+                ), /*
                 const SizedBox(height: 153),
                 Row(
                   children: [
@@ -306,7 +402,7 @@ class TournamentWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 80),
                   ],
-                ),
+                ),*/
               ],
             ),
           ],
@@ -539,6 +635,9 @@ class TournamentWidget extends StatelessWidget {
     switch (tournamentType) {
       case TournamentType.four:
         tournament = _tournamentTypeFour(tournamentDataMap, teamMap);
+        break;
+      case TournamentType.four2:
+        tournament = _tournamentTypeFour2(tournamentDataMap, teamMap);
         break;
       case TournamentType.five:
         tournament = _tournamentTypeFive(tournamentDataMap, teamMap);

@@ -37,8 +37,7 @@ class _MyGameScreenState extends State<MyGameScreen> {
 
   Future _loadData() async {
     if (_isInit) {
-      _targetPerson =
-          Provider.of<LocalData>(context, listen: false).pickedPersonForMyGame;
+      _targetPerson = Provider.of<LocalData>(context, listen: false).pickedPersonForMyGame;
     }
     if (_targetPerson == "") {
       _targetPerson = null;
@@ -48,20 +47,12 @@ class _MyGameScreenState extends State<MyGameScreen> {
         _isLoading = true;
       });
       _gameDataList = [];
-      await FirebaseFirestore.instance
-          .collection('gameData')
-          .where('referee', arrayContains: _targetPerson)
-          .get()
-          .then((QuerySnapshot querySnapshot) {
+      await FirebaseFirestore.instance.collection('gameData2').where('referee', arrayContains: _targetPerson).get().then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
           _gameDataList.add(doc.data() as Map);
         }
       });
-      await FirebaseFirestore.instance
-          .collection('gameData')
-          .where('rumutaiStaff', isEqualTo: _targetPerson)
-          .get()
-          .then((QuerySnapshot querySnapshot) {
+      await FirebaseFirestore.instance.collection('gameData2').where('rumutaiStaff', isEqualTo: _targetPerson).get().then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
           _gameDataList.add(doc.data() as Map);
         }
@@ -173,10 +164,8 @@ class _MyGameScreenState extends State<MyGameScreen> {
       ];
     }
 
-    day1sortedMyGameData
-        .sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
-    day2sortedMyGameData
-        .sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
+    day1sortedMyGameData.sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
+    day2sortedMyGameData.sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
 
     myGameListWidget.add(
       Container(
@@ -292,13 +281,10 @@ class _MyGameScreenState extends State<MyGameScreen> {
                                     ? ""
                                     : _pickedPersonInDialog!;*/
 
-                        await LocalData.saveLocalData<String>(
-                            "pickedPersonForMyGame",
-                            _targetPersonController.text);
+                        await LocalData.saveLocalData<String>("pickedPersonForMyGame", _targetPersonController.text);
 
                         if (!mounted) return;
-                        await Provider.of<LocalData>(context, listen: false)
-                            .setDataFromLocal();
+                        await Provider.of<LocalData>(context, listen: false).setDataFromLocal();
                         setState(() {
                           _targetPerson = _targetPersonController.text;
                           if (_targetPerson != "") {
@@ -376,8 +362,7 @@ class _MyGameScreenState extends State<MyGameScreen> {
                                   const SizedBox(height: 50),
                                   FittedBox(
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15),
+                                      padding: const EdgeInsets.symmetric(horizontal: 15),
                                       child: Text(
                                         "審判は自分が担当の試合を\n確認できます。\n\nHR番号を入力してください。",
                                         style: TextStyle(

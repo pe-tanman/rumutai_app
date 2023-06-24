@@ -123,7 +123,8 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     if (_gameData["referee"][2] != _referee3Controller.text) {
       _dirtyList.add("referee3");
     }
-    if (_gameData["referee"][3] != _referee4Controller.text) {
+    if ((_gameData["referee"].length >= 4 &&
+        _gameData["referee"][3] != _referee4Controller.text)) {
       _dirtyList.add("referee4");
     }
     if (_gameData["gameStatus"] != _newGameStatus) {
@@ -244,6 +245,13 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     }
   }
 
+  int _toInt(String intString) {
+    if (intString == "") {
+      return 0;
+    }
+    return int.parse(intString);
+  }
+
   Map get _newDataForDialog {
     return {
       "team": {"0": _team1Controller.text, "1": _team2Controller.text},
@@ -263,21 +271,21 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
       "gameStatus": _newGameStatus,
       "extraTime": _newExtraTime,
       "score": [
-        int.parse(_score1Controller.text),
-        int.parse(_score2Controller.text),
+        _toInt(_score1Controller.text),
+        _toInt(_score2Controller.text),
       ],
       "scoreDetail": {
         "0": [
-          int.parse(_scoreDetail1Controller.text),
-          int.parse(_scoreDetail2Controller.text),
+          _toInt(_scoreDetail1Controller.text),
+          _toInt(_scoreDetail2Controller.text),
         ],
         "1": [
-          int.parse(_scoreDetail3Controller.text),
-          int.parse(_scoreDetail4Controller.text),
+          _toInt(_scoreDetail3Controller.text),
+          _toInt(_scoreDetail4Controller.text),
         ],
         "2": [
-          int.parse(_scoreDetail5Controller.text),
-          int.parse(_scoreDetail6Controller.text),
+          _toInt(_scoreDetail5Controller.text),
+          _toInt(_scoreDetail6Controller.text),
         ],
       },
       "gameId": _gameData["gameId"],
@@ -287,8 +295,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
   List<Widget> get _scoreDetailList {
     List<Widget> scoreDetailList = [];
     int count = 1;
-    for (var lable
-        in LableUtilities.scoreDetailLableList(_gameData["gameId"])) {
+    for (var lable in LableUtilities.scoreDetailLableList(_gameData["sport"])) {
       scoreDetailList.add(
         Row(
           children: [
@@ -355,7 +362,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
   Column get _refereeInputColumn {
     List<Widget> refereeDetailList = [];
     int count = 1;
-    for (var lable in LableUtilities.refereeLableList(_gameData["gameId"])) {
+    for (var lable in LableUtilities.refereeLableList(_gameData["sport"])) {
       late TextEditingController teController;
       if (count == 1) {
         teController = _referee1Controller;
@@ -662,6 +669,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
                                   _refereeInputColumn,
                                 ],
                               ),
+                              /*
                               Row(
                                 children: [
                                   _lable("スタッフ："),
@@ -669,7 +677,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
                                       width: 180,
                                       controller: _rumutaiStaffController),
                                 ],
-                              ),
+                              ),*/
                               const SizedBox(height: 10),
                               const Divider(),
                               Row(
@@ -708,7 +716,7 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
                                           _gameData["gameId"].contains("l")))
                                     Text(
                                       LableUtilities.extraTimeLable(
-                                          _gameData["gameId"]),
+                                          _gameData["sport"]),
                                       style: TextStyle(
                                           color: Colors.grey.shade700),
                                     ),

@@ -20,22 +20,20 @@ class PickCategoryScreen extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
         side: BorderSide(
           color: Theme.of(context).colorScheme.primary,
-          width: 1,
+          width: 1.5,
         ),
       ),
       onPressed: () => Navigator.of(context)
           .pushNamed(GameResultsScreen.routeName, arguments: categoryToGet),
       child: SizedBox(
-        width: 90,
+        width: 105,
         height: 100,
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
             Icon(
               icon,
               size: 40,
@@ -47,7 +45,8 @@ class PickCategoryScreen extends StatelessWidget {
               style: TextStyle(
                   color: Colors.brown.shade900,
                   fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
+                  letterSpacing: 0.6,
+                  fontSize: 18,
                   fontFamily: "Anton"),
             )
           ],
@@ -93,6 +92,7 @@ class PickCategoryScreen extends StatelessWidget {
       ),
       backgroundColor: Colors.grey.shade100,
       body: SingleChildScrollView(
+        primary: true,
         child: SizedBox(
           width: double.infinity,
           child: Card(
@@ -203,18 +203,18 @@ class PickCategoryScreen extends StatelessWidget {
                           foregroundColor: Colors.black,
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(3),
                           ),
                           side: BorderSide(
                             color: Theme.of(context).colorScheme.primary,
-                            width: 1,
+                            width: 1.5,
                           ),
                         ),
                         onPressed: () => Navigator.of(context).pushNamed(
                             GameResultsScreen.routeName,
                             arguments: CategoryToGet.j3),
                         child: SizedBox(
-                          width: 90,
+                          width: 105,
                           height: 100,
                           child: Column(
                             children: [
@@ -230,7 +230,8 @@ class PickCategoryScreen extends StatelessWidget {
                                 style: TextStyle(
                                     color: Colors.brown.shade900,
                                     fontWeight: FontWeight.w600,
-                                    letterSpacing: 1,
+                                    letterSpacing: 0.6,
+                                    fontSize: 18,
                                     fontFamily: "Anton"),
                               ),
                             ],

@@ -179,12 +179,24 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return scheduleList;
   }
 
+//not flexible
+  List<String> _tabStrings(String classNumber) {
+    if (classNumber[0] == "1") {
+      return ["フットサル", "バレーボール", "ドッジボール"];
+    } else if (classNumber[0] == "2") {
+      return ["フットサル", "バスケットボール", "バレーボール"];
+    } else if (classNumber[0] == "3") {
+      return ["フットサル", "ドッジビー", "バレーボール"];
+    }
+    return ["", "", ""];
+  }
+
   @override
   Widget build(BuildContext context) {
     final String classNumber =
         ModalRoute.of(context)!.settings.arguments as String;
     _loadData(classNumber);
-
+    final List<String> tabStrings = _tabStrings(classNumber);
 //    Provider.of<GameData>(context, listen: false)
     //      .loadGameData2(collection: "gameData");
 
@@ -200,9 +212,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           title: Text("$classNumber　スケジュール"),
           actions: const [MainPopUpMenu()],
           bottom: TabBar(indicatorColor: Colors.white, tabs: [
-            const Tab(text: "フットサル"),
-            Tab(text: classNumber[0] == "1" ? "バスケット" : "ドッチビー"),
-            const Tab(text: "バレー"),
+            Tab(text: tabStrings[0]),
+            Tab(text: tabStrings[1]),
+            Tab(text: tabStrings[2]),
           ]),
         ),
         backgroundColor: Colors.grey.shade100,
@@ -214,7 +226,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: _scheduleList(
-                            classNumber: classNumber, gameData: _gameData["b"]),
+                            classNumber: classNumber, gameData: _gameData["d"]),
                       ),
                     ),
                   ),
@@ -222,7 +234,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: _scheduleList(
-                            classNumber: classNumber, gameData: _gameData["g"]),
+                            classNumber: classNumber, gameData: _gameData["j"]),
                       ),
                     ),
                   ),
@@ -230,7 +242,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: _scheduleList(
-                            classNumber: classNumber, gameData: _gameData["m"]),
+                            classNumber: classNumber, gameData: _gameData["k"]),
                       ),
                     ),
                   ),

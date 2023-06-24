@@ -69,6 +69,9 @@ class RankWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (rank.isEmpty) {
+      return const SizedBox();
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

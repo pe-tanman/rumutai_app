@@ -28,7 +28,7 @@ class _DetailScreenState extends State<DetailScreen> {
   Column _refereesAsColumn(Map gameData) {
     List<Widget> refereeList = [];
     int count = 0;
-    List refereeLableList = LableUtilities.refereeLableList(gameData["gameId"]);
+    List refereeLableList = LableUtilities.refereeLableList(gameData["sport"]);
     gameData["referee"].forEach((referee) {
       if (referee == "") {
         return;
@@ -125,7 +125,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget _scoreDetailWidget({required Map gameData, bool isReverse = false}) {
     List<String> scoreDetailLableList =
-        LableUtilities.scoreDetailLableList(gameData["gameId"]);
+        LableUtilities.scoreDetailLableList(gameData["sport"]);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,18 +153,24 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   CategoryToGet? _categoryToGet(String gameDataId) {
-    if (gameDataId.contains("1b")) {
+    if (gameDataId.contains("1d")) {
       return CategoryToGet.d1;
-    } else if (gameDataId.contains("1g")) {
+    } else if (gameDataId.contains("1j")) {
       return CategoryToGet.j1;
-    } else if (gameDataId.contains("1m")) {
+    } else if (gameDataId.contains("1k")) {
       return CategoryToGet.k1;
-    } else if (gameDataId.contains("2b")) {
+    } else if (gameDataId.contains("2d")) {
       return CategoryToGet.d2;
-    } else if (gameDataId.contains("2g")) {
+    } else if (gameDataId.contains("2j")) {
       return CategoryToGet.j2;
-    } else if (gameDataId.contains("2m")) {
+    } else if (gameDataId.contains("2k")) {
       return CategoryToGet.k2;
+    } else if (gameDataId.contains("3d")) {
+      return CategoryToGet.d3;
+    } else if (gameDataId.contains("3j")) {
+      return CategoryToGet.j3;
+    } else if (gameDataId.contains("3k")) {
+      return CategoryToGet.k3;
     }
     return null;
   }
@@ -184,14 +190,16 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
-  String _sport(String gameId) {
-    if (gameId[1] == "b") {
+  String _sport(String sport) {
+    if (sport == "futsal") {
       return "フットサル";
-    } else if (gameId[1] == "m") {
+    } else if (sport == "volleyball") {
       return "バレーボール";
-    } else if (gameId[0] == "1") {
+    } else if (sport == "basketball") {
       return "バスケットボール";
-    } else if (gameId[0] == "2") {
+    } else if (sport == "dodgebee") {
+      return "ドッチビー";
+    } else if (sport == "dodgeball") {
       return "ドッチビー";
     }
     return "";
@@ -249,11 +257,9 @@ class _DetailScreenState extends State<DetailScreen> {
     final bool? isLoggedInRumutaiStaff =
         Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
     return Scaffold(
-      appBar: AppBar(title: const Text("詳細"), actions: [
-        MainPopUpMenu(
-          place: gameData["place"],
-        )
-      ]),
+      appBar: AppBar(
+          title: const Text("詳細"),
+          actions: [MainPopUpMenu(place: gameData["place"])]),
       floatingActionButton: _isLoading
           ? null
           : Column(
@@ -448,7 +454,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                               children: [
                                                 Text(
                                                   LableUtilities.extraTimeLable(
-                                                    gameData["gameId"],
+                                                    gameData["sport"],
                                                   ),
                                                   style: const TextStyle(
                                                     fontSize: 18,
@@ -533,7 +539,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             Row(
                               children: [
                                 _lable("競技："),
-                                Text(_sport(gameData["gameId"]),
+                                Text(_sport(gameData["sport"]),
                                     style: const TextStyle(fontSize: 20)),
                               ],
                             ),

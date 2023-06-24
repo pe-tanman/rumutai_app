@@ -198,8 +198,11 @@ class GameAdminDialogWidget extends StatelessWidget {
                           ? const TextStyle(color: Colors.red)
                           : null,
                     ),
-                    if (_gameData["referee"][3] != "") const Text("、"),
-                    if (_gameData["referee"][3] != "")
+                    if ((_gameData["referee"].length >= 4 &&
+                        _gameData["referee"][3] != ""))
+                      const Text("、"),
+                    if ((_gameData["referee"].length >= 4 &&
+                        _gameData["referee"][3] != ""))
                       Text(
                         _gameData["referee"][3],
                         style: _dartyList.contains("referee4")

@@ -366,21 +366,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  if (isLoggedInAdmin == true)
-                    Column(
-                      children: [
-                        const SizedBox(height: 25),
-                        _dividerWithText("管理者機能"),
-                        const SizedBox(height: 15),
-                        _tonalButton(
-                          text: "通知を送る",
-                          icon: Icons.send_outlined,
-                          width: buttonWidth,
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(SendNotificationScreen.routeName),
-                        ),
-                      ],
-                    ),
                   if (isLoggedInStaff == true)
                     Column(
                       children: [
@@ -402,6 +387,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () => Navigator.of(context)
                               .pushNamed(DashboardScreen.routeName),
                         )
+                      ],
+                    ),
+                  if (isLoggedInAdmin == true)
+                    Column(
+                      children: [
+                        const SizedBox(height: 25),
+                        _dividerWithText("管理者機能"),
+                        const SizedBox(height: 15),
+                        _tonalButton(
+                          text: "通知を送る",
+                          icon: Icons.send_outlined,
+                          width: buttonWidth,
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(SendNotificationScreen.routeName),
+                        ),
                       ],
                     ),
                 ],

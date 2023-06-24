@@ -52,11 +52,13 @@ class LeagueBlock extends StatelessWidget {
           );
         } else {
           return InkWell(
-            onTap: () => Navigator.of(context).pushNamed(
-              DetailScreen.routeName,
-              arguments: DataToPass(
-                  gameDataId: gameData!["gameId"], isReverse: isReverse),
-            ),
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                DetailScreen.routeName,
+                arguments: DataToPass(
+                    gameDataId: gameData!["gameId"], isReverse: isReverse),
+              );
+            },
             child: Container(
               decoration:
                   BoxDecoration(border: Border.all(color: Colors.black)),

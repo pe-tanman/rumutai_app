@@ -241,17 +241,23 @@ class GameData with ChangeNotifier {
   Object? getGameDataForResult({required CategoryToGet categoryToGet}) {
     switch (categoryToGet) {
       case CategoryToGet.d1:
-        return _gameDataForResult["1b"];
+        return _gameDataForResult["1d"];
       case CategoryToGet.j1:
-        return _gameDataForResult["1g"];
+        return _gameDataForResult["1j"];
       case CategoryToGet.k1:
-        return _gameDataForResult["1m"];
+        return _gameDataForResult["1k"];
       case CategoryToGet.d2:
-        return _gameDataForResult["2b"];
+        return _gameDataForResult["2d"];
       case CategoryToGet.j2:
-        return _gameDataForResult["2g"];
+        return _gameDataForResult["2j"];
       case CategoryToGet.k2:
-        return _gameDataForResult["2m"];
+        return _gameDataForResult["2k"];
+      case CategoryToGet.d3:
+        return _gameDataForResult["3d"];
+      case CategoryToGet.j3:
+        return _gameDataForResult["3j"];
+      case CategoryToGet.k3:
+        return _gameDataForResult["3k"];
     }
   }
 
@@ -267,12 +273,12 @@ class GameData with ChangeNotifier {
     try {
       if (!setMerge) {
         await FirebaseFirestore.instance
-            .collection('gameData')
+            .collection('gameData2')
             .doc(doc)
             .update(newData);
       } else {
         await FirebaseFirestore.instance
-            .collection('gameData')
+            .collection('gameData2')
             .doc(doc)
             .set(newData, SetOptions(merge: true));
       }
@@ -332,22 +338,31 @@ class GameData with ChangeNotifier {
     late String docId;
     switch (categoryToGet) {
       case CategoryToGet.d1:
-        docId = "1b";
+        docId = "1d";
         break;
       case CategoryToGet.j1:
-        docId = "1g";
+        docId = "1j";
         break;
       case CategoryToGet.k1:
-        docId = "1m";
+        docId = "1k";
         break;
       case CategoryToGet.d2:
-        docId = "2b";
+        docId = "2d";
         break;
       case CategoryToGet.j2:
-        docId = "2g";
+        docId = "2j";
         break;
       case CategoryToGet.k2:
-        docId = "2m";
+        docId = "2k";
+        break;
+      case CategoryToGet.d3:
+        docId = "3d";
+        break;
+      case CategoryToGet.j3:
+        docId = "3j";
+        break;
+      case CategoryToGet.k3:
+        docId = "3k";
         break;
     }
     await FirebaseFirestore.instance

@@ -36,7 +36,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
   final TextEditingController _timeHourController = TextEditingController();
   final TextEditingController _timeMinuteController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
-  final TextEditingController _rumutaiStaffController = TextEditingController();
   final TextEditingController _referee1Controller = TextEditingController();
   final TextEditingController _referee2Controller = TextEditingController();
   final TextEditingController _referee3Controller = TextEditingController();
@@ -105,9 +104,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
     if (_gameData["place"] != _placeController.text) {
       _dirtyList.add("place");
     }
-    if (_gameData["rumutaiStaff"] != _rumutaiStaffController.text) {
-      _dirtyList.add("rumutaiStaff");
-    }
     if (_gameData["referee"][0] != _referee1Controller.text) {
       _dirtyList.add("referee1");
     }
@@ -168,8 +164,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
         };
       } else if (data == "place") {
         newData["place"] = _placeController.text;
-      } else if (data == "rumutaiStaff") {
-        newData["rumutaiStaff"] = _rumutaiStaffController.text;
       } else if (data.contains("referee")) {
         newData["referee"] = (_gameData["gameId"].contains("1g")
             ? [
@@ -248,7 +242,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
         "hour": _timeHourController.text,
         "minute": _timeMinuteController.text,
       },
-      "rumutaiStaff": _rumutaiStaffController.text,
       "referee": [
         _referee1Controller.text,
         _referee2Controller.text,
@@ -510,7 +503,6 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
       _timeHourController.text = _gameData["startTime"]["hour"];
       _timeMinuteController.text = _gameData["startTime"]["minute"];
       _placeController.text = _gameData["place"];
-      _rumutaiStaffController.text = _gameData["rumutaiStaff"];
       _referee1Controller.text = _gameData["referee"][0];
       _referee2Controller.text = _gameData["referee"][1];
       _referee3Controller.text = _gameData["referee"][2];

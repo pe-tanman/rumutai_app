@@ -23,13 +23,11 @@ class RumutaiStaffScreen extends StatefulWidget {
 
 class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   bool _isLoadingDialog = false;
-  bool _isLoadingLocalData = true;
   bool _isInit = true;
   bool _canFinishGame = true;
   bool _isReverse = false;
   late Map _gameData;
   late Map<String, dynamic> data;
-  bool? _isLoggedInResultEditor = false;
 
   final TextEditingController _scoreDetail1Controller = TextEditingController();
   final TextEditingController _scoreDetail2Controller = TextEditingController();
@@ -403,7 +401,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
 /*{"gameId":{"0":"team"}}
 */
 
-//TODO:fix tournament winner
   Map<String, Map<String, String>> _dataToUpdateTournament({
     required Map gameData,
     required TournamentType tournamentType,
@@ -428,31 +425,29 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     switch (tournamentType) {
       case TournamentType.four:
         if (gameData["gameId"].substring(4) == "01") {
-          dataToReturn["${gameData["gameId"].substring(0, 4)}00"] = {"0": winTeam};
+          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"0": winTeam};
           dataToReturn["${gameData["gameId"].substring(0, 4)}03"] = {"0": loseTeam};
         } else if (gameData["gameId"].substring(4) == "02") {
-          dataToReturn["${gameData["gameId"].substring(0, 4)}00"] = {"1": winTeam};
+          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"1": winTeam};
           dataToReturn["${gameData["gameId"].substring(0, 4)}03"] = {"1": loseTeam};
         }
         break;
       case TournamentType.four2:
         if (gameData["gameId"].substring(4) == "01") {
-          dataToReturn["${gameData["gameId"].substring(0, 4)}00"] = {"0": winTeam};
+          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"0": winTeam};
           dataToReturn["${gameData["gameId"].substring(0, 4)}03"] = {"0": loseTeam};
         } else if (gameData["gameId"].substring(4) == "02") {
-          dataToReturn["${gameData["gameId"].substring(0, 4)}00"] = {"1": winTeam};
+          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"1": winTeam};
           dataToReturn["${gameData["gameId"].substring(0, 4)}03"] = {"1": loseTeam};
         }
         break;
       case TournamentType.five:
         if (gameData["gameId"].substring(4) == "01") {
-          dataToReturn["${gameData["gameId"].substring(0, 4)}00"] = {"1": winTeam};
+          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"0": winTeam};
         } else if (gameData["gameId"].substring(4) == "02") {
-          dataToReturn["${gameData["gameId"].substring(0, 4)}00"] = {"0": winTeam};
-          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"0": loseTeam};
+          dataToReturn["${gameData["gameId"].substring(0, 4)}03"] = {"0": winTeam};
         } else if (gameData["gameId"].substring(4) == "03") {
-          dataToReturn["${gameData["gameId"].substring(0, 4)}01"] = {"0": winTeam};
-          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"1": loseTeam};
+          dataToReturn["${gameData["gameId"].substring(0, 4)}04"] = {"1": winTeam};
         }
         break;
       case TournamentType.six:
@@ -516,47 +511,48 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
         _lable(LableUtilities.extraTimeLable(sport)),
         SizedBox(
           width: 150,
-          child: (_isLoadingLocalData)
-              ? const Center(child: CircularProgressIndicator())
-              : DropdownButton(
-                  style: const TextStyle(fontSize: 20, color: Colors.black),
-                  isExpanded: true,
-                  items: [
-                    DropdownMenuItem(
-                      value: team1,
-                      child: Text("$team1 勝利"),
-                    ),
-                    DropdownMenuItem(
-                      value: team2,
-                      child: Text("$team2 勝利"),
-                    ),
-                    const DropdownMenuItem(
-                      value: "",
-                      child: Text("なし"),
-                    ),
-                  ],
-                  onChanged: (_isLoggedInResultEditor!)
-                      ? (String? value) {
-                          if ((_scoreList[0] == _scoreList[1]) && value == "") {
-                            if (_canFinishGame == true) {
-                              setState(() {
-                                _canFinishGame = false;
-                              });
-                            }
-                          } else {
-                            if (_canFinishGame == false) {
-                              setState(() {
-                                _canFinishGame = true;
-                              });
-                            }
-                          }
-                          setState(() {
-                            _selectedExtraTime = value as String;
-                          });
-                        }
-                      : null,
-                  value: _selectedExtraTime,
-                ),
+          child: DropdownButton(
+            style: const TextStyle(fontSize: 20, color: Colors.black),
+            isExpanded: true,
+            items: [
+              DropdownMenuItem(
+                value: team1,
+                child: Text("$team1 勝利"),
+              ),
+              DropdownMenuItem(
+                value: team2,
+                child: Text("$team2 勝利"),
+              ),
+              const DropdownMenuItem(
+                value: "",
+                child: Text("なし"),
+              ),
+            ],
+            onChanged: (String? value) {
+              if ((_scoreList[0] == _scoreList[1]) && value == "") {
+                if (_canFinishGame == true) {
+                  setState(() {
+                    _canFinishGame = false;
+                  });
+                }
+              } else if (_scoreDetail1Controller.text != "" ||
+                  _scoreDetail2Controller.text != "" ||
+                  _scoreDetail3Controller.text != "" ||
+                  _scoreDetail4Controller.text != "" ||
+                  _scoreDetail5Controller.text != "" ||
+                  _scoreDetail6Controller.text != "") {
+                if (_canFinishGame == false) {
+                  setState(() {
+                    _canFinishGame = true;
+                  });
+                }
+              }
+              setState(() {
+                _selectedExtraTime = value as String;
+              });
+            },
+            value: _selectedExtraTime,
+          ),
         )
       ],
     );
@@ -606,13 +602,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     });
   }
 
-  Future _LoadLoginData() async {
-    _isLoggedInResultEditor = Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
-    setState(() {
-      _isLoadingLocalData = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     Provider.of<GameData>(context);
@@ -620,7 +609,6 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
     final DataToPass gotData = ModalRoute.of(context)!.settings.arguments as DataToPass;
     final String gameDataId = gotData.gameDataId;
     _isReverse = gotData.isReverse;
-    _LoadLoginData();
 
     if (gotData.classNumber != null) {
       _gameData = (Provider.of<GameData>(context).getGameDataForSchedule(classNumber: gotData.classNumber!) as Map)[gotData.gameDataId[1]][gotData.gameDataId];

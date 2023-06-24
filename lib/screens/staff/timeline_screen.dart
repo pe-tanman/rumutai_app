@@ -38,8 +38,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
     setState(() {
       _isLoading = true;
     });
-    var gotData =
-    await FirebaseFirestore.instance.collection("Timeline").get();
+    var gotData = await FirebaseFirestore.instance.collection("Timeline").get();
     for (var data in gotData.docs) {
       final d = data.data();
       final String id = data.id;
@@ -83,10 +82,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
                         ),
                       ),
                       Text(
-                        DateFormat('yyyy/MM/dd HH:mm')
-                            .format(timelineData["timeStamp"]),
-                        style:
-                        const TextStyle(color: Colors.grey, fontSize: 14),
+                        DateFormat('yyyy/MM/dd HH:mm').format(timelineData["timeStamp"]),
+                        style: const TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ],
                   )
@@ -99,12 +96,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    final bool? isLoggedInAdmin =
-        Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
+    final bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
 
     if (_isInit) {
       _loadData();
@@ -115,24 +109,19 @@ class _TimelineScreenState extends State<TimelineScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-        itemCount:
-        (_timelines.isEmpty) ? 0 : _timelines.length + 1,
-        itemBuilder: ((context, index) {
-          index -= 1;
-          if (index == -1) {
-            return Container(
-              width: double.infinity,
-              padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 5)
-            );
-          }
-          return _timelineWidget(
-            timelineData: _timelines[index],
-            index: index,
-            isLoggedInAdmin: isLoggedInAdmin,
-          );
-        }),
-      ),
+              itemCount: (_timelines.isEmpty) ? 0 : _timelines.length + 1,
+              itemBuilder: ((context, index) {
+                index -= 1;
+                if (index == -1) {
+                  return Container(width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5));
+                }
+                return _timelineWidget(
+                  timelineData: _timelines[index],
+                  index: index,
+                  isLoggedInAdmin: isLoggedInAdmin,
+                );
+              }),
+            ),
     );
   }
 }

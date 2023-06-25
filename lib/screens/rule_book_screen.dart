@@ -25,8 +25,7 @@ class _RuleBookScreenState extends State<RuleBookScreen> {
       body: Stack(
         children: [
           WebView(
-            initialUrl:
-                "https://drive.google.com/drive/folders/1P7izGwdZvwUPkB68R9_ucYPluzhLqETZ",
+            initialUrl: "https://drive.google.com/drive/folders/1MYYOBIsuRONhF1pvj7c7_XN2aqyBqztT",
             javascriptMode: JavascriptMode.unrestricted,
             onPageFinished: (String utl) {
               setState(() {

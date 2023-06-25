@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import 'package:rumutai_app/utilities/local_notification.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest_all.dart' as tz;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:rumutai_app/screens/staff/dashboard_screen.dart';
@@ -43,8 +40,7 @@ import 'screens/omikuji/pick_omikuji_screen.dart';
 import 'screens/omikuji/draw_omikuji_screen.dart';
 import 'screens/omikuji/make_omikuji_screen.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -56,13 +52,12 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   RemoteNotification? notification = message.notification;
-  flnp.initialize(const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher')));
+  flnp.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
 
   if (notification == null) {
     return;
@@ -85,14 +80,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
 //通知をタップして起動したときの設定＆local_notificationの初期化
-    flutterLocalNotificationsPlugin
-        .initialize(LocalNotification.initializeLocNotification(),
-            onDidReceiveNotificationResponse: (NotificationResponse res) {
+    flutterLocalNotificationsPlugin.initialize(LocalNotification.initializeLocNotification(), onDidReceiveNotificationResponse: (NotificationResponse res) {
       navigatorKey.currentState?.pushNamed(DetailScreen.routeName,
           arguments: DataToPass(
             gameDataId: res.payload!,
@@ -100,11 +93,7 @@ class MyApp extends StatelessWidget {
           ));
     });
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (ctx) => LocalData()),
-        ChangeNotifierProvider(create: (ctx) => GameData()),
-        ChangeNotifierProvider(create: (ctx) => DashboardNotifier())
-      ],
+      providers: [ChangeNotifierProvider(create: (ctx) => LocalData()), ChangeNotifierProvider(create: (ctx) => GameData()), ChangeNotifierProvider(create: (ctx) => DashboardNotifier())],
       child: MaterialApp(
         navigatorKey: navigatorKey,
         title: 'Rumutai',
@@ -128,8 +117,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           scaffoldBackgroundColor: Colors.brown.shade50,
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown)
-              .copyWith(secondary: Colors.indigoAccent),
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown).copyWith(secondary: Colors.indigoAccent),
         ),
         themeMode: ThemeMode.system,
         initialRoute: HomeScreen.routeName,
@@ -143,26 +131,23 @@ class MyApp extends StatelessWidget {
           PickCategoryScreen.routeName: (ctx) => const PickCategoryScreen(),
           GameResultsScreen.routeName: (ctx) => const GameResultsScreen(),
           MapScreen.routeName: (ctx) => MapScreen(),
-          SendNotificationScreen.routeName: (ctx) =>
-              const SendNotificationScreen(),
+          SendNotificationScreen.routeName: (ctx) => const SendNotificationScreen(),
           AdminEditScreen.routeName: (ctx) => const AdminEditScreen(),
           RumutaiStaffScreen.routeName: (ctx) => const RumutaiStaffScreen(),
-          NotificationsDetailScreen.routeName: (ctx) =>
-              const NotificationsDetailScreen(),
+          NotificationsDetailScreen.routeName: (ctx) => const NotificationsDetailScreen(),
           RuleBookScreen.routeName: (ctx) => const RuleBookScreen(),
           MyGameScreen.routeName: (ctx) => const MyGameScreen(),
           SettingScreen.routeName: (ctx) => const SettingScreen(),
           PrivacyPolicyScreen.routeName: (ctx) => const PrivacyPolicyScreen(),
           TermsOfServiceScreen.routeName: (ctx) => const TermsOfServiceScreen(),
           ContactScreen.routeName: (ctx) => const ContactScreen(),
-          PickTeamToCheerScreen.routeName: (ctx) =>
-              const PickTeamToCheerScreen(),
+          PickTeamToCheerScreen.routeName: (ctx) => const PickTeamToCheerScreen(),
           CheerScreen.routeName: (ctx) => const CheerScreen(),
           PickOmikujiScreen.routeName: (ctx) => const PickOmikujiScreen(),
           DrawOmikujiScreen.routeName: (ctx) => const DrawOmikujiScreen(),
           MakeOmikujiScreen.routeName: (ctx) => const MakeOmikujiScreen(),
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
-          DashboardScreen.routeName: (ctx) => DashboardScreen(),
+          DashboardScreen.routeName: (ctx) => const DashboardScreen(),
           MyPlaceGameScreen.routeName: (ctx) => const MyPlaceGameScreen(),
 
           //PredictScreen.routeName: (ctx) => const PredictScreen(),

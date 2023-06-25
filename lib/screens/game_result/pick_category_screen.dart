@@ -26,8 +26,7 @@ class PickCategoryScreen extends StatelessWidget {
           width: 1.5,
         ),
       ),
-      onPressed: () => Navigator.of(context)
-          .pushNamed(GameResultsScreen.routeName, arguments: categoryToGet),
+      onPressed: () => Navigator.of(context).pushNamed(GameResultsScreen.routeName, arguments: categoryToGet),
       child: SizedBox(
         width: 105,
         height: 100,
@@ -42,43 +41,10 @@ class PickCategoryScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               text,
-              style: TextStyle(
-                  color: Colors.brown.shade900,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.6,
-                  fontSize: 18,
-                  fontFamily: "Anton"),
+              style: TextStyle(color: Colors.brown.shade900, fontWeight: FontWeight.w600, letterSpacing: 0.6, fontSize: 18, fontFamily: "Anton"),
             )
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _gameInfoButton2({
-    required context,
-    required String text,
-    required CategoryToGet categoryToGet,
-  }) {
-    return TextButton(
-      onPressed: () => Navigator.of(context)
-          .pushNamed(GameResultsScreen.routeName, arguments: categoryToGet),
-      style: TextButton.styleFrom(foregroundColor: Colors.black),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 30,
-              height: 1.0,
-              letterSpacing: 5,
-              fontFamily: "Anton",
-            ),
-          ),
-          Icon(Icons.arrow_forward_ios)
-        ],
       ),
     );
   }
@@ -135,8 +101,7 @@ class PickCategoryScreen extends StatelessWidget {
                     ],
                   ),
                   const Padding(
-                    padding: EdgeInsets.only(
-                        left: 10, right: 10, top: 10, bottom: 5),
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
                     child: Divider(),
                   ),
                   Text(
@@ -174,8 +139,7 @@ class PickCategoryScreen extends StatelessWidget {
                     ],
                   ),
                   const Padding(
-                    padding: EdgeInsets.only(
-                        left: 10, right: 10, top: 10, bottom: 5),
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
                     child: Divider(),
                   ),
                   Text(
@@ -210,9 +174,7 @@ class PickCategoryScreen extends StatelessWidget {
                             width: 1.5,
                           ),
                         ),
-                        onPressed: () => Navigator.of(context).pushNamed(
-                            GameResultsScreen.routeName,
-                            arguments: CategoryToGet.j3),
+                        onPressed: () => Navigator.of(context).pushNamed(GameResultsScreen.routeName, arguments: CategoryToGet.j3),
                         child: SizedBox(
                           width: 105,
                           height: 100,
@@ -227,12 +189,7 @@ class PickCategoryScreen extends StatelessWidget {
                               const SizedBox(height: 12),
                               Text(
                                 "DODGEBEE",
-                                style: TextStyle(
-                                    color: Colors.brown.shade900,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.6,
-                                    fontSize: 18,
-                                    fontFamily: "Anton"),
+                                style: TextStyle(color: Colors.brown.shade900, fontWeight: FontWeight.w600, letterSpacing: 0.6, fontSize: 18, fontFamily: "Anton"),
                               ),
                             ],
                           ),

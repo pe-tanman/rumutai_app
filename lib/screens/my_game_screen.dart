@@ -226,7 +226,7 @@ class _MyGameScreenState extends State<MyGameScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      hintText: "例：10138",
+                      hintText: "例：20634",
                       label: const Text("入力"),
                     ),
                     onChanged: (text) {

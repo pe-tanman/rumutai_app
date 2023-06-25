@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import "../providers/local_data.dart";
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rumutai_app/utilities/lable_utilities.dart';

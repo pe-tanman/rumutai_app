@@ -234,7 +234,7 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(
                 width: 300,
                 child: Text(
-                  "ルム対スタッフ、試合結果編集者、管理者は、認証コードでサインインできます。",
+                  "ルム対スタッフ、管理者は、\n認証コードでサインインできます。",
                   style: TextStyle(fontSize: 15),
                 ),
               ),

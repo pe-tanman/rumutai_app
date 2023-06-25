@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rumutai_app/screens/drawer/publish_drive.dart';
 import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import 'package:rumutai_app/utilities/local_notification.dart';
 
@@ -149,7 +150,7 @@ class MyApp extends StatelessWidget {
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
           DashboardScreen.routeName: (ctx) => const DashboardScreen(),
           MyPlaceGameScreen.routeName: (ctx) => const MyPlaceGameScreen(),
-
+          PublishDriveScreen.routeName: (ctx) => const PublishDriveScreen(),
           //PredictScreen.routeName: (ctx) => const PredictScreen(),
         },
       ),

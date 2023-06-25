@@ -46,8 +46,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     "1. 収集する情報",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  _indentedText("a.",
-                      "本アプリでは、基本的にユーザーの個人情報を収集しません。しかし、不具合発生状況などの詳細な情報を収集する際、ユーザーの情報や使用するデバイスの情報、アプリの使用方法などを求める場合があります。"),
+                  _indentedText("a.", "本アプリでは、基本的にユーザーの個人情報を収集しません。しかし、不具合発生状況などの詳細な情報を収集する際、ユーザーの情報や使用するデバイスの情報、アプリの使用方法などを求める場合があります。"),
                   _indentedText("b.", "収集した個人情報はアプリの機能改善以外の目的では使用しません。"),
                   const SizedBox(height: 5),
                   const Text(
@@ -60,15 +59,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     "3. セキュリティに関する情報",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  _indentedText(
-                      "a.", "収集した情報については、第三者への意図せぬ流出などがないように責任をもって保管します。"),
+                  _indentedText("a.", "収集した情報については、第三者への意図せぬ流出などがないように責任をもって保管します。"),
                   const SizedBox(height: 5),
                   const Text(
                     "4. ユーザーの選択肢に関する情報",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  _indentedText(
-                      "a.", "ユーザーの情報など機密性が高い情報についてはユーザーが提供するか選択できるようにします。"),
+                  _indentedText("a.", "ユーザーの情報など機密性が高い情報についてはユーザーが提供するか選択できるようにします。"),
                   const SizedBox(height: 5),
                   const Text(
                     "5. 制定日",
@@ -88,8 +85,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                   _indentedText("a.", "プライバシーポリシーは、事前の通知なしに変更されることがあります。"),
-                  _indentedText(
-                      "b.", "プライバシーポリシーが変更された場合、変更後のプライバシーポリシーが適用されるものとします。"),
+                  _indentedText("b.", "プライバシーポリシーが変更された場合、変更後のプライバシーポリシーが適用されるものとします。"),
                 ],
               ),
             ),

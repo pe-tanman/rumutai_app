@@ -7,13 +7,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class LocalData with ChangeNotifier {
   bool? isLoggedInAdmin;
   bool? isLoggedInRumutaiStaff;
-  bool? isLoggedInResultEditor;
+  //bool? isLoggedInResultEditor;
   String? pickedPersonForMyGame;
 
   Future setDataFromLocal() async {
     isLoggedInAdmin = await readLocalData<bool>("isLoggedInAdmin");
     isLoggedInRumutaiStaff = await readLocalData<bool>("isLoggedInRumutaiStaff");
-    isLoggedInResultEditor = await readLocalData<bool>("isLoggedInResultEditor");
     pickedPersonForMyGame = await readLocalData<String>("pickedPersonForMyGame");
     notifyListeners();
   }
@@ -21,9 +20,8 @@ class LocalData with ChangeNotifier {
   static Future<List<String>> listOfStringThatPasswordDidChange() async {
     bool? adminIsLoggedIn = await readLocalData<bool>("isLoggedInAdmin");
     bool? rumutaiStaffIsLoggedIn = await readLocalData<bool>("isLoggedInRumutaiStaff");
-    bool? resultEditorIsLoggedIn = await readLocalData<bool>("isLoggedInResultEditor");
     final List<String> listToReturn = [];
-    if (adminIsLoggedIn == true || rumutaiStaffIsLoggedIn == true || resultEditorIsLoggedIn == true) {
+    if (adminIsLoggedIn == true || rumutaiStaffIsLoggedIn == true) {
       var passwordData = await FirebaseFirestore.instance.collection("password").doc("passwordDoc").get();
 
       if (adminIsLoggedIn == true) {
@@ -38,13 +36,6 @@ class LocalData with ChangeNotifier {
         if (passwordData["RumutaiStaff"] != oldRumutaiStaffPassword) {
           await saveLocalData<bool>("isLoggedInRumutaiStaff", false);
           listToReturn.add("ルム対スタッフ");
-        }
-      }
-      if (resultEditorIsLoggedIn == true) {
-        final oldRumutaiStaffPassword = await readLocalData<String>("resultEditorPassword");
-        if (passwordData["ResultEditor"] != oldRumutaiStaffPassword) {
-          await saveLocalData<bool>("isLoggedInResultEditor", false);
-          listToReturn.add("試合結果編集者");
         }
       }
     }

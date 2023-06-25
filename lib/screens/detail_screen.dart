@@ -238,7 +238,7 @@ class _DetailScreenState extends State<DetailScreen> {
       gameData = (Provider.of<GameData>(context).getGameDataForResult(categoryToGet: _categoryToGet(gotData.gameDataId)!) as Map)[gotData.gameDataId[3]][gotData.gameDataId];
     }
     final bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
-    final bool? isLoggedInResultEditor = Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
+    final bool? isLoggedInRumutaiStaff = Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
     return Scaffold(
       appBar: AppBar(title: const Text("詳細"), actions: [MainPopUpMenu(place: gameData["place"])]),
       floatingActionButton: _isLoading
@@ -263,7 +263,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   label: const Text("予想"),
                 ),
                 if (isLoggedInRumutaiStaff == true) const SizedBox(height: 10),*/
-                if (isLoggedInResultEditor == true)
+                if (isLoggedInRumutaiStaff == true)
                   FloatingActionButton.extended(
                     heroTag: "hero1",
                     onPressed: () => Navigator.of(context).pushNamed(
@@ -277,7 +277,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     icon: const Icon(Icons.sports),
                     label: const Text("試合"),
                   ),
-                if (isLoggedInAdmin == true && isLoggedInResultEditor == true) const SizedBox(height: 10),
+                if (isLoggedInAdmin == true && isLoggedInRumutaiStaff == true) const SizedBox(height: 10),
                 if (isLoggedInAdmin == true)
                   FloatingActionButton.extended(
                     heroTag: "hero2",

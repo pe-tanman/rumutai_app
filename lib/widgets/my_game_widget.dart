@@ -35,8 +35,7 @@ class _MyGameWidgetState extends State<MyGameWidget> {
 
   //通知on,offの再読み込み
   Future<bool> readNotify() async {
-    bool isNotify =
-        await LocalData.readLocalData<bool>(widget.gameData["gameId"]) ?? false;
+    bool isNotify = await LocalData.readLocalData<bool>(widget.gameData["gameId"]) ?? false;
     return Future<bool>.value(isNotify);
   }
 
@@ -92,15 +91,13 @@ class _MyGameWidgetState extends State<MyGameWidget> {
                           : [
                               Text(
                                 "${widget.gameData["startTime"]["hour"]}:${widget.gameData["startTime"]["minute"]}〜",
-                                style:
-                                    const TextStyle(fontSize: 20, height: 1.0),
+                                style: const TextStyle(fontSize: 20, height: 1.0),
                               ),
                               const SizedBox(height: 6),
                               FittedBox(
                                 child: Text(
                                   widget.gameData["place"],
-                                  style: const TextStyle(
-                                      fontSize: 20, height: 1.0),
+                                  style: const TextStyle(fontSize: 20, height: 1.0),
                                 ),
                               ),
                             ],
@@ -121,13 +118,11 @@ class _MyGameWidgetState extends State<MyGameWidget> {
                                     gameId: widget.gameData["gameId"],
                                     day: widget.gameData["startTime"]["date"],
                                     hour: widget.gameData["startTime"]["hour"],
-                                    minute: widget.gameData["startTime"]
-                                        ["minute"],
+                                    minute: widget.gameData["startTime"]["minute"],
                                     team1: widget.gameData["team"]["0"],
                                     team2: widget.gameData["team"]["1"],
                                   ).then((_) {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
+                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         duration: Duration(milliseconds: 1500),
@@ -139,8 +134,7 @@ class _MyGameWidgetState extends State<MyGameWidget> {
                                   LocalNotification.cancelLocNotification(
                                     widget.gameData["gameId"],
                                   ).then((_) {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
+                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         duration: Duration(milliseconds: 1500),
@@ -158,20 +152,14 @@ class _MyGameWidgetState extends State<MyGameWidget> {
                                 Icon(
                                   Icons.notifications,
                                   size: 28,
-                                  color: _notify
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Colors.grey,
+                                  color: _notify ? Theme.of(context).colorScheme.secondary : Colors.grey,
                                 ),
                                 Text(
                                   _notify ? "on" : "off",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 15,
-                                    color: _notify
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .secondary
-                                        : Colors.grey,
+                                    color: _notify ? Theme.of(context).colorScheme.secondary : Colors.grey,
                                   ),
                                 ),
                               ],

@@ -265,22 +265,12 @@ class GameData with ChangeNotifier {
     return _gameDataForSchedule[classNumber];
   }
 
-  Future updateData(
-      {required String doc,
-      required Map<String, Object> newData,
-      required Map teams,
-      bool setMerge = false}) async {
+  Future updateData({required String doc, required Map<String, Object> newData, required Map teams, bool setMerge = false}) async {
     try {
       if (!setMerge) {
-        await FirebaseFirestore.instance
-            .collection('gameData2')
-            .doc(doc)
-            .update(newData);
+        await FirebaseFirestore.instance.collection('gameData2').doc(doc).update(newData);
       } else {
-        await FirebaseFirestore.instance
-            .collection('gameData2')
-            .doc(doc)
-            .set(newData, SetOptions(merge: true));
+        await FirebaseFirestore.instance.collection('gameData2').doc(doc).set(newData, SetOptions(merge: true));
       }
     } catch (e) {
       return;
@@ -293,30 +283,24 @@ class GameData with ChangeNotifier {
       final String smallCategory = doc[3];
       if (!setMerge) {
         if (_gameDataForResult[category] != null) {
-          _gameDataForResult[category][smallCategory][doc]
-              .update(key, (_) => data);
+          _gameDataForResult[category][smallCategory][doc].update(key, (_) => data);
         }
         if (_gameDataForSchedule[teams["0"]] != null) {
-          _gameDataForSchedule[teams["0"]][gender][doc]
-              .update(key, (_) => data);
+          _gameDataForSchedule[teams["0"]][gender][doc].update(key, (_) => data);
         }
         if (_gameDataForSchedule[teams["1"]] != null) {
-          _gameDataForSchedule[teams["1"]][gender][doc]
-              .update(key, (_) => data);
+          _gameDataForSchedule[teams["1"]][gender][doc].update(key, (_) => data);
         }
       } else {
         (data as Map).forEach((k, d) {
           if (_gameDataForResult[category] != null) {
-            _gameDataForResult[category][smallCategory][doc]["team"]
-                .update(k, (_) => d);
+            _gameDataForResult[category][smallCategory][doc]["team"].update(k, (_) => d);
           }
           if (_gameDataForSchedule[teams["0"]] != null) {
-            _gameDataForSchedule[teams["0"]][gender][doc]["team"]
-                .update(k, (_) => d);
+            _gameDataForSchedule[teams["0"]][gender][doc]["team"].update(k, (_) => d);
           }
           if (_gameDataForSchedule[teams["1"]] != null) {
-            _gameDataForSchedule[teams["1"]][gender][doc]["team"]
-                .update(k, (_) => d);
+            _gameDataForSchedule[teams["1"]][gender][doc]["team"].update(k, (_) => d);
           }
         });
       }
@@ -325,11 +309,7 @@ class GameData with ChangeNotifier {
   }
 
   Future loadGameDataForSchedule({required String classNumber}) async {
-    await FirebaseFirestore.instance
-        .collection("classGameDataToRead")
-        .doc(classNumber)
-        .get()
-        .then((DocumentSnapshot doc) {
+    await FirebaseFirestore.instance.collection("classGameDataToRead").doc(classNumber).get().then((DocumentSnapshot doc) {
       _gameDataForSchedule[classNumber] = doc.data() as Map;
     });
   }
@@ -365,11 +345,7 @@ class GameData with ChangeNotifier {
         docId = "3k";
         break;
     }
-    await FirebaseFirestore.instance
-        .collection("gameDataToRead")
-        .doc(docId)
-        .get()
-        .then((DocumentSnapshot doc) {
+    await FirebaseFirestore.instance.collection("gameDataToRead").doc(docId).get().then((DocumentSnapshot doc) {
       _gameDataForResult[docId] = doc.data() as Map;
       //_gameData[docId] = doc.data() as Map<String, dynamic>;
     });

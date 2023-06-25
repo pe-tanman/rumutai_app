@@ -22,13 +22,11 @@ class RumutaiStaffScreen extends StatefulWidget {
 
 class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   bool _isLoadingDialog = false;
-  bool _isLoadingLocalData = true;
   bool _isInit = true;
   bool _canFinishGame = true;
   bool _isReverse = false;
   late Map _gameData;
   late Map<String, dynamic> data;
-  bool? _isLoggedInResultEditor = false;
 
   final TextEditingController _scoreDetail1Controller = TextEditingController();
   final TextEditingController _scoreDetail2Controller = TextEditingController();
@@ -48,15 +46,35 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
   }) {
     return SizedBox(
       width: width,
-      child: (_isLoadingLocalData)
-          ? const Center(child: CircularProgressIndicator())
-          : TextField(
-              enabled: _isLoggedInResultEditor,
-              keyboardType: Platform.isAndroid ? TextInputType.number : const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: inputDecoration ?? const InputDecoration(isDense: true),
-              style: const TextStyle(fontSize: 30),
-              controller: controller),
+      child: TextField(
+          keyboardType: Platform.isAndroid ? TextInputType.number : const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          decoration: inputDecoration ?? const InputDecoration(isDense: true),
+          style: const TextStyle(fontSize: 30),
+          onChanged: (text) {
+            if (_scoreDetail1Controller.text == "" ||
+                _scoreDetail2Controller.text == "" ||
+                _scoreDetail3Controller.text == "" ||
+                _scoreDetail4Controller.text == "" ||
+                _scoreDetail5Controller.text == "" ||
+                _scoreDetail6Controller.text == "") {
+              if (_canFinishGame == true) {
+                setState(() {
+                  _canFinishGame = false;
+                });
+              }
+            } else {
+              if (_canFinishGame == false) {
+                setState(() {
+                  _canFinishGame = true;
+                });
+              }
+            }
+            if (text != "") {
+              setState(() {});
+            }
+          },
+          controller: controller),
     );
   }
 
@@ -492,34 +510,48 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
         _lable(LableUtilities.extraTimeLable(sport)),
         SizedBox(
           width: 150,
-          child: (_isLoadingLocalData)
-              ? const Center(child: CircularProgressIndicator())
-              : DropdownButton(
-                  style: const TextStyle(fontSize: 20, color: Colors.black),
-                  isExpanded: true,
-                  items: [
-                    DropdownMenuItem(
-                      value: team1,
-                      child: Text("$team1 勝利"),
-                    ),
-                    DropdownMenuItem(
-                      value: team2,
-                      child: Text("$team2 勝利"),
-                    ),
-                    const DropdownMenuItem(
-                      value: "",
-                      child: Text("なし"),
-                    ),
-                  ],
-                  onChanged: (_isLoggedInResultEditor!)
-                      ? (String? value) {
-                          setState(() {
-                            _selectedExtraTime = value as String;
-                          });
-                        }
-                      : null,
-                  value: _selectedExtraTime,
-                ),
+          child: DropdownButton(
+            style: const TextStyle(fontSize: 20, color: Colors.black),
+            isExpanded: true,
+            items: [
+              DropdownMenuItem(
+                value: team1,
+                child: Text("$team1 勝利"),
+              ),
+              DropdownMenuItem(
+                value: team2,
+                child: Text("$team2 勝利"),
+              ),
+              const DropdownMenuItem(
+                value: "",
+                child: Text("なし"),
+              ),
+            ],
+            onChanged: (String? value) {
+              if ((_scoreList[0] == _scoreList[1]) && value == "") {
+                if (_canFinishGame == true) {
+                  setState(() {
+                    _canFinishGame = false;
+                  });
+                }
+              } else if (_scoreDetail1Controller.text != "" ||
+                  _scoreDetail2Controller.text != "" ||
+                  _scoreDetail3Controller.text != "" ||
+                  _scoreDetail4Controller.text != "" ||
+                  _scoreDetail5Controller.text != "" ||
+                  _scoreDetail6Controller.text != "") {
+                if (_canFinishGame == false) {
+                  setState(() {
+                    _canFinishGame = true;
+                  });
+                }
+              }
+              setState(() {
+                _selectedExtraTime = value as String;
+              });
+            },
+            value: _selectedExtraTime,
+          ),
         )
       ],
     );
@@ -591,6 +623,9 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
       _scoreDetail5Controller.text = _gameData["scoreDetail"]["2"][0].toString();
       _scoreDetail6Controller.text = _gameData["scoreDetail"]["2"][1].toString();
       _selectedExtraTime = _gameData["extraTime"];
+      if (gameDataId.contains("f") || gameDataId.contains("l")) {
+        _canFinishGame = false;
+      }
       _isInit = false;
     }
 
@@ -734,7 +769,8 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
               const SizedBox(width: 10),
               if (_gameData["gameStatus"] != "after")
                 ElevatedButton.icon(
-                  onPressed: (_gameData["gameStatus"] == "now" && !_canFinishGame)
+                  onPressed: (((_gameData["gameStatus"] == "now") && (gameDataId.contains("f") || gameDataId.contains("l")) && ((_scoreList[0] == _scoreList[1]) && _selectedExtraTime == "")) ||
+                          (_gameData["gameStatus"] == "now" && !_canFinishGame))
                       ? null
                       : () {
                           dateTime = DateTime.now();

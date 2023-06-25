@@ -17,11 +17,11 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _adminController = TextEditingController();
   final TextEditingController _rumutaiStaffController = TextEditingController();
-  final TextEditingController _resultEditorController = TextEditingController();
+  //final TextEditingController _resultEditorController = TextEditingController();
 
   var _isLoadingAdmin = false;
   var _isLoadingRumutaiStaff = false;
-  var _isLoadingResultEditor = false;
+  //var _isLoadingResultEditor = false;
 
   Widget _signInWidget({
     required bool? isLoggedIn,
@@ -33,9 +33,9 @@ class _SignInScreenState extends State<SignInScreen> {
       text = "管理者";
     } else if (loginAs == "RumutaiStaff") {
       text = "ルム対スタッフ";
-    } else if (loginAs == "ResultEditor") {
+    } /* else if (loginAs == "ResultEditor") {
       text = "試合結果編集者";
-    }
+    }*/
     return Column(
       children: [
         SizedBox(
@@ -69,9 +69,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         _isLoadingAdmin = true;
                       } else if (loginAs == "RumutaiStaff") {
                         _isLoadingRumutaiStaff = true;
-                      } else if (loginAs == "ResultEditor") {
+                      } /*else if (loginAs == "ResultEditor") {
                         _isLoadingResultEditor = true;
-                      }
+                      }*/
                     });
                     await LocalData.saveLocalData<bool>("isLoggedIn$loginAs", false);
                     if (!mounted) return;
@@ -89,9 +89,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         _isLoadingAdmin = false;
                       } else if (loginAs == "RumutaiStaff") {
                         _isLoadingRumutaiStaff = false;
-                      } else if (loginAs == "ResultEditor") {
+                      } /*else if (loginAs == "ResultEditor") {
                         _isLoadingResultEditor = false;
-                      }
+                      }*/
                     });
                   },
                   label: const Text("サインアウト"),
@@ -131,9 +131,9 @@ class _SignInScreenState extends State<SignInScreen> {
                               _isLoadingAdmin = true;
                             } else if (loginAs == "RumutaiStaff") {
                               _isLoadingRumutaiStaff = true;
-                            } else if (loginAs == "ResultEditor") {
+                            } /* else if (loginAs == "ResultEditor") {
                               _isLoadingResultEditor = true;
-                            }
+                            }*/
                           });
                           var data = await FirebaseFirestore.instance.collection("password").doc("passwordDoc").get();
                           if (data[loginAs] == textController.text) {
@@ -148,12 +148,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                 "rumutaiStaffPassword",
                                 data[loginAs],
                               );
-                            } else if (loginAs == "ResultEditor") {
+                            } /* else if (loginAs == "ResultEditor") {
                               await LocalData.saveLocalData<String>(
                                 "resultEditorPassword",
                                 data[loginAs],
                               );
-                            }
+                            }*/
 
                             if (!mounted) return;
                             await Provider.of<LocalData>(context, listen: false).setDataFromLocal();
@@ -176,9 +176,9 @@ class _SignInScreenState extends State<SignInScreen> {
                               _isLoadingAdmin = false;
                             } else if (loginAs == "RumutaiStaff") {
                               _isLoadingRumutaiStaff = false;
-                            } else if (loginAs == "ResultEditor") {
+                            } /* if (loginAs == "ResultEditor") {
                               _isLoadingResultEditor = false;
-                            }
+                            }*/
                           });
                         },
                   label: const Text("サインイン"),
@@ -199,13 +199,13 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: 20,
                 child: CircularProgressIndicator(),
               ),
-            if (_isLoadingResultEditor && loginAs == "ResultEditor") const SizedBox(width: 10),
+            /* if (_isLoadingResultEditor && loginAs == "ResultEditor") const SizedBox(width: 10),
             if (_isLoadingResultEditor && loginAs == "ResultEditor")
               const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(),
-              ),
+              ),*/
           ],
         ),
       ],
@@ -216,7 +216,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
     bool? isLoggedInRumutaiStaff = Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
-    bool? isLoggedInResultEditor = Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
+    // bool? isLoggedInResultEditor = Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
     return Scaffold(
       appBar: AppBar(title: const Text("サインイン")),
       body: GestureDetector(
@@ -245,12 +245,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 loginAs: "RumutaiStaff",
                 textController: _rumutaiStaffController,
               ),
-              Divider(color: Colors.brown.shade900),
+              /*Divider(color: Colors.brown.shade900),
               _signInWidget(
                 isLoggedIn: isLoggedInResultEditor,
                 loginAs: "ResultEditor",
                 textController: _resultEditorController,
-              ),
+              ),*/
               Divider(color: Colors.brown.shade900),
               _signInWidget(
                 isLoggedIn: isLoggedInAdmin,

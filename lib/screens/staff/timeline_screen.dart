@@ -204,19 +204,21 @@ class _TimelineScreenState extends State<TimelineScreen> {
       appBar: AppBar(title: const Text("タイムライン")),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: (_timelines.isEmpty) ? 0 : _timelines.length + 1,
-              itemBuilder: ((context, index) {
-                index -= 1;
-                if (index == -1) {
-                  return Container(width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5));
-                }
-                return _timelineWidget(
-                  timelineData: _timelines[index],
-                  index: index,
-                  isLoggedInAdmin: isLoggedInAdmin,
-                );
-              }),
+          : Scrollbar(
+              child: ListView.builder(
+                itemCount: (_timelines.isEmpty) ? 0 : _timelines.length + 1,
+                itemBuilder: ((context, index) {
+                  index -= 1;
+                  if (index == -1) {
+                    return Container(width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5));
+                  }
+                  return _timelineWidget(
+                    timelineData: _timelines[index],
+                    index: index,
+                    isLoggedInAdmin: isLoggedInAdmin,
+                  );
+                }),
+              ),
             ),
     );
   }

@@ -646,13 +646,13 @@ class _AdminEditScreenState extends State<AdminEditScreen> {
                                 },
                                 value: _selectedGameStatus,
                               ),
-                              if (!_gameData["gameId"].contains("m") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l"))) const SizedBox(width: 20),
-                              if (!_gameData["gameId"].contains("m") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l")))
+                              if ((_gameData["sport"] != "volleyball") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l"))) const SizedBox(width: 20),
+                              if ((_gameData["sport"] != "volleyball") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l")))
                                 Text(
                                   LableUtilities.extraTimeLable(_gameData["sport"]),
                                   style: TextStyle(color: Colors.grey.shade700),
                                 ),
-                              if (!_gameData["gameId"].contains("m") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l")))
+                              if ((_gameData["sport"] != "volleyball") && (_gameData["gameId"].contains("f") || _gameData["gameId"].contains("l")))
                                 DropdownButton(
                                   items: [
                                     DropdownMenuItem(

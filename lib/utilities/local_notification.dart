@@ -12,23 +12,14 @@ class LocalNotification {
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation("Asia/Tokyo"));
 //権限設定
-    const DarwinInitializationSettings initSettingsIOS =
-        DarwinInitializationSettings(
-            requestAlertPermission: true,
-            requestBadgePermission: true,
-            requestSoundPermission: false);
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('notification_icon');
+    const DarwinInitializationSettings initSettingsIOS = DarwinInitializationSettings(requestAlertPermission: true, requestBadgePermission: true, requestSoundPermission: false);
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('notification_icon');
     if (Platform.isAndroid) {
-      flnp
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()!
-          .requestPermission();
+      flnp.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()!.requestPermission();
     }
 
 // ignore: unused_local_variable
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
+    const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initSettingsIOS,
     );
@@ -42,15 +33,17 @@ class LocalNotification {
     await LocalData.saveLocalData<bool>(gameId, false);
   }
 
-  static String _sport(String gameId) {
-    if (gameId[1] == "b") {
+  static String _sport(String sport) {
+    if (sport == "futsal") {
       return "フットサル";
-    } else if (gameId[1] == "m") {
+    } else if (sport == "volleyball") {
       return "バレーボール";
-    } else if (gameId[0] == "1") {
+    } else if (sport == "basketball") {
       return "バスケットボール";
-    } else if (gameId[0] == "2") {
+    } else if (sport == "dodgebee") {
       return "ドッチビー";
+    } else if (sport == "dodgeball") {
+      return "ドッジボール";
     }
     return "";
   }
@@ -59,6 +52,7 @@ class LocalNotification {
   static Future<void> registerLocNotification({
     required String place,
     required String gameId,
+    required String sport,
     required String day,
     required String hour,
     required String minute,
@@ -66,8 +60,7 @@ class LocalNotification {
     required String team2,
   }) async {
     //日時指定
-    var date = tz.TZDateTime(tz.local, 2023, 6, 28 - 1 + int.parse(day),
-        int.parse(hour), int.parse(minute) - 10);
+    var date = tz.TZDateTime(tz.local, 2023, 6, 28 - 1 + int.parse(day), int.parse(hour), int.parse(minute) - 10);
     String message = "10分前：$place";
     //通知設定
     await flnp.zonedSchedule(
@@ -87,8 +80,7 @@ class LocalNotification {
             icon: 'notification_icon',
           ), //iosは設定事項がほぼないためアンドロイドのみの設定
         ),
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         androidAllowWhileIdle: true);
 
     await LocalData.saveLocalData<bool>(gameId, true);

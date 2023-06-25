@@ -8,10 +8,7 @@ import 'rank_widget.dart';
 class LeagueWidget extends StatelessWidget {
   final String _title;
   final Map _leagueData;
-  const LeagueWidget(
-      {super.key,
-      required String title,
-      required Map<dynamic, dynamic> leagueData})
+  const LeagueWidget({super.key, required String title, required Map<dynamic, dynamic> leagueData})
       : _leagueData = leagueData,
         _title = title;
 
@@ -73,8 +70,7 @@ class LeagueWidget extends StatelessWidget {
         setTextLeagueBlock(coordinate: "10", text: teams["0"]!);
         setTextLeagueBlock(coordinate: "20", text: teams["1"]!);
       } else {
-        setTextLeagueBlock(
-            coordinate: "${int.parse(gameIdNumber) + 1}0", text: teams["1"]!);
+        setTextLeagueBlock(coordinate: "${int.parse(gameIdNumber) + 1}0", text: teams["1"]!);
       }
     }
 
@@ -167,20 +163,11 @@ class LeagueWidget extends StatelessWidget {
 
       //リーグのチームを設定
       if (leagueData.length == 6) {
-        doSetLeagueTeam = (gameIdNumber == "01" ||
-            gameIdNumber == "02" ||
-            gameIdNumber == "03");
+        doSetLeagueTeam = (gameIdNumber == "01" || gameIdNumber == "02" || gameIdNumber == "03");
       } else if (leagueData.length == 10) {
-        doSetLeagueTeam = (gameIdNumber == "01" ||
-            gameIdNumber == "02" ||
-            gameIdNumber == "03" ||
-            gameIdNumber == "04");
+        doSetLeagueTeam = (gameIdNumber == "01" || gameIdNumber == "02" || gameIdNumber == "03" || gameIdNumber == "04");
       } else if (leagueData.length == 15) {
-        doSetLeagueTeam = (gameIdNumber == "01" ||
-            gameIdNumber == "02" ||
-            gameIdNumber == "03" ||
-            gameIdNumber == "04" ||
-            gameIdNumber == "05");
+        doSetLeagueTeam = (gameIdNumber == "01" || gameIdNumber == "02" || gameIdNumber == "03" || gameIdNumber == "04" || gameIdNumber == "05");
       }
       if (doSetLeagueTeam) {
         setLeagueTeams(gameIdNumber: gameIdNumber, teams: gameData["team"]);
@@ -188,8 +175,7 @@ class LeagueWidget extends StatelessWidget {
 
       //試合状況ごとにテキスト設定
       if (gameData["gameStatus"] == "before") {
-        textOfBlock =
-            "${gameData["startTime"]["date"]}日目\n${gameData["startTime"]["hour"]}:${gameData["startTime"]["minute"]}〜";
+        textOfBlock = "${gameData["startTime"]["date"]}日目\n${gameData["startTime"]["hour"]}:${gameData["startTime"]["minute"]}〜";
       } else if (gameData["gameStatus"] == "now") {
         textOfBlock = "試合中";
         textColorOfBlock = Colors.deepPurpleAccent.shade700;
@@ -395,7 +381,7 @@ class LeagueWidget extends StatelessWidget {
         teamPointDifference[gameData["team"]["1"]] = 0;
       }
       //バレーの場合
-      if (gameData["gameId"][1] == "m") {
+      if (gameData["sport"] == "volleyball") {
         if (teamSetDifference[gameData["team"]["0"]] == null) {
           teamSetDifference[gameData["team"]["0"]] = 0;
         }
@@ -410,15 +396,11 @@ class LeagueWidget extends StatelessWidget {
         teamPointAll[gameData["team"]["1"]] = 0;
       }
 
-      final int team1score = (gameData["scoreDetail"]["0"][0] +
-          gameData["scoreDetail"]["1"][0] +
-          gameData["scoreDetail"]["2"][0]);
-      final int team2score = (gameData["scoreDetail"]["0"][1] +
-          gameData["scoreDetail"]["1"][1] +
-          gameData["scoreDetail"]["2"][1]);
+      final int team1score = (gameData["scoreDetail"]["0"][0] + gameData["scoreDetail"]["1"][0] + gameData["scoreDetail"]["2"][0]);
+      final int team2score = (gameData["scoreDetail"]["0"][1] + gameData["scoreDetail"]["1"][1] + gameData["scoreDetail"]["2"][1]);
 
       //バレーの場合
-      if (gameData["gameId"][1] == "m") {
+      if (gameData["sport"] == "volleyball") {
         final int team1set = gameData["score"][0];
         final int team2set = gameData["score"][1];
         teamSetDifference[gameData["team"]["0"]] += (team1set - team2set);
@@ -442,7 +424,7 @@ class LeagueWidget extends StatelessWidget {
       //勝ち点が同じ場合
       if (compare == 0) {
         //バレーの場合
-        if (leagueData.values.first["gameId"][1] == "m") {
+        if (leagueData.values.first["sport"] == "volleyball") {
           if (teamSetDifference[teamA] > teamSetDifference[teamB]) {
             return -1;
           } else if (teamSetDifference[teamA] < teamSetDifference[teamB]) {
@@ -450,8 +432,7 @@ class LeagueWidget extends StatelessWidget {
           } else {
             if (teamPointDifference[teamA] > teamPointDifference[teamB]) {
               return -1;
-            } else if (teamPointDifference[teamA] <
-                teamPointDifference[teamB]) {
+            } else if (teamPointDifference[teamA] < teamPointDifference[teamB]) {
               return 1;
             } else {
               return 1;

@@ -42,13 +42,16 @@ class _DashboardState extends State<DashboardWidget> {
       localPlace = await LocalData.readLocalData<String>("staffPlace");
     }
 
-    var globalData = await FirebaseFirestore.instance.collection("StaffDashboard").doc(staffPlace).get();
+    var globalData = await FirebaseFirestore.instance
+        .collection("StaffDashboard")
+        .doc(staffPlace)
+        .get();
     int currentStaffs = globalData.get("staffs");
 
     if (staffPlace == "本部") {
-      if (currentStaffs > 8) {
+      if (currentStaffs >= 10) {
         signColor = Colors.green;
-      } else if (currentStaffs > 5) {
+      } else if (currentStaffs >= 8) {
         signColor = Colors.yellow;
       } else {
         signColor = Colors.red;
@@ -72,7 +75,8 @@ class _DashboardState extends State<DashboardWidget> {
         return AlertDialog(
           insetPadding: const EdgeInsets.all(10),
           title: const Text("確認"),
-          content: SizedBox(height: 50, width: 200, child: Text("$staffPlace　のスタッフを担当します")),
+          content: SizedBox(
+              height: 50, width: 200, child: Text("$staffPlace　のスタッフを担当します")),
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             if (!dialogIsLoading)
@@ -80,7 +84,8 @@ class _DashboardState extends State<DashboardWidget> {
                 width: 140,
                 height: 40,
                 child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
+                  style:
+                      OutlinedButton.styleFrom(foregroundColor: Colors.black),
                   onPressed: () => Navigator.pop(context),
                   child: const Text("キャンセル"),
                 ),
@@ -99,11 +104,18 @@ class _DashboardState extends State<DashboardWidget> {
                     ),
                     child: const Text("確認"),
                     onPressed: () async {
-                      await LocalData.saveLocalData<String>("staffPlace", staffPlace);
+                      await LocalData.saveLocalData<String>(
+                          "staffPlace", staffPlace);
 
-                      var d = await FirebaseFirestore.instance.collection("StaffDashboard").doc(staffPlace).get();
+                      var d = await FirebaseFirestore.instance
+                          .collection("StaffDashboard")
+                          .doc(staffPlace)
+                          .get();
                       var data = {"staffs": d.get("staffs") + 1};
-                      await FirebaseFirestore.instance.collection('StaffDashboard').doc(staffPlace).set(data, SetOptions(merge: true));
+                      await FirebaseFirestore.instance
+                          .collection('StaffDashboard')
+                          .doc(staffPlace)
+                          .set(data, SetOptions(merge: true));
 
                       if (!mounted) return;
                       Navigator.pop(context);
@@ -114,7 +126,9 @@ class _DashboardState extends State<DashboardWidget> {
                           builder: (_) {
                             return _dialogOut(staffPlace: staffPlace);
                           });
-                      Navigator.of(context).pushNamed(MyPlaceGameScreen.routeName, arguments: staffPlace);
+                      Navigator.of(context).pushNamed(
+                          MyPlaceGameScreen.routeName,
+                          arguments: staffPlace);
                     }),
               )
           ],
@@ -132,7 +146,8 @@ class _DashboardState extends State<DashboardWidget> {
             child: AlertDialog(
               insetPadding: const EdgeInsets.all(10),
               title: const Text("確認"),
-              content: SizedBox(height: 50, width: 200, child: Text("$staffPlace　の担当を外れます")),
+              content: SizedBox(
+                  height: 50, width: 200, child: Text("$staffPlace　の担当を外れます")),
               actionsAlignment: MainAxisAlignment.center,
               actions: <Widget>[
                 if (!dialogIsLoading)
@@ -140,9 +155,12 @@ class _DashboardState extends State<DashboardWidget> {
                     width: 140,
                     height: 40,
                     child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
+                      style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.black),
                       onPressed: () {
-                        Navigator.of(context).pushNamed(MyPlaceGameScreen.routeName, arguments: staffPlace);
+                        Navigator.of(context).pushNamed(
+                            MyPlaceGameScreen.routeName,
+                            arguments: staffPlace);
                       },
                       child: const Text("キャンセル"),
                     ),
@@ -153,7 +171,8 @@ class _DashboardState extends State<DashboardWidget> {
                     height: 40,
                     child: FilledButton(
                         style: ButtonStyle(
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -162,13 +181,20 @@ class _DashboardState extends State<DashboardWidget> {
                         child: const Text("確認"),
                         onPressed: () async {
                           LocalData.saveLocalData<String>("staffPlace", "None");
-                          var d = await FirebaseFirestore.instance.collection("StaffDashboard").doc(staffPlace).get();
+                          var d = await FirebaseFirestore.instance
+                              .collection("StaffDashboard")
+                              .doc(staffPlace)
+                              .get();
                           var data = {"staffs": d.get("staffs") - 1};
                           if (d.get("staffs") >= 1) {
-                            await FirebaseFirestore.instance.collection('StaffDashboard').doc(staffPlace).set(data, SetOptions(merge: true));
+                            await FirebaseFirestore.instance
+                                .collection('StaffDashboard')
+                                .doc(staffPlace)
+                                .set(data, SetOptions(merge: true));
                           }
                           if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
                             content: Text('担当を外れました'),
                           ));
                           Navigator.pop(context);
@@ -208,7 +234,9 @@ class _DashboardState extends State<DashboardWidget> {
                   }
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: signColor),
-                child: Text((staffPlace == localPlace) ? "$staffPlace(担当中)" : staffPlace),
+                child: Text((staffPlace == localPlace)
+                    ? "$staffPlace(担当中)"
+                    : staffPlace),
               ));
     }
   }

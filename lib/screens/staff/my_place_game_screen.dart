@@ -25,14 +25,17 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
   //final TextEditingController _targetPlaceController = TextEditingController();
 
   Future _loadData() async {
-    //print(_isInit.toString() + _targetPlace.toString());
     if ((_isInit && _targetPlace != null)) {
       setState(() {
         _isLoading = true;
       });
       _gameDataList = [];
-      //print("loading");
-      await FirebaseFirestore.instance.collection('gameData').where('place', isEqualTo: _targetPlace).where("gameStatus", isNotEqualTo: "after").get().then((QuerySnapshot querySnapshot) {
+      await FirebaseFirestore.instance
+          .collection('gameData2')
+          .where('place', isEqualTo: _targetPlace)
+          .where("gameStatus", isNotEqualTo: "after")
+          .get()
+          .then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
           _gameDataList.add(doc.data() as Map);
         }
@@ -121,8 +124,10 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
       ];
     }
 
-    day1sortedMyGameData.sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
-    day2sortedMyGameData.sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
+    day1sortedMyGameData
+        .sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
+    day2sortedMyGameData
+        .sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
 
     myGameListWidget.add(
       Container(
@@ -157,9 +162,10 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isInit) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('担当を開始しました'),
-          )));
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('担当を開始しました'),
+              )));
     }
     _targetPlace = ModalRoute.of(context)!.settings.arguments as String;
     _loadData();
@@ -197,36 +203,9 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Scrollbar(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          children: _targetPlace == null
-                              ? [
-                                  const SizedBox(height: 50),
-                                  FittedBox(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                                      child: Text(
-                                        "審判は自分が担当の試合を\n確認できます。\n\nHR番号を入力してください。",
-                                        style: TextStyle(
-                                          color: Colors.brown.shade900,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ]
-                              : _myGameListWidget(
-                                  gameDataList: _gameDataList,
-                                ),
-                        ),
-                      ),
-                    ),
-                  ),
+                Expanded(
+                  child: ListView(
+                      children: _myGameListWidget(gameDataList: _gameDataList)),
                 ),
               ],
             ),

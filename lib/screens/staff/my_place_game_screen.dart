@@ -30,12 +30,7 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
         _isLoading = true;
       });
       _gameDataList = [];
-      await FirebaseFirestore.instance
-          .collection('gameData2')
-          .where('place', isEqualTo: _targetPlace)
-          .where("gameStatus", isNotEqualTo: "after")
-          .get()
-          .then((QuerySnapshot querySnapshot) {
+      await FirebaseFirestore.instance.collection('gameData2').where('place', isEqualTo: _targetPlace).where("gameStatus", isNotEqualTo: "after").get().then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
           _gameDataList.add(doc.data() as Map);
         }
@@ -124,10 +119,8 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
       ];
     }
 
-    day1sortedMyGameData
-        .sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
-    day2sortedMyGameData
-        .sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
+    day1sortedMyGameData.sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
+    day2sortedMyGameData.sort((a, b) => a['createdAt'].compareTo(b['createdAt']));
 
     myGameListWidget.add(
       Container(
@@ -162,10 +155,9 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isInit) {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('担当を開始しました'),
-              )));
+      WidgetsBinding.instance.addPostFrameCallback((_) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('担当を開始しました'),
+          )));
     }
     _targetPlace = ModalRoute.of(context)!.settings.arguments as String;
     _loadData();
@@ -204,8 +196,7 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
                   ),
                 ),
                 Expanded(
-                  child: ListView(
-                      children: _myGameListWidget(gameDataList: _gameDataList)),
+                  child: ListView(children: _myGameListWidget(gameDataList: _gameDataList)),
                 ),
               ],
             ),

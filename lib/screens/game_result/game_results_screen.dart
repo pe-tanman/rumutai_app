@@ -27,8 +27,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
       setState(() {
         _isLoading = true;
       });
-      await Provider.of<GameData>(context, listen: false)
-          .loadGameDataForResult(categoryToGet: categoryToGet);
+      await Provider.of<GameData>(context, listen: false).loadGameDataForResult(categoryToGet: categoryToGet);
       setState(() {
         _isLoading = false;
       });
@@ -66,8 +65,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
     _loadData(categoryToGet as CategoryToGet);
 
     if (!_isLoading) {
-      _gameDataAll = Provider.of<GameData>(context)
-          .getGameDataForResult(categoryToGet: categoryToGet) as Map;
+      _gameDataAll = Provider.of<GameData>(context).getGameDataForResult(categoryToGet: categoryToGet) as Map;
     }
     return DefaultTabController(
       length: 2,
@@ -98,11 +96,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                 ),
                                 const SizedBox(
                                   child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 10,
-                                        right: 10,
-                                        top: 15,
-                                        bottom: 5),
+                                    padding: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 5),
                                     child: Divider(),
                                   ),
                                 ),
@@ -127,14 +121,12 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                 title: "決勝",
                                 tournamentData: _gameDataAll["f"],
                               ),
-                              if (categoryToGet == CategoryToGet.d2 ||
-                                  categoryToGet == CategoryToGet.d3)
+                              if (categoryToGet == CategoryToGet.d2 || categoryToGet == CategoryToGet.d3)
                                 Column(
                                   children: [
                                     const SizedBox(
                                       child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
+                                        padding: EdgeInsets.symmetric(horizontal: 10),
                                         child: Divider(),
                                       ),
                                     ),

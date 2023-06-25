@@ -660,7 +660,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                   const SizedBox(height: 30),
                   if (_gameData["gameStatus"] == "now") _scoreInputWidget(),
                   const SizedBox(height: 30),
-                  if (_gameData["gameStatus"] == "now" && !gameDataId.contains("m") && (gameDataId.contains("f") || gameDataId.contains("l")))
+                  if (_gameData["gameStatus"] == "now" && _gameData["sport"] != "volleyball" && (gameDataId.contains("f") || gameDataId.contains("l")))
                     _extraTimeInputWidget(
                       team1: _gameData["team"]["0"],
                       team2: _gameData["team"]["1"],

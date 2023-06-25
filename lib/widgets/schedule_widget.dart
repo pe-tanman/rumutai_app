@@ -150,6 +150,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                                   LocalNotification.registerLocNotification(
                                     place: widget.gameData["place"],
                                     gameId: widget.gameData["gameId"],
+                                    sport: widget.gameData["sport"],
                                     day: widget.gameData["startTime"]["date"],
                                     hour: widget.gameData["startTime"]["hour"],
                                     minute: widget.gameData["startTime"]["minute"],

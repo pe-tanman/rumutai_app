@@ -16,21 +16,25 @@ class MapScreen extends StatelessWidget {
     late double xTranslate;
     late double yTranslate;
     if (place.contains("運動場")) {
-      zoomFactor = 2.3;
-      xTranslate = 395.0;
-      yTranslate = 540.0;
-    } else if (place.contains("鯱光館")) {
-      zoomFactor = 2.4;
-      xTranslate = 380.0;
+      zoomFactor = 1.5;
+      xTranslate = 150.0;
       yTranslate = 300.0;
+    } else if (place.contains("鯱光館")) {
+      zoomFactor = 1.3;
+      xTranslate = 100.0;
+      yTranslate = 0.0;
     } else if (place.contains("外バレ")) {
-      zoomFactor = 3.0;
-      xTranslate = 450.0;
-      yTranslate = 380.0;
-    } else if (place.contains("小体育館")) {
-      zoomFactor = 3.0;
+      zoomFactor = 1.5;
       xTranslate = 0.0;
-      yTranslate = 700.0;
+      yTranslate = 0.0;
+    } else if (place.contains("小体育館")) {
+      zoomFactor = 1.5;
+      xTranslate = 0.0;
+      yTranslate = 100.0;
+    } else if (place.contains("ハンドボールコート")) {
+      zoomFactor = 1.5;
+      xTranslate = 0.0;
+      yTranslate = 300.0;
     } else {
       return;
     }

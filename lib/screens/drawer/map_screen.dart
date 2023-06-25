@@ -48,18 +48,21 @@ class MapScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("マップ")),
-      body: Scrollbar(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: InteractiveViewer(
-                transformationController: _viewTransformationController,
-                maxScale: 5,
+      body: InteractiveViewer(
+        transformationController: _viewTransformationController,
+        maxScale: 5,
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
                 child: Image.asset("assets/images/map.png"),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

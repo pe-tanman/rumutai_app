@@ -145,7 +145,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                               setState(() {
                                 _notify = !_notify;
                                 if (_notify) {
-                                  print("startTime:" + widget.gameData["startTime"]["date"] + widget.gameData["startTime"]["hour"] + widget.gameData["startTime"]["minute"]);
+                                  /*print("startTime:" + widget.gameData["startTime"]["date"] + widget.gameData["startTime"]["hour"] + widget.gameData["startTime"]["minute"]);*/
                                   //通知予約
                                   LocalNotification.registerLocNotification(
                                     place: widget.gameData["place"],

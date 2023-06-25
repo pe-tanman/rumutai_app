@@ -22,7 +22,7 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
 
   String? _targetPlace;
 
-  final TextEditingController _targetPlaceController = TextEditingController();
+  //final TextEditingController _targetPlaceController = TextEditingController();
 
   Future _loadData() async {
     //print(_isInit.toString() + _targetPlace.toString());

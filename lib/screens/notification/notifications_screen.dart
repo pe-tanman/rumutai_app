@@ -38,8 +38,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     setState(() {
       _isLoading = true;
     });
-    var gotData =
-        await FirebaseFirestore.instance.collection("notification").get();
+    var gotData = await FirebaseFirestore.instance.collection("notification").get();
     for (var data in gotData.docs) {
       final d = data.data();
       final String id = data.id;
@@ -64,10 +63,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return SizedBox(
       width: double.infinity,
       child: InkWell(
-        onTap: () => Navigator.of(context).pushNamed(
-            NotificationsDetailScreen.routeName,
-            arguments:
-                NotificationDataToPass(data: notificationData, index: index)),
+        onTap: () => Navigator.of(context).pushNamed(NotificationsDetailScreen.routeName, arguments: NotificationDataToPass(data: notificationData, index: index)),
         child: Hero(
           tag: "notification-tag$index",
           child: Card(
@@ -95,15 +91,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         ),
                       ),
                       Text(
-                        DateFormat('yyyy/MM/dd HH:mm')
-                            .format(notificationData["timeStamp"]),
-                        style:
-                            const TextStyle(color: Colors.grey, fontSize: 14),
+                        DateFormat('yyyy/MM/dd HH:mm').format(notificationData["timeStamp"]),
+                        style: const TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ],
                   ),
-                  if (isLoggedInAdmin == true)
-                    const Expanded(child: SizedBox()),
+                  if (isLoggedInAdmin == true) const Expanded(child: SizedBox()),
                   if (isLoggedInAdmin == true)
                     IconButton(
                       onPressed: () => showDialog(
@@ -144,16 +137,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       Expanded(
                         child: Scrollbar(
                           child: SingleChildScrollView(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    notificationData["title"],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  Text(notificationData["content"]),
-                                ]),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text(
+                                notificationData["title"],
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              Text(notificationData["content"]),
+                            ]),
                           ),
                         ),
                       ),
@@ -171,8 +161,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 width: 140,
                 height: 40,
                 child: OutlinedButton(
-                  style:
-                      OutlinedButton.styleFrom(foregroundColor: Colors.black),
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
                   onPressed: () => Navigator.pop(context),
                   child: const Text("キャンセル"),
                 ),
@@ -194,10 +183,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     setStateInDialog(() {
                       dialogIsLoading = true;
                     });
-                    await FirebaseFirestore.instance
-                        .collection("notification")
-                        .doc(notificationData["id"])
-                        .delete();
+                    await FirebaseFirestore.instance.collection("notification").doc(notificationData["id"]).delete();
                     dialogIsLoading = false;
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -220,8 +206,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool? isLoggedInAdmin =
-        Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
+    final bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
 
     if (_isInit) {
       _loadData();
@@ -232,15 +217,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount:
-                  (_notifications.isEmpty) ? 0 : _notifications.length + 1,
+              itemCount: (_notifications.isEmpty) ? 0 : _notifications.length + 1,
               itemBuilder: ((context, index) {
                 index -= 1;
                 if (index == -1) {
                   return Container(
                     width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                     child: Text(
                       "※タップで内容を確認できます。",
                       textAlign: TextAlign.start,

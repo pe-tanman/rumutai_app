@@ -4,11 +4,11 @@ import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import '/providers/local_data.dart';
 
 class DashboardWidget extends StatefulWidget {
-  String staffPlace;
-  double x;
-  double y;
+  final String staffPlace;
+  final double x;
+  final double y;
 
-  DashboardWidget(this.staffPlace, this.x, this.y);
+  const DashboardWidget(this.staffPlace, this.x, this.y, {super.key});
 
   @override
   State<DashboardWidget> createState() => _DashboardState();
@@ -25,13 +25,14 @@ class _DashboardState extends State<DashboardWidget> {
 
   @override
   void initState() {
+    super.initState();
     staffPlace = widget.staffPlace;
     x = widget.x;
     y = widget.y;
-    LoadPlaceAndColor();
+    loadPlaceAndColor();
   }
 
-  Future<void> LoadPlaceAndColor() async {
+  Future<void> loadPlaceAndColor() async {
     setState(() {
       isloading = true;
     });
@@ -41,10 +42,7 @@ class _DashboardState extends State<DashboardWidget> {
       localPlace = await LocalData.readLocalData<String>("staffPlace");
     }
 
-    var globalData = await FirebaseFirestore.instance
-        .collection("StaffDashboard")
-        .doc(staffPlace)
-        .get();
+    var globalData = await FirebaseFirestore.instance.collection("StaffDashboard").doc(staffPlace).get();
     int currentStaffs = globalData.get("staffs");
 
     if (staffPlace == "本部") {
@@ -74,8 +72,7 @@ class _DashboardState extends State<DashboardWidget> {
         return AlertDialog(
           insetPadding: const EdgeInsets.all(10),
           title: const Text("確認"),
-          content: SizedBox(
-              height: 50, width: 200, child: Text("$staffPlace　のスタッフを担当します")),
+          content: SizedBox(height: 50, width: 200, child: Text("$staffPlace　のスタッフを担当します")),
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             if (!dialogIsLoading)
@@ -83,8 +80,7 @@ class _DashboardState extends State<DashboardWidget> {
                 width: 140,
                 height: 40,
                 child: OutlinedButton(
-                  style:
-                      OutlinedButton.styleFrom(foregroundColor: Colors.black),
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
                   onPressed: () => Navigator.pop(context),
                   child: const Text("キャンセル"),
                 ),
@@ -103,19 +99,13 @@ class _DashboardState extends State<DashboardWidget> {
                     ),
                     child: const Text("確認"),
                     onPressed: () async {
-                      await LocalData.saveLocalData<String>(
-                          "staffPlace", staffPlace);
+                      await LocalData.saveLocalData<String>("staffPlace", staffPlace);
 
-                      var d = await FirebaseFirestore.instance
-                          .collection("StaffDashboard")
-                          .doc(staffPlace)
-                          .get();
+                      var d = await FirebaseFirestore.instance.collection("StaffDashboard").doc(staffPlace).get();
                       var data = {"staffs": d.get("staffs") + 1};
-                      await FirebaseFirestore.instance
-                          .collection('StaffDashboard')
-                          .doc(staffPlace)
-                          .set(data, SetOptions(merge: true));
+                      await FirebaseFirestore.instance.collection('StaffDashboard').doc(staffPlace).set(data, SetOptions(merge: true));
 
+                      if (!mounted) return;
                       Navigator.pop(context);
 
                       showDialog(
@@ -124,9 +114,7 @@ class _DashboardState extends State<DashboardWidget> {
                           builder: (_) {
                             return _dialogOut(staffPlace: staffPlace);
                           });
-                      Navigator.of(context).pushNamed(
-                          MyPlaceGameScreen.routeName,
-                          arguments: staffPlace);
+                      Navigator.of(context).pushNamed(MyPlaceGameScreen.routeName, arguments: staffPlace);
                     }),
               )
           ],
@@ -144,8 +132,7 @@ class _DashboardState extends State<DashboardWidget> {
             child: AlertDialog(
               insetPadding: const EdgeInsets.all(10),
               title: const Text("確認"),
-              content: SizedBox(
-                  height: 50, width: 200, child: Text("$staffPlace　の担当を外れます")),
+              content: SizedBox(height: 50, width: 200, child: Text("$staffPlace　の担当を外れます")),
               actionsAlignment: MainAxisAlignment.center,
               actions: <Widget>[
                 if (!dialogIsLoading)
@@ -153,12 +140,9 @@ class _DashboardState extends State<DashboardWidget> {
                     width: 140,
                     height: 40,
                     child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.black),
+                      style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
                       onPressed: () {
-                        Navigator.of(context).pushNamed(
-                            MyPlaceGameScreen.routeName,
-                            arguments: staffPlace);
+                        Navigator.of(context).pushNamed(MyPlaceGameScreen.routeName, arguments: staffPlace);
                       },
                       child: const Text("キャンセル"),
                     ),
@@ -169,8 +153,7 @@ class _DashboardState extends State<DashboardWidget> {
                     height: 40,
                     child: FilledButton(
                         style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -179,19 +162,13 @@ class _DashboardState extends State<DashboardWidget> {
                         child: const Text("確認"),
                         onPressed: () async {
                           LocalData.saveLocalData<String>("staffPlace", "None");
-                          var d = await FirebaseFirestore.instance
-                              .collection("StaffDashboard")
-                              .doc(staffPlace)
-                              .get();
+                          var d = await FirebaseFirestore.instance.collection("StaffDashboard").doc(staffPlace).get();
                           var data = {"staffs": d.get("staffs") - 1};
                           if (d.get("staffs") >= 1) {
-                            await FirebaseFirestore.instance
-                                .collection('StaffDashboard')
-                                .doc(staffPlace)
-                                .set(data, SetOptions(merge: true));
+                            await FirebaseFirestore.instance.collection('StaffDashboard').doc(staffPlace).set(data, SetOptions(merge: true));
                           }
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text('担当を外れました'),
                           ));
                           Navigator.pop(context);
@@ -230,10 +207,8 @@ class _DashboardState extends State<DashboardWidget> {
                     null;
                   }
                 },
-                child: Text((staffPlace == localPlace)
-                    ? "$staffPlace(担当中)"
-                    : staffPlace),
                 style: ElevatedButton.styleFrom(backgroundColor: signColor),
+                child: Text((staffPlace == localPlace) ? "$staffPlace(担当中)" : staffPlace),
               ));
     }
   }

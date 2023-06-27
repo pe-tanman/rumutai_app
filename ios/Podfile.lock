@@ -846,6 +846,6 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+PODFILE CHECKSUM: 8bd16479139fc90c6cfb7407d156bd88e30f2de3
 
 COCOAPODS: 1.11.3

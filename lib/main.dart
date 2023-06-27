@@ -40,6 +40,9 @@ import 'screens/cheer/cheer_screen.dart';
 import 'screens/omikuji/pick_omikuji_screen.dart';
 import 'screens/omikuji/draw_omikuji_screen.dart';
 import 'screens/omikuji/make_omikuji_screen.dart';
+import 'screens/award/pick_award_screen.dart';
+import 'screens/award/game_award_screen.dart';
+import 'screens/award/cheer_award_screen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -151,7 +154,9 @@ class MyApp extends StatelessWidget {
           DashboardScreen.routeName: (ctx) => const DashboardScreen(),
           MyPlaceGameScreen.routeName: (ctx) => const MyPlaceGameScreen(),
           PublishDriveScreen.routeName: (ctx) => const PublishDriveScreen(),
-          //PredictScreen.routeName: (ctx) => const PredictScreen(),
+          PickAwardScreen.routeName: (ctx) => const PickAwardScreen(),
+          GameAwardScreen.routeName: (ctx) => const GameAwardScreen(),
+          CheerAwardScreen.routeName: (ctz) => const CheerAwardScreen(),
         },
       ),
     );

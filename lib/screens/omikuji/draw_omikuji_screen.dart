@@ -72,7 +72,7 @@ class _DrawOmikujiScreenState extends State<DrawOmikujiScreen> {
         child: SingleChildScrollView(
           child: Column(children: [
             Text(
-              omikujiData["fortune"],
+              omikujiData["map"]["fortune"],
               style: const TextStyle(
                 fontFamily: "YujiSyuku",
                 fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class _DrawOmikujiScreenState extends State<DrawOmikujiScreen> {
                 const SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    omikujiData["oneWord"],
+                    omikujiData["map"]["oneWord"],
                     style: const TextStyle(
                       fontFamily: "YujiSyuku",
                       fontSize: 18,
@@ -101,17 +101,35 @@ class _DrawOmikujiScreenState extends State<DrawOmikujiScreen> {
               primary: false,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: omikujiData["content"].length,
+              itemCount: omikujiData["map"]["content"].length,
               itemBuilder: (context, index) {
                 return _textForOmikuji(
-                  title: omikujiData["content"][index]["title"],
-                  content: omikujiData["content"][index]["content"],
+                  title: omikujiData["map"]["content"][index]["title"],
+                  content: omikujiData["map"]["content"][index]["content"],
                 );
               },
             ),
           ]),
         ),
       ),
+      /* actionsAlignment: MainAxisAlignment.start,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5, left: 15),
+          child: IconButton(
+            onPressed: () {},
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: const Icon(Icons.favorite_outline),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: StatefulBuilder(builder: (BuildContext context, StateSetter setStateInDialog) {
+            return Text(omikujiData["id"]);
+          }),
+        ),
+      ],*/
     );
   }
 
@@ -120,14 +138,10 @@ class _DrawOmikujiScreenState extends State<DrawOmikujiScreen> {
       setState(() {
         _isLoading = true;
       });
-      await FirebaseFirestore.instance
-          .collection("omikujiDataToRead")
-          .doc("omikujiDataToReadDoc")
-          .get()
-          .then((DocumentSnapshot doc) {
+      await FirebaseFirestore.instance.collection("omikujiDataToRead").doc("omikujiDataToReadDoc").get().then((DocumentSnapshot doc) {
         final Map gotMap = doc.data() as Map;
         gotMap.forEach((id, map) {
-          _omikujiDataList.add(map);
+          _omikujiDataList.add({"map": map, "id": id});
         });
       });
 

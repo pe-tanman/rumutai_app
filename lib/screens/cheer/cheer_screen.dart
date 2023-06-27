@@ -25,8 +25,7 @@ class CheerScreen extends StatefulWidget {
   State<CheerScreen> createState() => _CheerScreenState();
 }
 
-class _CheerScreenState extends State<CheerScreen>
-    with TickerProviderStateMixin {
+class _CheerScreenState extends State<CheerScreen> with TickerProviderStateMixin {
   late DatabaseReference _cheerDatabase;
   late StreamSubscription _streamSubscription;
   bool _isInit = true;
@@ -63,14 +62,12 @@ class _CheerScreenState extends State<CheerScreen>
   @override
   Widget build(BuildContext context) {
     if (_isInit) {
-      final DataToPassCheer gotData =
-          ModalRoute.of(context)!.settings.arguments as DataToPassCheer;
+      final DataToPassCheer gotData = ModalRoute.of(context)!.settings.arguments as DataToPassCheer;
       _backgroundColor = gotData.backgroundColor;
       _classStr = gotData.classStr;
       _cheerPoint = gotData.currentCheerPoint;
       _cheerDatabase = FirebaseDatabase.instance.ref("cheer");
-      _streamSubscription =
-          _cheerDatabase.child(_classStr).onValue.listen(_onCheerPointChanged);
+      _streamSubscription = _cheerDatabase.child(_classStr).onValue.listen(_onCheerPointChanged);
       _isInit = false;
     }
 

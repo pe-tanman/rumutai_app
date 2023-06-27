@@ -58,11 +58,19 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
       } else {
         return classNumber;
       }
-    } else if (classNumber == "209") {
-      if (team.containsValue("209a")) {
-        return "209a";
-      } else if (team.containsValue("209b")) {
-        return "209b";
+    } else if (classNumber == "210") {
+      if (team.containsValue("210a")) {
+        return "210a";
+      } else if (team.containsValue("210b")) {
+        return "210b";
+      } else {
+        return classNumber;
+      }
+    } else if (classNumber == "309") {
+      if (team.containsValue("309a")) {
+        return "309a";
+      } else if (team.containsValue("309b")) {
+        return "309b";
       } else {
         return classNumber;
       }

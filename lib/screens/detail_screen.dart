@@ -194,7 +194,7 @@ class _DetailScreenState extends State<DetailScreen> {
     } else if (sport == "dodgebee") {
       return "ドッチビー";
     } else if (sport == "dodgeball") {
-      return "ドッチビー";
+      return "ドッジボール";
     }
     return "";
   }

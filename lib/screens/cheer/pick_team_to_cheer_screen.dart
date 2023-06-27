@@ -224,14 +224,12 @@ class _PickTeamToCheerScreenState extends State<PickTeamToCheerScreen> {
                 ),
                 GridView.count(
                   primary: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   crossAxisCount: 3,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: <Widget>[
-                    _coloredCardWithText(
-                        text: "1年", color: Colors.brown.shade100),
+                    _coloredCardWithText(text: "1年", color: Colors.brown.shade100),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "101",
@@ -301,14 +299,12 @@ class _PickTeamToCheerScreenState extends State<PickTeamToCheerScreen> {
                 ),
                 GridView.count(
                   primary: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   crossAxisCount: 3,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: <Widget>[
-                    _coloredCardWithText(
-                        text: "2年", color: Colors.brown.shade300),
+                    _coloredCardWithText(text: "2年", color: Colors.brown.shade300),
                     _teamToCheerWidget(
                       context: context,
                       classStr: "201",
@@ -378,14 +374,12 @@ class _PickTeamToCheerScreenState extends State<PickTeamToCheerScreen> {
                 ),
                 GridView.count(
                   primary: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   crossAxisCount: 3,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: <Widget>[
-                    _coloredCardWithText(
-                        text: "3年", color: Colors.brown.shade100),
+                    _coloredCardWithText(text: "3年", color: Colors.brown.shade100),
                     _coloredCard(color: Colors.brown.shade200),
                     _coloredCard(color: Colors.brown.shade300),
                     _teamToCheerWidget(

@@ -15,6 +15,7 @@ import '../providers/local_data.dart';
 import 'rule_book_screen.dart';
 import 'cheer/pick_team_to_cheer_screen.dart';
 import 'omikuji/pick_omikuji_screen.dart';
+import 'award/pick_award_screen.dart';
 
 import '../utilities/local_notification.dart';
 import '../widgets/main_drawer.dart';
@@ -359,6 +360,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () => Navigator.of(context).pushNamed(PickTeamToCheerScreen.routeName),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 15),
+                  _subButton(
+                    text: "表彰",
+                    icon: FontAwesomeIcons.medal,
+                    iconSize: 18,
+                    width: buttonWidth,
+                    onPressed: () => Navigator.of(context).pushNamed(PickAwardScreen.routeName),
                   ),
                   if (isLoggedInStaff == true)
                     Column(

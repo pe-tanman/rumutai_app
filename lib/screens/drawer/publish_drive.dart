@@ -21,8 +21,7 @@ class _PublishDriveScreenState extends State<PublishDriveScreen> {
       body: Stack(
         children: [
           WebView(
-            initialUrl:
-                'https://drive.google.com/drive/folders/1MYYOBIsuRONhF1pvj7c7_XN2aqyBqztT?usp=drive_link',
+            initialUrl: 'https://drive.google.com/drive/folders/1MYYOBIsuRONhF1pvj7c7_XN2aqyBqztT?usp=drive_link',
             javascriptMode: JavascriptMode.unrestricted,
             onPageFinished: (String utl) {
               setState(() {

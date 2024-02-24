@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:rumutai_app/screens/drawer/publish_drive.dart';
 import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import 'package:rumutai_app/themes/app_theme.dart';
@@ -11,8 +13,6 @@ import 'package:rumutai_app/screens/staff/timeline_screen.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'themes/app_color.dart';
 
 import 'screens/home_screen.dart';
 
@@ -52,14 +52,18 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
+  await _init();
+  //runApp(const ProviderScope(child: MyApp()));
+  runApp(const MyApp());
+}
+
+Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  runApp(const MyApp());
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {

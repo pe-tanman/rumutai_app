@@ -6,6 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rumutai_app/screens/staff/dashboard_screen.dart';
 
+import '../themes/app_color.dart';
+
 import 'notification/send_notification_screen.dart';
 import 'schedule/pick_schedule_screen.dart';
 import 'my_game_screen.dart';
@@ -100,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  Widget _mainButton({
+  Widget _buildMainButton({
     required String text,
     required IconData icon,
     required double width,
@@ -130,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _subButton({
+  Widget _buildSubButton({
     required String text,
     required IconData icon,
     required double width,
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 2,
           ),
           backgroundColor: Colors.white,
-          foregroundColor: Colors.brown.shade800,
+          foregroundColor: AppColors.themeColor.shade800,
         ),
         label: Text(
           text,
@@ -166,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _subButtonWithChild({
+  Widget _buildSubButtonWithChild({
     required String text,
     required Widget child,
     required double width,
@@ -183,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 2,
           ),
           backgroundColor: Colors.white,
-          foregroundColor: Colors.brown.shade800,
+          foregroundColor: AppColors.themeColor.shade800,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -205,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _tonalButton({
+  Widget _buildTonalButton({
     required String text,
     required IconData icon,
     required double width,
@@ -218,8 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: FilledButton.icon(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
-          backgroundColor: Colors.brown.shade200,
-          foregroundColor: Colors.brown.shade900,
+          backgroundColor: AppColors.themeColor.shade200,
+          foregroundColor: AppColors.themeColor.shade900,
         ),
         label: Text(
           text,
@@ -247,21 +249,21 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 40,
               child: Divider(
                 thickness: 1,
-                color: Colors.brown.shade800,
+                color: AppColors.themeColor.shade800,
               )),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
             child: Text(
               text,
               style: TextStyle(
-                color: Colors.brown.shade800,
+                color: AppColors.themeColor.shade800,
               ),
             ),
           ),
           Expanded(
             child: Divider(
               thickness: 1,
-              color: Colors.brown.shade800,
+              color: AppColors.themeColor.shade800,
             ),
           ),
         ],
@@ -299,46 +301,46 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w600,
-                      color: Colors.brown.shade800,
+                      color: AppColors.themeColor.shade800,
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "2023  6/28〜29",
+                    "2024  3/13〜14",
                     style: TextStyle(
-                      color: Colors.brown.shade800,
+                      color: AppColors.themeColor.shade800,
                     ),
                   ),
                   const SizedBox(height: 40),
-                  _mainButton(
+                  _buildMainButton(
                     text: "試合結果",
                     icon: Icons.scoreboard_outlined,
                     width: buttonWidth,
                     onPressed: () => Navigator.of(context).pushNamed(PickCategoryScreen.routeName),
                   ),
                   const SizedBox(height: 15),
-                  _mainButton(
+                  _buildMainButton(
                     text: "スケジュール",
                     icon: Icons.event_note_outlined,
                     width: buttonWidth,
                     onPressed: () => Navigator.of(context).pushNamed(PickScheduleScreen.routeName),
                   ),
                   const SizedBox(height: 30),
-                  _subButton(
+                  _buildSubButton(
                     text: "るるぶ",
                     icon: Icons.description_outlined,
                     width: buttonWidth,
                     onPressed: () => Navigator.of(context).pushNamed(RuleBookScreen.routeName),
                   ),
                   const SizedBox(height: 15),
-                  _tonalButton(text: "担当の試合", icon: Icons.sports_score, width: buttonWidth, onPressed: () => Navigator.of(context).pushNamed(MyGameScreen.routeName)),
+                  _buildTonalButton(text: "担当の試合", icon: Icons.sports_score, width: buttonWidth, onPressed: () => Navigator.of(context).pushNamed(MyGameScreen.routeName)),
                   const SizedBox(height: 25),
                   _dividerWithText("その他機能"),
                   const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _subButton(
+                      _buildSubButton(
                         text: "おみくじ",
                         icon: FontAwesomeIcons.wandMagic,
                         iconSize: 18,
@@ -346,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () => Navigator.of(context).pushNamed(PickOmikujiScreen.routeName),
                       ),
                       const SizedBox(width: 10),
-                      _subButtonWithChild(
+                      _buildSubButtonWithChild(
                         text: "応援",
                         child: SizedBox(
                           width: 26,
@@ -362,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  _subButton(
+                  _buildSubButton(
                     text: "表彰",
                     icon: FontAwesomeIcons.medal,
                     iconSize: 18,
@@ -375,14 +377,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 25),
                         _dividerWithText("スタッフ機能"),
                         const SizedBox(height: 15),
-                        _tonalButton(
+                        _buildTonalButton(
                           text: "タイムライン",
                           icon: Icons.view_timeline_outlined,
                           width: buttonWidth,
                           onPressed: () => Navigator.of(context).pushNamed(TimelineScreen.routeName),
                         ),
                         const SizedBox(height: 15),
-                        _tonalButton(
+                        _buildTonalButton(
                           text: "人手確認",
                           icon: Icons.map,
                           width: buttonWidth,
@@ -396,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 25),
                         _dividerWithText("管理者機能"),
                         const SizedBox(height: 15),
-                        _tonalButton(
+                        _buildTonalButton(
                           text: "通知を送る",
                           icon: Icons.send_outlined,
                           width: buttonWidth,

@@ -62,7 +62,11 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Widget _scoreDetailPartWidget({required Map gameData, required String index, required String lable, bool isReverse = false}) {
+  Widget _scoreDetailPartWidget(
+      {required Map gameData,
+      required String index,
+      required String lable,
+      bool isReverse = false}) {
     return SizedBox(
       width: 300,
       child: Stack(
@@ -120,7 +124,8 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Widget _scoreDetailWidget({required Map gameData, bool isReverse = false}) {
-    List<String> scoreDetailLableList = LableUtilities.scoreDetailLableList(gameData["sport"]);
+    List<String> scoreDetailLableList =
+        LableUtilities.scoreDetailLableList(gameData["sport"]);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -136,7 +141,8 @@ class _DetailScreenState extends State<DetailScreen> {
           isReverse: isReverse,
           lable: scoreDetailLableList[1],
         ),
-        if (gameData["sport"] == "volleyball" || gameData["sport"] == "basketball")
+        if (gameData["sport"] == "volleyball" ||
+            gameData["sport"] == "basketball")
           _scoreDetailPartWidget(
             gameData: gameData,
             index: "2",
@@ -176,7 +182,8 @@ class _DetailScreenState extends State<DetailScreen> {
       setState(() {
         _isLoading = true;
       });
-      await Provider.of<GameData>(context, listen: false).loadGameDataForResult(categoryToGet: categoryToGet);
+      await Provider.of<GameData>(context, listen: false)
+          .loadGameDataForResult(categoryToGet: categoryToGet);
       setState(() {
         _isLoading = false;
       });
@@ -222,25 +229,38 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    DataToPass gotData = ModalRoute.of(context)!.settings.arguments as DataToPass;
+    DataToPass gotData =
+        ModalRoute.of(context)!.settings.arguments as DataToPass;
 
     Map gameData = {};
     final bool isReverse = gotData.isReverse;
     if (gotData.isMyGame == true) {
-      if ((Provider.of<GameData>(context, listen: false).getGameDataForResult(categoryToGet: _categoryToGet(gotData.gameDataId)!)) == null) {
+      if ((Provider.of<GameData>(context, listen: false).getGameDataForResult(
+              categoryToGet: _categoryToGet(gotData.gameDataId)!)) ==
+          null) {
         _loadData(_categoryToGet(gotData.gameDataId)!);
       } else if (!_isLoading) {
-        gameData = (Provider.of<GameData>(context).getGameDataForResult(categoryToGet: _categoryToGet(gotData.gameDataId)!) as Map)[gotData.gameDataId[3]][gotData.gameDataId];
+        gameData = (Provider.of<GameData>(context).getGameDataForResult(
+                categoryToGet: _categoryToGet(gotData.gameDataId)!)
+            as Map)[gotData.gameDataId[3]][gotData.gameDataId];
       }
     } else if (gotData.classNumber != null) {
-      gameData = (Provider.of<GameData>(context).getGameDataForSchedule(classNumber: gotData.classNumber!) as Map)[gotData.gameDataId[1]][gotData.gameDataId];
+      gameData = (Provider.of<GameData>(context)
+              .getGameDataForSchedule(classNumber: gotData.classNumber!)
+          as Map)[gotData.gameDataId[1]][gotData.gameDataId];
     } else {
-      gameData = (Provider.of<GameData>(context).getGameDataForResult(categoryToGet: _categoryToGet(gotData.gameDataId)!) as Map)[gotData.gameDataId[3]][gotData.gameDataId];
+      gameData = (Provider.of<GameData>(context).getGameDataForResult(
+              categoryToGet: _categoryToGet(gotData.gameDataId)!)
+          as Map)[gotData.gameDataId[3]][gotData.gameDataId];
     }
-    final bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
-    final bool? isLoggedInRumutaiStaff = Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
+    final bool? isLoggedInAdmin =
+        Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
+    final bool? isLoggedInRumutaiStaff =
+        Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
     return Scaffold(
-      appBar: AppBar(title: const Text("詳細"), actions: [MainPopUpMenu(place: gameData["place"])]),
+      appBar: AppBar(
+          title: const Text("詳細"),
+          actions: [MainPopUpMenu(place: gameData["place"])]),
       floatingActionButton: _isLoading
           ? null
           : Column(
@@ -277,11 +297,15 @@ class _DetailScreenState extends State<DetailScreen> {
                     icon: const Icon(Icons.sports),
                     label: const Text("試合"),
                   ),
-                if (isLoggedInAdmin == true && isLoggedInRumutaiStaff == true) const SizedBox(height: 10),
+                if (isLoggedInAdmin == true && isLoggedInRumutaiStaff == true)
+                  const SizedBox(height: 10),
                 if (isLoggedInAdmin == true)
                   FloatingActionButton.extended(
                     heroTag: "hero2",
-                    onPressed: () => Navigator.of(context).pushNamed(AdminEditScreen.routeName, arguments: GameDataToPassAdmin(gameData: gameData, isReverse: isReverse)),
+                    onPressed: () => Navigator.of(context).pushNamed(
+                        AdminEditScreen.routeName,
+                        arguments: GameDataToPassAdmin(
+                            gameData: gameData, isReverse: isReverse)),
                     icon: const Icon(Icons.edit),
                     label: const Text("編集"),
                   ),
@@ -297,7 +321,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -362,7 +387,8 @@ class _DetailScreenState extends State<DetailScreen> {
                         ),
                         const SizedBox(height: 12),
                         StatefulBuilder(
-                          builder: (BuildContext context, StateSetter setState) {
+                          builder:
+                              (BuildContext context, StateSetter setState) {
                             return Column(
                               children: [
                                 if (gameData["gameStatus"] == "after")
@@ -394,19 +420,24 @@ class _DetailScreenState extends State<DetailScreen> {
                                   Stack(
                                     children: [
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           IconButton(
                                             onPressed: () {
                                               setState(
-                                                () => _isExpanded = !_isExpanded,
+                                                () =>
+                                                    _isExpanded = !_isExpanded,
                                               );
                                             },
                                             padding: EdgeInsets.zero,
                                             constraints: const BoxConstraints(),
                                             icon: Icon(
-                                              _isExpanded ? Icons.expand_less : Icons.expand_more,
+                                              _isExpanded
+                                                  ? Icons.expand_less
+                                                  : Icons.expand_more,
                                             ),
                                             color: Colors.grey.shade800,
                                           ),
@@ -417,8 +448,10 @@ class _DetailScreenState extends State<DetailScreen> {
                                         children: [
                                           if (gameData["extraTime"] != "")
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
                                               children: [
                                                 Text(
                                                   LableUtilities.extraTimeLable(
@@ -446,7 +479,8 @@ class _DetailScreenState extends State<DetailScreen> {
                                                 ),
                                               ],
                                             ),
-                                          if (gameData["extraTime"] != "") const SizedBox(height: 10),
+                                          if (gameData["extraTime"] != "")
+                                            const SizedBox(height: 10),
                                           const Center(
                                             child: Text(
                                               "試合終了",
@@ -482,12 +516,15 @@ class _DetailScreenState extends State<DetailScreen> {
                                 _lable("日時："),
                                 Text(
                                   "${gameData["startTime"]["date"]}",
-                                  style: const TextStyle(fontSize: 25, height: 1.0),
+                                  style: const TextStyle(
+                                      fontSize: 25, height: 1.0),
                                 ),
-                                const Text("日目　", style: TextStyle(fontSize: 16)),
+                                const Text("日目　",
+                                    style: TextStyle(fontSize: 16)),
                                 Text(
                                   "${gameData["startTime"]["hour"]}:${gameData["startTime"]["minute"]}〜",
-                                  style: const TextStyle(fontSize: 25, height: 1.0),
+                                  style: const TextStyle(
+                                      fontSize: 25, height: 1.0),
                                 ),
                               ],
                             ),
@@ -495,14 +532,16 @@ class _DetailScreenState extends State<DetailScreen> {
                             Row(
                               children: [
                                 _lable("場所："),
-                                Text("${gameData["place"]}", style: const TextStyle(fontSize: 20)),
+                                Text("${gameData["place"]}",
+                                    style: const TextStyle(fontSize: 20)),
                               ],
                             ),
                             const SizedBox(height: 4),
                             Row(
                               children: [
                                 _lable("競技："),
-                                Text(_sport(gameData["sport"]), style: const TextStyle(fontSize: 20)),
+                                Text(_sport(gameData["sport"]),
+                                    style: const TextStyle(fontSize: 20)),
                               ],
                             ),
                             const SizedBox(height: 35),

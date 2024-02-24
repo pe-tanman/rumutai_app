@@ -80,8 +80,7 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                 SizedBox(
                   width: 300,
                   child: FilledButton(
-                    onPressed: (_controller.text == "" ||
-                            _titleController.text == "")
+                    onPressed: (_controller.text == "" || _titleController.text == "")
                         ? null
                         : () => showDialog(
                             context: context,
@@ -92,8 +91,7 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                                   content: SizedBox(
                                     height: 200,
                                     child: _isLoading
-                                        ? const Center(
-                                            child: CircularProgressIndicator())
+                                        ? const Center(child: CircularProgressIndicator())
                                         : SingleChildScrollView(
                                             child: Column(
                                               children: [
@@ -104,9 +102,7 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                                                   child: Text(
                                                     _titleController.text,
                                                     textAlign: TextAlign.start,
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600),
+                                                    style: const TextStyle(fontWeight: FontWeight.w600),
                                                   ),
                                                 ),
                                                 const SizedBox(height: 5),
@@ -129,12 +125,9 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                                         height: 40,
                                         child: OutlinedButton(
                                           style: ButtonStyle(
-                                            foregroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.black),
+                                            foregroundColor: MaterialStateProperty.all(Colors.black),
                                           ),
-                                          onPressed: () =>
-                                              Navigator.pop(context),
+                                          onPressed: () => Navigator.pop(context),
                                           child: const Text("キャンセル"),
                                         ),
                                       ),
@@ -144,11 +137,9 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                                         height: 40,
                                         child: FilledButton(
                                           style: ButtonStyle(
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
+                                                borderRadius: BorderRadius.circular(5),
                                               ),
                                             ),
                                           ),
@@ -159,18 +150,12 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
                                             });
                                             await FirebaseFirestore.instance
                                                 .collection("notification")
-                                                .add({
-                                              "timeStamp": Timestamp.fromDate(
-                                                  DateTime.now()),
-                                              "content": _controller.text,
-                                              "title": _titleController.text
-                                            });
+                                                .add({"timeStamp": Timestamp.fromDate(DateTime.now()), "content": _controller.text, "title": _titleController.text});
                                             _controller.text = "";
                                             _titleController.text = "";
                                             _isLoading = false;
                                             if (!mounted) return;
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(context).showSnackBar(
                                               const SnackBar(
                                                 content: Text("通知を送信しました"),
                                               ),

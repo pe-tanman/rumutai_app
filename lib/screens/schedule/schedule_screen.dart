@@ -26,8 +26,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       setState(() {
         _isLoading = true;
       });
-      await Provider.of<GameData>(context, listen: false)
-          .loadGameDataForSchedule(classNumber: classNumber);
+      await Provider.of<GameData>(context, listen: false).loadGameDataForSchedule(classNumber: classNumber);
       setState(() {
         _isLoading = false;
       });
@@ -93,6 +92,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     List day2sortedGameData = [];
     gameData.forEach((gameId, data) {
       if (data["startTime"]["date"] == "1") {
+        print(gameId);
         day1sortedGameData.add({
           "createdAt": DateTime(
             2023,
@@ -193,16 +193,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String classNumber =
-        ModalRoute.of(context)!.settings.arguments as String;
+    final String classNumber = ModalRoute.of(context)!.settings.arguments as String;
     _loadData(classNumber);
     final List<String> tabStrings = _tabStrings(classNumber);
 //    Provider.of<GameData>(context, listen: false)
     //      .loadGameData2(collection: "gameData");
 
     if (!_isLoading) {
-      _gameData = Provider.of<GameData>(context)
-          .getGameDataForSchedule(classNumber: classNumber) as Map;
+      _gameData = Provider.of<GameData>(context).getGameDataForSchedule(classNumber: classNumber) as Map;
     }
 
     return DefaultTabController(
@@ -225,24 +223,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
-                        children: _scheduleList(
-                            classNumber: classNumber, gameData: _gameData["d"]),
+                        children: _scheduleList(classNumber: classNumber, gameData: _gameData["d"]),
                       ),
                     ),
                   ),
                   Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
-                        children: _scheduleList(
-                            classNumber: classNumber, gameData: _gameData["j"]),
+                        children: _scheduleList(classNumber: classNumber, gameData: _gameData["j"]),
                       ),
                     ),
                   ),
                   Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
-                        children: _scheduleList(
-                            classNumber: classNumber, gameData: _gameData["k"]),
+                        children: _scheduleList(classNumber: classNumber, gameData: _gameData["k"]),
                       ),
                     ),
                   ),

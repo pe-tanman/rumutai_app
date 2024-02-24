@@ -38,12 +38,10 @@ class MainPopUpMenu extends StatelessWidget {
               Navigator.of(context).pushNamed(SettingScreen.routeName);
               return;
             case "マップ":
-              Navigator.of(context)
-                  .pushNamed(MapScreen.routeName, arguments: place);
+              Navigator.of(context).pushNamed(MapScreen.routeName, arguments: place);
               return;
             case "ホーム":
-              Navigator.popUntil(
-                  context, ModalRoute.withName(HomeScreen.routeName));
+              Navigator.popUntil(context, ModalRoute.withName(HomeScreen.routeName));
               return;
           }
         },

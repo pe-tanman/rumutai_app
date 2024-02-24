@@ -21,8 +21,7 @@ class _ContactScreenState extends State<ContactScreen> {
       body: Stack(
         children: [
           WebView(
-            initialUrl:
-                'https://docs.google.com/forms/d/e/1FAIpQLSdYQG01Rfkox6ETFUsZupo-cXYyirHF9wQWp83yYlTvw8otzA/viewform',
+            initialUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSdYQG01Rfkox6ETFUsZupo-cXYyirHF9wQWp83yYlTvw8otzA/viewform',
             javascriptMode: JavascriptMode.unrestricted,
             onPageFinished: (String utl) {
               setState(() {

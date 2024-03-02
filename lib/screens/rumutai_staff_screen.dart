@@ -732,6 +732,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                         _isLoadingDialog = false;
                                       });
                                       if (!mounted) return;
+                                      // ignore: use_build_context_synchronously
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Text(currentGameStatus == "after" ? '試合中に戻しました。' : "試合前に戻しました。"),
@@ -789,7 +790,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                                     adapter: DateTimePickerAdapter(type: PickerDateTimeType.kHM, value: dateTime, customColumnType: [3, 4]),
                                                     title: const Text("時間選択"),
                                                     onConfirm: (Picker picker, List value) {
-                                                      setState(() => {dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0)});
+                                                      setState(() {dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0);});
                                                     }).showModal(context);
                                               })
                                         ],
@@ -914,7 +915,7 @@ class _RumutaiStaffScreenState extends State<RumutaiStaffScreen> {
                                                           adapter: DateTimePickerAdapter(type: PickerDateTimeType.kHM, value: dateTime, customColumnType: [3, 4]),
                                                           title: const Text("時間選択"),
                                                           onConfirm: (Picker picker, List value) {
-                                                            setState(() => {dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0)});
+                                                            setState(() {dateTime = DateTime.utc(0, 0, 0, value[0], value[1], 0);});
                                                           }).showModal(context);
                                                     },
                                                     child: const Text("終了時刻変更"),

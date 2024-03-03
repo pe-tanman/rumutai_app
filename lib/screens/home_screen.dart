@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:rumutai_app/screens/staff/schedule_upload_screen.dart';
 import 'package:rumutai_app/screens/staff/dashboard_screen.dart';
 
 import '../themes/app_color.dart';
@@ -403,6 +404,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: Icons.send_outlined,
                           width: buttonWidth,
                           onPressed: () => Navigator.of(context).pushNamed(SendNotificationScreen.routeName),
+                        ),
+                        const SizedBox(height: 15),
+                        _buildTonalButton(
+                          text: "日程表の更新",
+                          icon: Icons.calendar_view_month_outlined,
+                          width: buttonWidth,
+                          onPressed: () {
+                            Navigator.of(context)
+                              .pushNamed(ScheduleUploadScreen.routeName);
+                          },
                         ),
                       ],
                     ),

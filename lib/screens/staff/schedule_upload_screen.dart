@@ -19,8 +19,9 @@ class _ScheduleUploadScreenState extends State<ScheduleUploadScreen> {
   final endRow = 57;
   final placeColumn = 2;
   final timeRow = 9;
-  final originalExcelPath = 'assets/documents/schedule.xlsx';
-  final List<String> sheetNames = ["一日目", '二日目'];
+  final originalExcelPath = 'assets/documents/Book1.xlsx';
+  final List<String> sheetNames = ["Sheet1"];
+
   List table = [];
   List tableMap = [];
   late List<Sheet> sheets;
@@ -41,33 +42,13 @@ class _ScheduleUploadScreenState extends State<ScheduleUploadScreen> {
       }
     }
     sheets = results;
+    print(sheets);
     setState(() {
       _isLoading = false;
     });
   }
 
   Map<String, String> readGames(rowNum, colNum, sheet, date) {
-    /*String id = sheet
-        .cell(CellIndex.indexByColumnRow(
-            rowIndex: rowNum + 3, columnIndex: colNum))
-        .value;
-    String team1 = sheet
-        .cell(CellIndex.indexByColumnRow(
-            rowIndex: rowNum + 1, columnIndex: colNum))
-        .value;
-    String team2 = sheet
-        .cell(CellIndex.indexByColumnRow(
-            rowIndex: rowNum + 2, columnIndex: colNum))
-        .value;
-    String time = sheet
-        .cell(
-            CellIndex.indexByColumnRow(rowIndex: timeRow, columnIndex: colNum))
-        .value;
-    String place = sheet
-        .cell(CellIndex.indexByColumnRow(
-            rowIndex: rowNum, columnIndex: placeColumn))
-        .value;
-*/
     String id = sheet.rows[rowNum + 3][colNum].value;
     String team1 = sheet.rows[rowNum + 1][colNum].value;
     String team2 = sheet.rows[rowNum + 2][colNum].value;
@@ -132,7 +113,6 @@ class _ScheduleUploadScreenState extends State<ScheduleUploadScreen> {
   }
 
   Widget _tablePreview(sheets) {
-    table = [];
     for (int date = 1; date <= 2; date++) {
       for (int col = placeColumn + 1; col <= endColumn; col++) {
         for (int row = timeRow + 1; row <= endRow; col++) {

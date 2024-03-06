@@ -10,33 +10,7 @@ class PickScheduleScreen extends StatelessWidget {
   static const routeName = "/schedule-screen";
 
   const PickScheduleScreen({super.key});
-/*
-  Widget _scheduleButton1({
-    required context,
-    required String title,
-    required IconData icon,
-    required String text,
-    required Schedule schedule,
-  }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(title, style: const TextStyle(fontSize: 18)),
-        const SizedBox(width: 10),
-        OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.black,
-            shape: const StadiumBorder(),
-            side: const BorderSide(color: Colors.black),
-          ),
-          onPressed: () => Navigator.of(context)
-              .pushNamed(ScheduleDetailScreen.routeName, arguments: schedule),
-          label: SizedBox(width: 80, child: Text(text)),
-          icon: Icon(icon),
-        ),
-      ],
-    );
-  }*/
+
 
   Widget _scheduleButton({required context, required String classNumber}) {
     return SizedBox(

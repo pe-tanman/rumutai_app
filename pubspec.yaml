@@ -50,6 +50,7 @@ dependencies:
   path: ^1.8.3
   flutter_riverpod: ^2.4.10
   excel: ^4.0.2
+  syncfusion_flutter_xlsio: ^24.2.9
 
 
   # The following adds the Cupertino Icons font to your application.

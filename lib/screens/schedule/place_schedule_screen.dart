@@ -5,32 +5,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../widgets/my_game_widget.dart';
 import '../../widgets/main_pop_up_menu.dart';
 
-class MyPlaceGameScreen extends StatefulWidget {
-  static const routeName = "/my-place_game-screen";
+class PlaceScheduleScreen extends StatefulWidget {
+  static const routeName = "/place-schedule-screen";
 
-  const MyPlaceGameScreen({super.key});
+  const PlaceScheduleScreen({super.key});
 
   @override
-  State<MyPlaceGameScreen> createState() => _MyPlaceGameScreenState();
+  State<PlaceScheduleScreen> createState() => _PlaceScheduleScreenState();
 }
 
-class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
+class _PlaceScheduleScreenState extends State<PlaceScheduleScreen> {
   bool _isInit = true;
   bool _isLoading = false;
 
   List<Map> _gameDataList = [];
 
-  String? _targetPlace;
+  String? targetPlace;
 
   //final TextEditingController _targetPlaceController = TextEditingController();
 
   Future _loadData() async {
-    if ((_isInit && _targetPlace != null)) {
+    if ((_isInit && targetPlace != null)) {
       setState(() {
         _isLoading = true;
       });
       _gameDataList = [];
-      await FirebaseFirestore.instance.collection('gameData2').where('place', isEqualTo: _targetPlace).where("gameStatus", isNotEqualTo: "after").get().then((QuerySnapshot querySnapshot) {
+      await FirebaseFirestore.instance.collection('gameData2').where('place', isEqualTo: targetPlace).get().then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
           _gameDataList.add(doc.data() as Map);
         }
@@ -154,52 +154,18 @@ class _MyPlaceGameScreenState extends State<MyPlaceGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isInit) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('担当を開始しました'),
-          )));
-    }
-    _targetPlace = ModalRoute.of(context)!.settings.arguments as String;
+    targetPlace = ModalRoute.of(context)!.settings.arguments as String;
     _loadData();
     _isInit = false;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("担当の試合"),
+        title:  Text(targetPlace!),
         actions: const [MainPopUpMenu()],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.brown.shade100,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _targetPlace == null ? "担当場所：" : "担当場所：$_targetPlace",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView(children: _myGameListWidget(gameDataList: _gameDataList)),
-                ),
-              ],
-            ),
+          : ListView(children: _myGameListWidget(gameDataList: _gameDataList)),
     );
   }
 }

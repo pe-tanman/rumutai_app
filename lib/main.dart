@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:rumutai_app/screens/drawer/publish_drive.dart';
+import 'package:rumutai_app/screens/schedule/pick_place_schedule_screen.dart';
+import 'package:rumutai_app/screens/schedule/place_schedule_screen.dart';
 import 'package:rumutai_app/screens/staff/schedule_upload_screen.dart';
-import 'package:rumutai_app/screens/staff/my_place_game_screen.dart';
 import 'package:rumutai_app/themes/app_theme.dart';
 import 'package:rumutai_app/utilities/local_notification.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rumutai_app/screens/staff/dashboard_screen.dart';
 import 'package:rumutai_app/screens/staff/timeline_screen.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -150,8 +150,8 @@ class MyApp extends StatelessWidget {
           DrawOmikujiScreen.routeName: (ctx) => const DrawOmikujiScreen(),
           MakeOmikujiScreen.routeName: (ctx) => const MakeOmikujiScreen(),
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
-          DashboardScreen.routeName: (ctx) => const DashboardScreen(),
-          MyPlaceGameScreen.routeName: (ctx) => const MyPlaceGameScreen(),
+          PickPlaceScheduleScreen.routeName: (ctx) => const PickPlaceScheduleScreen(),
+          PlaceScheduleScreen.routeName: (ctx) => const PlaceScheduleScreen(),
           PublishDriveScreen.routeName: (ctx) => const PublishDriveScreen(),
           PickAwardScreen.routeName: (ctx) => const PickAwardScreen(),
           GameAwardScreen.routeName: (ctx) => const GameAwardScreen(),

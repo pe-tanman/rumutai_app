@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:rumutai_app/screens/drawer/publish_drive.dart';
 import 'package:rumutai_app/screens/schedule/pick_place_schedule_screen.dart';
 import 'package:rumutai_app/screens/schedule/place_schedule_screen.dart';
-import 'package:rumutai_app/screens/staff/schedule_upload_screen.dart';
 import 'package:rumutai_app/themes/app_theme.dart';
 import 'package:rumutai_app/utilities/local_notification.dart';
 
@@ -156,7 +155,6 @@ class MyApp extends StatelessWidget {
           PickAwardScreen.routeName: (ctx) => const PickAwardScreen(),
           GameAwardScreen.routeName: (ctx) => const GameAwardScreen(),
           CheerAwardScreen.routeName: (ctz) => const CheerAwardScreen(),
-          ScheduleUploadScreen.routeName: (ctz) => const ScheduleUploadScreen(),
         },
       ),
     );

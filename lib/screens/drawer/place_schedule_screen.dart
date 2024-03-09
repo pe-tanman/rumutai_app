@@ -22,8 +22,6 @@ class _PlaceScheduleScreenState extends State<PlaceScheduleScreen> {
 
   String? targetPlace;
 
-  //final TextEditingController _targetPlaceController = TextEditingController();
-
   Future _loadData() async {
     if ((_isInit && targetPlace != null)) {
       setState(() {

@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:rumutai_app/screens/schedule/pick_place_schedule_screen.dart';
 
 import '../themes/app_color.dart';
 
@@ -334,13 +333,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 15),
                   _buildTonalButton(text: "担当の試合", icon: Icons.sports_score, width: buttonWidth, onPressed: () => Navigator.of(context).pushNamed(MyGameScreen.routeName)),
-                  const SizedBox(height: 15),
-                  _buildTonalButton(
-                          text: "場所別スケジュール",
-                          icon: Icons.map,
-                          width: buttonWidth,
-                          onPressed: () => Navigator.of(context).pushNamed(PickPlaceScheduleScreen.routeName),
-                        ),
                   const SizedBox(height: 25),
                   _dividerWithText("その他機能"),
                   const SizedBox(height: 15),

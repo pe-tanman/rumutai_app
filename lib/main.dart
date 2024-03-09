@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:rumutai_app/screens/drawer/publish_drive.dart';
-import 'package:rumutai_app/screens/schedule/pick_place_schedule_screen.dart';
-import 'package:rumutai_app/screens/schedule/place_schedule_screen.dart';
+import 'package:rumutai_app/screens/drawer/map_screen.dart';
+import 'package:rumutai_app/screens/drawer/place_schedule_screen.dart';
 import 'package:rumutai_app/themes/app_theme.dart';
 import 'package:rumutai_app/utilities/local_notification.dart';
 
@@ -26,7 +26,6 @@ import 'screens/detail_screen.dart';
 import 'screens/schedule/schedule_screen.dart';
 import 'screens/game_result/pick_category_screen.dart';
 import 'screens/game_result/game_results_screen.dart';
-import 'screens/drawer/map_screen.dart';
 import 'screens/notification/send_notification_screen.dart';
 import 'screens/drawer/sign_in_screen.dart';
 import 'screens/admin_edit_screen.dart';
@@ -129,7 +128,6 @@ class MyApp extends StatelessWidget {
           ScheduleScreen.routeName: (ctx) => const ScheduleScreen(),
           PickCategoryScreen.routeName: (ctx) => const PickCategoryScreen(),
           GameResultsScreen.routeName: (ctx) => const GameResultsScreen(),
-          MapScreen.routeName: (ctx) => MapScreen(),
           SendNotificationScreen.routeName: (ctx) =>
               const SendNotificationScreen(),
           AdminEditScreen.routeName: (ctx) => const AdminEditScreen(),
@@ -149,7 +147,7 @@ class MyApp extends StatelessWidget {
           DrawOmikujiScreen.routeName: (ctx) => const DrawOmikujiScreen(),
           MakeOmikujiScreen.routeName: (ctx) => const MakeOmikujiScreen(),
           TimelineScreen.routeName: (ctx) => const TimelineScreen(),
-          PickPlaceScheduleScreen.routeName: (ctx) => const PickPlaceScheduleScreen(),
+          MapScreen.routeName: (ctx) => const MapScreen(),
           PlaceScheduleScreen.routeName: (ctx) => const PlaceScheduleScreen(),
           PublishDriveScreen.routeName: (ctx) => const PublishDriveScreen(),
           PickAwardScreen.routeName: (ctx) => const PickAwardScreen(),

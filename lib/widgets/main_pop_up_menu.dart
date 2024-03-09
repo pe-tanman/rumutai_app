@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../screens/drawer/map_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/drawer/setting_screen.dart';
 
@@ -37,9 +36,6 @@ class MainPopUpMenu extends StatelessWidget {
             case "法的事項":
               Navigator.of(context).pushNamed(SettingScreen.routeName);
               return;
-            case "マップ":
-              Navigator.of(context).pushNamed(MapScreen.routeName, arguments: place);
-              return;
             case "ホーム":
               Navigator.popUntil(context, ModalRoute.withName(HomeScreen.routeName));
               return;
@@ -50,10 +46,6 @@ class MainPopUpMenu extends StatelessWidget {
           PopupMenuItem(
             value: "法的事項",
             child: _popUpMenuChild(text: "法的事項", icon: Icons.settings_outlined),
-          ),
-          PopupMenuItem(
-            value: "マップ",
-            child: _popUpMenuChild(text: "マップ", icon: Icons.map_outlined),
           ),
           const PopupMenuDivider(),
           PopupMenuItem(

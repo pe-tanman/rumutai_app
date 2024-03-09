@@ -201,7 +201,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
       _isInit = false;
     }
     return Scaffold(
-      appBar: AppBar(title: const Text("タイムライン")),
+      appBar: AppBar(title: const Text("開始終了時刻")),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Scrollbar(

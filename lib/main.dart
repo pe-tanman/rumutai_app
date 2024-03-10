@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:rumutai_app/screens/drawer/place_schedule_screen.dart';
 import 'firebase_options.dart';
 
 import 'notification_manager.dart';
@@ -95,7 +96,8 @@ class MyApp extends StatelessWidget {
         //drawer
         InfoScreen.routeName: (ctx) => const InfoScreen(),
         SignInScreen.routeName: (ctx) => const SignInScreen(),
-        MapScreen.routeName: (ctx) => MapScreen(),
+        MapScreen.routeName: (ctx) => const MapScreen(),
+        PlaceScheduleScreen.routeName: (ctx) => const PlaceScheduleScreen(),
         PrivacyPolicyScreen.routeName: (ctx) => const PrivacyPolicyScreen(),
         TermsOfServiceScreen.routeName: (ctx) => const TermsOfServiceScreen(),
         ContactScreen.routeName: (ctx) => const ContactScreen(),

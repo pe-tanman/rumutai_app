@@ -161,9 +161,9 @@ class _DrawOmikujiScreenState extends State<DrawOmikujiScreen> {
           icon: const Icon(Icons.favorite_outline),
           iconSize: 18,
         ),
-        Text(
+        const Text(
           "22",
-          style: const TextStyle(fontSize: 12),
+          style: TextStyle(fontSize: 12),
         ),
       ],
     );

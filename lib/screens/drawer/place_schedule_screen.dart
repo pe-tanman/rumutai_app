@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '/providers/init_data_provider.dart';
 
 import '../../widgets/my_game_widget.dart';
 import '../../widgets/main_pop_up_menu.dart';
 
-class PlaceScheduleScreen extends StatefulWidget {
+class PlaceScheduleScreen extends ConsumerStatefulWidget {
   static const routeName = "/place-schedule-screen";
 
   const PlaceScheduleScreen({super.key});
 
   @override
-  State<PlaceScheduleScreen> createState() => _PlaceScheduleScreenState();
+  ConsumerState<PlaceScheduleScreen> createState() => _PlaceScheduleScreenState();
 }
 
-class _PlaceScheduleScreenState extends State<PlaceScheduleScreen> {
+class _PlaceScheduleScreenState extends ConsumerState<PlaceScheduleScreen> {
   bool _isInit = true;
   bool _isLoading = false;
 
@@ -28,7 +30,10 @@ class _PlaceScheduleScreenState extends State<PlaceScheduleScreen> {
         _isLoading = true;
       });
       _gameDataList = [];
-      await FirebaseFirestore.instance.collection('gameData2').where('place', isEqualTo: targetPlace).get().then((QuerySnapshot querySnapshot) {
+      final String collection = ref.read(semesterProvider) == Semester.zenki
+          ? "gameDataZenki"
+          : "gameDataKouki";
+      await FirebaseFirestore.instance.collection(collection).where('place', isEqualTo: targetPlace).get().then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
           _gameDataList.add(doc.data() as Map);
         }

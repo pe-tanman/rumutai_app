@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:provider/provider.dart';
-
+import '../../themes/app_color.dart';
 import '../../widgets/league/league_widget.dart';
 import '../../widgets/tournament/tournament_widget.dart';
 
-import '../../providers/game_data.dart';
+import '../../providers/game_data_provider.dart';
 import '../../widgets/main_pop_up_menu.dart';
+import '../../utilities/label_utilities.dart';
 
-class GameResultsScreen extends StatefulWidget {
+class GameResultsScreen extends ConsumerStatefulWidget {
   static const routeName = "/game-info-detail-screen";
 
   const GameResultsScreen({super.key});
 
   @override
-  State<GameResultsScreen> createState() => _GameResultsScreenState();
+  ConsumerState<GameResultsScreen> createState() => _GameResultsScreenState();
 }
 
-class _GameResultsScreenState extends State<GameResultsScreen> {
+class _GameResultsScreenState extends ConsumerState<GameResultsScreen> {
   late bool _isInit = true;
   late bool _isLoading;
-  late Map _gameDataAll;
+  late Map _gameDataForThisCategory;
 
-  Future _loadData(CategoryToGet categoryToGet) async {
+  Future _loadData(GameDataCategory gameDataCategory) async {
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
-      await Provider.of<GameData>(context, listen: false).loadGameDataForResult(categoryToGet: categoryToGet);
+      _gameDataForThisCategory = await GameDataManager.getGameDataByCategory(
+        category: gameDataCategory,
+        ref: ref,
+        load: true, //毎回ロードする
+      );
       setState(() {
         _isLoading = false;
       });
@@ -35,48 +40,55 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
     }
   }
 
-//not flexible
-  String _title(CategoryToGet gameInfoDetail) {
-    switch (gameInfoDetail) {
-      case CategoryToGet.d1:
-        return "1年　男子　フットサル";
-      case CategoryToGet.j1:
-        return "1年　女子　バレー";
-      case CategoryToGet.k1:
-        return "1年　混合　ドッジボール";
-      case CategoryToGet.d2:
-        return "2年　男子　フットサル";
-      case CategoryToGet.j2:
-        return "2年　女子　バスケット";
-      case CategoryToGet.k2:
-        return "2年　混合　バレー";
-      case CategoryToGet.d3:
-        return "3年　男子　フットサル";
-      case CategoryToGet.j3:
-        return "3年　女子　ドッジビー";
-      case CategoryToGet.k3:
-        return "3年　混合　バレー";
+  String _title(GameDataCategory gameDataCategory) {
+    final String sport = LabelUtilities.gameDataCategoryToSportLabel(ref, gameDataCategory);
+
+    switch (gameDataCategory) {
+      case GameDataCategory.d1:
+        return "1年 男子 $sport";
+      case GameDataCategory.j1:
+        return "1年 女子 $sport";
+      case GameDataCategory.k1:
+        return "1年 混合 $sport";
+      case GameDataCategory.d2:
+        return "2年 男子 $sport";
+      case GameDataCategory.j2:
+        return "2年 女子 $sport";
+      case GameDataCategory.k2:
+        return "2年 混合 $sport";
+      case GameDataCategory.d3:
+        return "3年 男子 $sport";
+      case GameDataCategory.j3:
+        return "3年 女子 $sport";
+      case GameDataCategory.k3:
+        return "3年 混合 $sport";
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final categoryToGet = ModalRoute.of(context)!.settings.arguments;
-    _loadData(categoryToGet as CategoryToGet);
 
-    if (!_isLoading) {
-      _gameDataAll = Provider.of<GameData>(context).getGameDataForResult(categoryToGet: categoryToGet) as Map;
-    }
+    ref.watch(gameDataForResultProvider); //データの変更を監視
+
+    _loadData(categoryToGet as GameDataCategory);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(_title(categoryToGet)),
           actions: const [MainPopUpMenu()],
-          bottom: const TabBar(indicatorColor: Colors.white, tabs: [
-            Tab(text: "リーグ"),
-            Tab(text: "トーナメント"),
-          ]),
+          bottom: TabBar(
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorColor: AppColors.lightText1,
+            unselectedLabelColor: AppColors.lightText1.withOpacity(0.5),
+            labelColor: AppColors.lightText1,
+            tabs: const [
+              Tab(text: "リーグ"),
+              Tab(text: "トーナメント"),
+            ],
+          ),
         ),
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -92,7 +104,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                               children: [
                                 LeagueWidget(
                                   title: "リーグA",
-                                  leagueData: _gameDataAll["a"],
+                                  leagueData: _gameDataForThisCategory["a"],
                                 ),
                                 const SizedBox(
                                   child: Padding(
@@ -102,7 +114,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                 ),
                                 LeagueWidget(
                                   title: "リーグB",
-                                  leagueData: _gameDataAll["b"],
+                                  leagueData: _gameDataForThisCategory["b"],
                                 ),
                               ],
                             ),
@@ -119,9 +131,9 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                             children: [
                               TournamentWidget(
                                 title: "決勝",
-                                tournamentData: _gameDataAll["f"],
+                                tournamentData: _gameDataForThisCategory["f"],
                               ),
-                              if (categoryToGet == CategoryToGet.d2 || categoryToGet == CategoryToGet.d3)
+                              if (_gameDataForThisCategory["l"] != null)
                                 Column(
                                   children: [
                                     const SizedBox(
@@ -132,7 +144,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                     ),
                                     TournamentWidget(
                                       title: "下位",
-                                      tournamentData: _gameDataAll["l"],
+                                      tournamentData: _gameDataForThisCategory["l"],
                                     ),
                                     const SizedBox(height: 30),
                                   ],

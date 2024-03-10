@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:rumutai_app/providers/game_data_provider.dart';
+import 'package:rumutai_app/providers/init_data_provider.dart';
 
 import 'league_block.dart';
 import 'rank_widget.dart';
@@ -174,19 +176,23 @@ class LeagueWidget extends StatelessWidget {
       }
 
       //試合状況ごとにテキスト設定
-      if (gameData["gameStatus"] == "before") {
-        textOfBlock = "${gameData["startTime"]["date"]}日目\n${gameData["startTime"]["hour"]}:${gameData["startTime"]["minute"]}〜";
-      } else if (gameData["gameStatus"] == "now") {
-        textOfBlock = "試合中";
-        textColorOfBlock = Colors.deepPurpleAccent.shade700;
-      } else if (gameData["gameStatus"] == "after") {
-        if (gameData["score"][0] > gameData["score"][1]) {
-          block = Block.win;
-        } else if (gameData["score"][0] < gameData["score"][1]) {
-          block = Block.lose;
-        } else {
-          block = Block.tie;
-        }
+      switch (GameStatus.values.byName(gameData["gameStatus"])) {
+        case GameStatus.before:
+          textOfBlock = "${gameData["startTime"]["date"]}日目\n${gameData["startTime"]["hour"]}:${gameData["startTime"]["minute"]}〜";
+          break;
+        case GameStatus.now:
+          textOfBlock = "試合中";
+          textColorOfBlock = Colors.deepPurpleAccent.shade700;
+          break;
+        case GameStatus.after:
+          if (gameData["score"][0] > gameData["score"][1]) {
+            block = Block.win;
+          } else if (gameData["score"][0] < gameData["score"][1]) {
+            block = Block.lose;
+          } else {
+            block = Block.tie;
+          }
+          break;
       }
 
       coordinate = coordinateMap[gameIdNumber];
@@ -381,7 +387,7 @@ class LeagueWidget extends StatelessWidget {
         teamPointDifference[gameData["team"]["1"]] = 0;
       }
       //バレーの場合
-      if (gameData["sport"] == "volleyball") {
+      if (gameData["sport"] == SportsType.volleyball.name) {
         if (teamSetDifference[gameData["team"]["0"]] == null) {
           teamSetDifference[gameData["team"]["0"]] = 0;
         }
@@ -400,7 +406,7 @@ class LeagueWidget extends StatelessWidget {
       final int team2score = (gameData["scoreDetail"]["0"][1] + gameData["scoreDetail"]["1"][1] + gameData["scoreDetail"]["2"][1]);
 
       //バレーの場合
-      if (gameData["sport"] == "volleyball") {
+      if (gameData["sport"] == SportsType.volleyball.name) {
         final int team1set = gameData["score"][0];
         final int team2set = gameData["score"][1];
         teamSetDifference[gameData["team"]["0"]] += (team1set - team2set);
@@ -424,7 +430,7 @@ class LeagueWidget extends StatelessWidget {
       //勝ち点が同じ場合
       if (compare == 0) {
         //バレーの場合
-        if (leagueData.values.first["sport"] == "volleyball") {
+        if (leagueData.values.first["sport"] == SportsType.volleyball.name) {
           if (teamSetDifference[teamA] > teamSetDifference[teamB]) {
             return -1;
           } else if (teamSetDifference[teamA] < teamSetDifference[teamB]) {

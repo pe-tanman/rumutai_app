@@ -1,263 +1,194 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 
-import '../../providers/local_data.dart';
+import '../../providers/sign_in_data_provider.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   static const routeName = "/sign-in-screen";
 
   const SignInScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController _adminController = TextEditingController();
-  final TextEditingController _rumutaiStaffController = TextEditingController();
-  //final TextEditingController _resultEditorController = TextEditingController();
+class _SignInScreenState extends ConsumerState<SignInScreen> {
+  final TextEditingController _passwordController = TextEditingController();
+  var _isLoading = false;
+  SignInType? _selectedLoginType;
 
-  var _isLoadingAdmin = false;
-  var _isLoadingRumutaiStaff = false;
-  //var _isLoadingResultEditor = false;
-
-  Widget _signInWidget({
-    required bool? isLoggedIn,
-    required String loginAs,
-    required textController,
-  }) {
-    late String text;
-    if (loginAs == "Admin") {
-      text = "管理者";
-    } else if (loginAs == "RumutaiStaff") {
-      text = "ルム対スタッフ";
-    } /* else if (loginAs == "ResultEditor") {
-      text = "試合結果編集者";
-    }*/
+  Widget _buildRadioButtonSection() {
     return Column(
       children: [
-        SizedBox(
-          width: 300,
-          child: Text(
-            text,
-            textAlign: TextAlign.start,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+        const SizedBox(height: 15),
+        const Text(
+          "選択",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 20),
-        if (isLoggedIn == true)
-          SizedBox(
-            width: 300,
-            child: Row(
-              children: [
-                Text(
-                  "サインイン済みです。",
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
-                ),
-                const SizedBox(width: 8),
-                TextButton.icon(
-                  style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Colors.black)),
-                  onPressed: () async {
-                    setState(() {
-                      if (loginAs == "Admin") {
-                        _isLoadingAdmin = true;
-                      } else if (loginAs == "RumutaiStaff") {
-                        _isLoadingRumutaiStaff = true;
-                      } /*else if (loginAs == "ResultEditor") {
-                        _isLoadingResultEditor = true;
-                      }*/
-                    });
-                    await LocalData.saveLocalData<bool>("isLoggedIn$loginAs", false);
-                    if (!mounted) return;
-                    await Provider.of<LocalData>(context, listen: false).setDataFromLocal();
-                    textController.text = "";
-                    if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('サインアウトしました。'),
-                      ),
-                    );
-
-                    setState(() {
-                      if (loginAs == "Admin") {
-                        _isLoadingAdmin = false;
-                      } else if (loginAs == "RumutaiStaff") {
-                        _isLoadingRumutaiStaff = false;
-                      } /*else if (loginAs == "ResultEditor") {
-                        _isLoadingResultEditor = false;
-                      }*/
-                    });
-                  },
-                  label: const Text("サインアウト"),
-                  icon: const Icon(Icons.logout),
-                ),
-              ],
-            ),
-          )
-        else
-          SizedBox(
-            width: 300,
-            height: 50,
-            child: TextField(
-              onChanged: (_) => setState(() {}),
-              controller: textController,
-              decoration: InputDecoration(
-                label: const Text("認証コード"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-            ),
-          ),
         const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isLoggedIn != true)
-              SizedBox(
-                width: 300,
-                child: FilledButton.icon(
-                  onPressed: textController.text == ""
-                      ? null
-                      : () async {
-                          setState(() {
-                            if (loginAs == "Admin") {
-                              _isLoadingAdmin = true;
-                            } else if (loginAs == "RumutaiStaff") {
-                              _isLoadingRumutaiStaff = true;
-                            } /* else if (loginAs == "ResultEditor") {
-                              _isLoadingResultEditor = true;
-                            }*/
-                          });
-                          var data = await FirebaseFirestore.instance.collection("password").doc("passwordDoc").get();
-                          if (data[loginAs] == textController.text) {
-                            await LocalData.saveLocalData<bool>("isLoggedIn$loginAs", true);
-                            if (loginAs == "Admin") {
-                              await LocalData.saveLocalData<String>(
-                                "adminPassword",
-                                data[loginAs],
-                              );
-                            } else if (loginAs == "RumutaiStaff") {
-                              await LocalData.saveLocalData<String>(
-                                "rumutaiStaffPassword",
-                                data[loginAs],
-                              );
-                            } /* else if (loginAs == "ResultEditor") {
-                              await LocalData.saveLocalData<String>(
-                                "resultEditorPassword",
-                                data[loginAs],
-                              );
-                            }*/
-
-                            if (!mounted) return;
-                            await Provider.of<LocalData>(context, listen: false).setDataFromLocal();
-                            textController.text = "";
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("$textとして、サインインしました。")),
-                            );
-                          } else {
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('認証コードが違います。'),
-                              ),
-                            );
-                          }
-
-                          setState(() {
-                            if (loginAs == "Admin") {
-                              _isLoadingAdmin = false;
-                            } else if (loginAs == "RumutaiStaff") {
-                              _isLoadingRumutaiStaff = false;
-                            } /* if (loginAs == "ResultEditor") {
-                              _isLoadingResultEditor = false;
-                            }*/
-                          });
-                        },
-                  label: const Text("サインイン"),
-                  icon: const Icon(Icons.login),
-                ),
-              ),
-            if (_isLoadingRumutaiStaff && loginAs == "RumutaiStaff") const SizedBox(width: 10),
-            if (_isLoadingRumutaiStaff && loginAs == "RumutaiStaff")
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(),
-              ),
-            if (_isLoadingAdmin && loginAs == "Admin") const SizedBox(width: 10),
-            if (_isLoadingAdmin && loginAs == "Admin")
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(),
-              ),
-            /* if (_isLoadingResultEditor && loginAs == "ResultEditor") const SizedBox(width: 10),
-            if (_isLoadingResultEditor && loginAs == "ResultEditor")
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(),
-              ),*/
-          ],
+        RadioListTile(
+          title: const Text('ルム対スタッフ'),
+          value: SignInType.rumutaiStaff,
+          groupValue: _selectedLoginType,
+          onChanged: (value) {
+            setState(() {
+              _selectedLoginType = value;
+            });
+          },
+        ),
+        RadioListTile(
+          title: const Text('管理者'),
+          value: SignInType.admin,
+          groupValue: _selectedLoginType,
+          onChanged: (value) {
+            setState(() {
+              _selectedLoginType = value;
+            });
+          },
         ),
       ],
     );
   }
 
+  Widget _buildPasswordSection() {
+    return Column(
+      children: [
+        const Text(
+          "パスワード",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 10),
+        TextField(
+          onChanged: (_) => setState(() {}),
+          controller: _passwordController,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSigninButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.login),
+        onPressed: (_passwordController.text != "" && _selectedLoginType != null)
+            ? () async {
+                setState(() {
+                  _isLoading = true;
+                });
+                //firebaseからパスワードを取得
+                debugPrint("loadedPasswordData");
+                var passwordData = await FirebaseFirestore.instance.collection("password").doc("passwordDoc").get();
+                //パスワードが合っているか確認
+                bool canLogin = false;
+                switch (_selectedLoginType!) {
+                  case SignInType.rumutaiStaff:
+                    if (_passwordController.text == passwordData["rumutaiStaff"]) {
+                      canLogin = true;
+                    }
+                    break;
+                  case SignInType.admin:
+                    if (_passwordController.text == passwordData["admin"]) {
+                      canLogin = true;
+                    }
+                    break;
+                }
+                //サインイン
+                if (canLogin) {
+                  await SignInDataManager.signIn(ref, _passwordController.text, _selectedLoginType!);
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("サインインに成功しました")),
+                  );
+                } else {
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("パスワードが違います"),
+                    ),
+                  );
+                }
+                setState(() {
+                  _isLoading = false;
+                });
+              }
+            : null,
+        label: const Text("サインイン"),
+      ),
+    );
+  }
+
+  Widget _buildSignoutButton() {
+    return SizedBox(
+      width: 200,
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.logout),
+        onPressed: () async {
+          setState(() {
+            _isLoading = true;
+          });
+          //ログアウト
+          await SignInDataManager.signOut(ref);
+
+          _passwordController.text = "";
+          _selectedLoginType = null;
+
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("サインアウトしました")),
+          );
+          setState(() {
+            _isLoading = false;
+          });
+        },
+        label: const Text("サインアウト"),
+      ),
+    );
+  }
+
+  Widget _buildSignInScreen() {
+    return Column(children: [
+      _buildRadioButtonSection(),
+      const SizedBox(height: 30),
+      _buildPasswordSection(),
+      const SizedBox(height: 15),
+      _isLoading ? const CircularProgressIndicator() : _buildSigninButton(),
+    ]);
+  }
+
+  Widget _buildSignOutScreen() {
+    return Column(children: [
+      const SizedBox(height: 30),
+      if (ref.watch(isLoggedInRumutaiStaffProvider)) const Text("ルム対スタッフとしてサインイン済みです"),
+      if (ref.watch(isLoggedInAdminProvider)) const Text("管理者としてサインイン済みです"),
+      const SizedBox(height: 50),
+      _isLoading ? const CircularProgressIndicator() : _buildSignoutButton(),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
-    bool? isLoggedInRumutaiStaff = Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
-    // bool? isLoggedInResultEditor = Provider.of<LocalData>(context, listen: false).isLoggedInResultEditor;
+    final isSignedIn = (ref.watch(isLoggedInRumutaiStaffProvider) || ref.watch(isLoggedInAdminProvider));
     return Scaffold(
-      appBar: AppBar(title: const Text("サインイン")),
-      body: GestureDetector(
-        onTap: () {
-          final FocusScopeNode currentScope = FocusScope.of(context);
-          if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
-            FocusManager.instance.primaryFocus!.unfocus();
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SingleChildScrollView(
-            child: Column(children: [
-              const SizedBox(height: 60),
-              const SizedBox(
-                width: 300,
-                child: Text(
-                  "ルム対スタッフ、管理者は、\n認証コードでサインインできます。",
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              const SizedBox(height: 30),
-              Divider(color: Colors.brown.shade900),
-              _signInWidget(
-                isLoggedIn: isLoggedInRumutaiStaff,
-                loginAs: "RumutaiStaff",
-                textController: _rumutaiStaffController,
-              ),
-              /*Divider(color: Colors.brown.shade900),
-              _signInWidget(
-                isLoggedIn: isLoggedInResultEditor,
-                loginAs: "ResultEditor",
-                textController: _resultEditorController,
-              ),*/
-              Divider(color: Colors.brown.shade900),
-              _signInWidget(
-                isLoggedIn: isLoggedInAdmin,
-                loginAs: "Admin",
-                textController: _adminController,
-              ),
-            ]),
+      appBar: AppBar(title: Text(isSignedIn ? "サインアウト" : "サインイン")),
+      body: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () {
+            final FocusScopeNode currentScope = FocusScope.of(context);
+            if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+              FocusManager.instance.primaryFocus!.unfocus();
+            }
+          },
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              child: isSignedIn ? _buildSignOutScreen() : _buildSignInScreen(),
+            ),
           ),
         ),
       ),

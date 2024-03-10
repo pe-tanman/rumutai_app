@@ -42,14 +42,14 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
 
   bool _isInit = true;
 
-  Widget _lable(lable) {
+  Widget _label(label) {
     return SizedBox(
       width: 120,
       child: Row(
         children: [
           Expanded(
             child: Text(
-              lable,
+              label,
               textAlign: TextAlign.end,
               style: TextStyle(
                 color: Colors.brown.shade900,
@@ -71,10 +71,11 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
         elevation: 1,
         child: Row(
           children: [
-            _lable("運勢："),
+            _label("運勢："),
             SizedBox(
               width: 100,
               child: DropdownButton(
+                dropdownColor: Colors.white,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -154,6 +155,9 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
                     maxLines: null,
                     decoration: InputDecoration(
                       helperText: helperText == null ? null : "例：$helperText",
+                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                      border: const UnderlineInputBorder(),
+                      isDense: true,
                     ),
                   ),
                 ],
@@ -207,7 +211,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
     );
   }
 
-  String _categoryLable(OmikujiCategory category) {
+  String _categoryLabel(OmikujiCategory category) {
     switch (category) {
       case OmikujiCategory.fortune:
         return "";
@@ -257,9 +261,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
     }
   }
 
-  Widget _categoryButton({
-    required OmikujiCategory category,
-  }) {
+  Widget _categoryButton({required OmikujiCategory category}) {
     return SizedBox(
       width: 150,
       child: FilledButton(
@@ -268,8 +270,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
             color: Theme.of(context).colorScheme.primary,
             width: 2,
           ),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           backgroundColor: Colors.white,
           foregroundColor: Colors.brown.shade800,
         ),
@@ -281,9 +282,11 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
                 });
                 Navigator.of(context).pop();
               },
-        child: Text(
-          _categoryLable(category),
-          style: TextStyle(color: Colors.brown.shade900),
+        child: FittedBox(
+          child: Text(
+            _categoryLabel(category),
+            style: TextStyle(color: Colors.brown.shade900),
+          ),
         ),
       ),
     );
@@ -363,8 +366,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
           width: _insideCardWidth,
           category: category,
           title: "一言",
-          helperText:
-              "・今日は絶好調！\n　　　自信を持って戦いましょう。\n　　・普段あまり話さない人と話すと\n　　　いいことあるかも？！\n　　・今日あなたはスマホを落とすでしょう",
+          helperText: "・今日は絶好調！\n　　　自信を持って戦いましょう。\n　　・普段あまり話さない人と話すと\n　　　いいことあるかも？！\n　　・今日あなたはスマホを落とすでしょう",
         );
       case OmikujiCategory.luckyNum:
         return _inputCard(
@@ -434,14 +436,10 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
 
   Widget _addButton() {
     return SizedBox(
-      width: 55,
-      height: 55,
-      child: FilledButton(
-        style: FilledButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
+      width: 50,
+      height: 50,
+      child: FloatingActionButton(
+        elevation: 0,
         onPressed: () => _showBottomSheetMenu(context),
         child: const Icon(Icons.add),
       ),
@@ -450,31 +448,19 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
 
   Widget _sumbitButton() {
     return SizedBox(
-      height: 55,
-      width: 120,
-      child: FilledButton(
-        style: FilledButton.styleFrom(
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.primary,
-            width: 2,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.brown.shade800,
-        ),
+      height: 50,
+      width: 130,
+      child: ElevatedButton(
         onPressed: (_selectedFortune == null || _oneWordController.text == "")
             ? null
             : () => showDialog(
-                  context: context,
-                  builder: (_) {
-                    return _dialog();
-                  },
-                ),
+                context: context,
+                builder: (_) {
+                  return _dialog();
+                }),
         child: const Text(
           "完成",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
       ),
     );
@@ -482,7 +468,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
 
   Widget _textForDialog({required OmikujiCategory category}) {
     late String text;
-    final String title = _categoryLable(category);
+    final String title = _categoryLabel(category);
     switch (category) {
       case OmikujiCategory.fortune:
         return const SizedBox();
@@ -552,6 +538,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
     bool dialogIsLoading = false;
     return StatefulBuilder(
       builder: (context, setStateInDialog) => AlertDialog(
+        insetPadding: const EdgeInsets.all(10),
         title: const Text("確認"),
         content: SizedBox(
           height: 350,
@@ -565,57 +552,55 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
                           width: 280,
                           child: Card(
                             elevation: 1,
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                             color: Colors.orange.shade50,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 10,
                                 horizontal: 15,
                               ),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    _selectedFortune!,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontFamily: "YujiSyuku",
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                                Row(
                                   children: [
-                                    SizedBox(
-                                      width: double.infinity,
+                                    const SizedBox(width: 10),
+                                    Flexible(
                                       child: Text(
-                                        _selectedFortune!,
-                                        textAlign: TextAlign.center,
+                                        _oneWordController.text,
                                         style: const TextStyle(
                                           fontFamily: "YujiSyuku",
-                                          fontWeight: FontWeight.w600,
                                           fontSize: 16,
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 15),
-                                    Row(
-                                      children: [
-                                        const SizedBox(width: 10),
-                                        Flexible(
-                                          child: Text(
-                                            _oneWordController.text,
-                                            style: const TextStyle(
-                                              fontFamily: "YujiSyuku",
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 18),
-                                    const Divider(),
-                                    ListView.builder(
-                                      primary: false,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: _categoryListToShow.length,
-                                      itemBuilder: (context, index) {
-                                        return _textForDialog(
-                                          category: _categoryListToShow[index],
-                                        );
-                                      },
-                                    ),
-                                  ]),
+                                  ],
+                                ),
+                                const SizedBox(height: 18),
+                                const Divider(color: Colors.brown),
+                                ListView.builder(
+                                  primary: false,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: _categoryListToShow.length,
+                                  itemBuilder: (context, index) {
+                                    return _textForDialog(
+                                      category: _categoryListToShow[index],
+                                    );
+                                  },
+                                ),
+                              ]),
                             ),
                           ),
                         ),
@@ -649,7 +634,6 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
               width: 120,
               height: 40,
               child: OutlinedButton(
-                style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
                 onPressed: () => Navigator.pop(context),
                 child: const Text("キャンセル"),
               ),
@@ -659,13 +643,6 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
               width: 120,
               height: 40,
               child: FilledButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                ),
                 child: const Text("投稿"),
                 onPressed: () async {
                   final List contentList = [];
@@ -675,7 +652,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
                       continue;
                     }
                     contentList.add({
-                      "title": _categoryLable(category),
+                      "title": _categoryLabel(category),
                       "content": text,
                     });
                   }
@@ -687,9 +664,7 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
                   setStateInDialog(() {
                     dialogIsLoading = true;
                   });
-                  await FirebaseFirestore.instance
-                      .collection('omikujiData')
-                      .add(data);
+                  await FirebaseFirestore.instance.collection('omikujiData').add(data);
 
                   if (!mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -805,22 +780,17 @@ class _MakeOmikujiScreenState extends State<MakeOmikujiScreen> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.brown.shade100,
-        height: 100,
+        height: 80,
         child: Stack(
           alignment: Alignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _sumbitButton(),
-              ],
+              children: [_sumbitButton()],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                _addButton(),
-                const SizedBox(width: 15),
-              ],
+              children: [_addButton()],
             ),
           ],
         ),

@@ -18,7 +18,6 @@ import 'admin/adjust_schedule_screen.dart';
 import 'admin/send_notification_screen.dart';
 import 'cheer/pick_team_to_cheer_screen.dart';
 import 'game_result/pick_category_screen.dart';
-import 'staff/dashboard_screen.dart';
 import "staff/timeline_screen.dart";
 import 'omikuji/pick_omikuji_screen.dart';
 import 'schedule/pick_schedule_screen.dart';

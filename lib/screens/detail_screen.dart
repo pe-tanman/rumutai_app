@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rumutai_app/providers/sign_in_data_provider.dart';
+import 'package:rumutai_app/themes/app_color.dart';
 
-import 'package:provider/provider.dart';
-
-import 'admin_edit_screen.dart';
+import 'admin/admin_edit_screen.dart';
 import 'rumutai_staff_screen.dart';
-import '../providers/local_data.dart';
-import '../providers/game_data.dart';
+import '../providers/game_data_provider.dart';
+import '../providers/init_data_provider.dart';
 
-import '../utilities/lable_utilities.dart';
+import '../utilities/label_utilities.dart';
 
 import '../widgets/main_pop_up_menu.dart';
 
-class DetailScreen extends StatefulWidget {
+class DetailScreen extends ConsumerStatefulWidget {
   static const routeName = "/detail-screen";
 
   const DetailScreen({super.key});
 
   @override
-  State<DetailScreen> createState() => _DetailScreenState();
+  ConsumerState<DetailScreen> createState() => _DetailScreenState();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _DetailScreenState extends ConsumerState<DetailScreen> {
   bool _isExpanded = false;
-  late bool _isInit = true;
-  late bool _isLoading = false;
+  bool _isInit = true;
+  bool _isLoading = false;
 
-  Column _refereesAsColumn(Map gameData) {
+  Map _thisGameData = {};
+  late SportsType _thisGameSport;
+
+  Column _refereesAsColumn() {
     List<Widget> refereeList = [];
     int count = 0;
-    List refereeLableList = LableUtilities.refereeLableList(gameData["sport"]);
-    gameData["referee"].forEach((referee) {
+    List refereeLabelList = LabelUtilities.refereeLabelList(_thisGameSport);
+
+    _thisGameData["referee"].forEach((referee) {
       if (referee == "") {
         return;
       }
@@ -45,7 +50,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ),
           Text(
-            " ( ${refereeLableList[count]} )",
+            " ( ${refereeLabelList[count]} )",
             maxLines: 1,
             style: TextStyle(
               fontSize: 15,
@@ -62,11 +67,7 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Widget _scoreDetailPartWidget(
-      {required Map gameData,
-      required String index,
-      required String lable,
-      bool isReverse = false}) {
+  Widget _scoreDetailPartWidget({required String index, required String label, bool isReverse = false}) {
     return SizedBox(
       width: 300,
       child: Stack(
@@ -75,7 +76,7 @@ class _DetailScreenState extends State<DetailScreen> {
           SizedBox(
             width: 100,
             child: Text(
-              "$lable：",
+              "$label：",
               style: TextStyle(
                 color: Colors.grey.shade700,
                 fontSize: 13,
@@ -90,7 +91,7 @@ class _DetailScreenState extends State<DetailScreen> {
               SizedBox(
                 width: 40,
                 child: Text(
-                  gameData["scoreDetail"][index][isReverse ? 1 : 0].toString(),
+                  _thisGameData["scoreDetail"][index][isReverse ? 1 : 0].toString(),
                   style: const TextStyle(
                     fontSize: 20,
                     height: 1.0,
@@ -108,7 +109,7 @@ class _DetailScreenState extends State<DetailScreen> {
               SizedBox(
                 width: 40,
                 child: Text(
-                  gameData["scoreDetail"][index][isReverse ? 0 : 1].toString(),
+                  _thisGameData["scoreDetail"][index][isReverse ? 0 : 1].toString(),
                   style: const TextStyle(
                     fontSize: 20,
                     height: 1.0,
@@ -123,97 +124,62 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Widget _scoreDetailWidget({required Map gameData, bool isReverse = false}) {
-    List<String> scoreDetailLableList =
-        LableUtilities.scoreDetailLableList(gameData["sport"]);
+  Widget _scoreDetailWidget({bool isReverse = false}) {
+    List<String> scoreDetailLabelList = LabelUtilities.scoreDetailLabelList(_thisGameSport);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _scoreDetailPartWidget(
-          gameData: gameData,
           index: "0",
           isReverse: isReverse,
-          lable: scoreDetailLableList[0],
+          label: scoreDetailLabelList[0],
         ),
         _scoreDetailPartWidget(
-          gameData: gameData,
           index: "1",
           isReverse: isReverse,
-          lable: scoreDetailLableList[1],
+          label: scoreDetailLabelList[1],
         ),
-        if (gameData["sport"] == "volleyball" ||
-            gameData["sport"] == "basketball")
+        if (_thisGameSport == SportsType.volleyball || _thisGameSport == SportsType.basketball)
           _scoreDetailPartWidget(
-            gameData: gameData,
             index: "2",
             isReverse: isReverse,
-            lable: scoreDetailLableList[2],
+            label: scoreDetailLabelList[2],
           ),
       ],
     );
   }
 
-  CategoryToGet? _categoryToGet(String gameDataId) {
+  GameDataCategory? _categoryToGet(String gameDataId) {
     if (gameDataId.contains("1d")) {
-      return CategoryToGet.d1;
+      return GameDataCategory.d1;
     } else if (gameDataId.contains("1j")) {
-      return CategoryToGet.j1;
+      return GameDataCategory.j1;
     } else if (gameDataId.contains("1k")) {
-      return CategoryToGet.k1;
+      return GameDataCategory.k1;
     } else if (gameDataId.contains("2d")) {
-      return CategoryToGet.d2;
+      return GameDataCategory.d2;
     } else if (gameDataId.contains("2j")) {
-      return CategoryToGet.j2;
+      return GameDataCategory.j2;
     } else if (gameDataId.contains("2k")) {
-      return CategoryToGet.k2;
+      return GameDataCategory.k2;
     } else if (gameDataId.contains("3d")) {
-      return CategoryToGet.d3;
+      return GameDataCategory.d3;
     } else if (gameDataId.contains("3j")) {
-      return CategoryToGet.j3;
+      return GameDataCategory.j3;
     } else if (gameDataId.contains("3k")) {
-      return CategoryToGet.k3;
+      return GameDataCategory.k3;
     }
     return null;
   }
 
-//ルム対スタッフが自分の担当のゲーム一覧からこの画面を開いた時だけロードされる。
-  Future _loadData(CategoryToGet categoryToGet) async {
-    if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-      await Provider.of<GameData>(context, listen: false)
-          .loadGameDataForResult(categoryToGet: categoryToGet);
-      setState(() {
-        _isLoading = false;
-      });
-      _isInit = false;
-    }
-  }
-
-  String _sport(String sport) {
-    if (sport == "futsal") {
-      return "フットサル";
-    } else if (sport == "volleyball") {
-      return "バレーボール";
-    } else if (sport == "basketball") {
-      return "バスケットボール";
-    } else if (sport == "dodgebee") {
-      return "ドッチビー";
-    } else if (sport == "dodgeball") {
-      return "ドッジボール";
-    }
-    return "";
-  }
-
-  Widget _lable(lable) {
+  Widget _label(label) {
     return SizedBox(
       width: 100,
       child: Row(
         children: [
           Expanded(
             child: Text(
-              lable,
+              label,
               textAlign: TextAlign.end,
               style: TextStyle(
                 fontSize: 15,
@@ -227,102 +193,198 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
+  Widget _buildGameStatusWidget(bool isReverse) {
+    switch (GameStatus.values.byName(_thisGameData["gameStatus"])) {
+      case GameStatus.before:
+        return const Text(
+          "試合前",
+          style: TextStyle(fontSize: 16),
+        );
+      case GameStatus.now:
+        return Text(
+          "試合中",
+          style: TextStyle(
+            color: Colors.deepPurpleAccent.shade700,
+            fontSize: 16,
+          ),
+        );
+      case GameStatus.after:
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: !_isExpanded ? 0 : 70,
+                  curve: Curves.linearToEaseOut,
+                  child: SingleChildScrollView(
+                    child: _scoreDetailWidget(isReverse: isReverse),
+                  ),
+                ),
+                Stack(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(
+                              () => _isExpanded = !_isExpanded,
+                            );
+                          },
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          icon: Icon(
+                            _isExpanded ? Icons.expand_less : Icons.expand_more,
+                          ),
+                          color: Colors.grey.shade800,
+                        ),
+                        const SizedBox(width: 15),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        if (_thisGameData["extraTime"] != "")
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                LabelUtilities.extraTimeLabel(_thisGameSport),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  height: 1.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              Text(
+                                _thisGameData["extraTime"],
+                                style: const TextStyle(
+                                  fontSize: 23,
+                                  height: 1.0,
+                                ),
+                              ),
+                              const Text(
+                                " 勝利",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (_thisGameData["extraTime"] != "") const SizedBox(height: 10),
+                        const Center(
+                          child: Text(
+                            "試合終了",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+    }
+  }
+
+  Future _loadGameDataByCategory(GameDataToPass gotData) async {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      final Map gotGameData = await GameDataManager.getGameDataByCategory(category: _categoryToGet(gotData.gameDataId)!, ref: ref);
+      _thisGameData = gotGameData[gotData.gameDataId[3]][gotData.gameDataId];
+      _thisGameSport = SportsType.values.byName(_thisGameData["sport"]);
+      setState(() {
+        _isLoading = false;
+      });
+      _isInit = false;
+    }
+  }
+
+  Future _loadGameDataByClassNumber(GameDataToPass gotData) async {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      final Map gotGameData = await GameDataManager.getGameDataByClassNumber(ref: ref, classNumber: gotData.classNumber!);
+      _thisGameData = gotGameData[gotData.gameDataId[1]][gotData.gameDataId];
+      _thisGameSport = SportsType.values.byName(_thisGameData["sport"]);
+      setState(() {
+        _isLoading = false;
+      });
+      _isInit = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    DataToPass gotData =
-        ModalRoute.of(context)!.settings.arguments as DataToPass;
+    GameDataToPass gotData = ModalRoute.of(context)!.settings.arguments as GameDataToPass;
 
-    Map gameData = {};
     final bool isReverse = gotData.isReverse;
+
+    ref.watch(gameDataForResultProvider); //データの変更を監視
     if (gotData.isMyGame == true) {
-      if ((Provider.of<GameData>(context, listen: false).getGameDataForResult(
-              categoryToGet: _categoryToGet(gotData.gameDataId)!)) ==
-          null) {
-        _loadData(_categoryToGet(gotData.gameDataId)!);
-      } else if (!_isLoading) {
-        gameData = (Provider.of<GameData>(context).getGameDataForResult(
-                categoryToGet: _categoryToGet(gotData.gameDataId)!)
-            as Map)[gotData.gameDataId[3]][gotData.gameDataId];
-      }
+      _loadGameDataByCategory(gotData);
     } else if (gotData.classNumber != null) {
-      gameData = (Provider.of<GameData>(context)
-              .getGameDataForSchedule(classNumber: gotData.classNumber!)
-          as Map)[gotData.gameDataId[1]][gotData.gameDataId];
+      _loadGameDataByClassNumber(gotData);
     } else {
-      gameData = (Provider.of<GameData>(context).getGameDataForResult(
-              categoryToGet: _categoryToGet(gotData.gameDataId)!)
-          as Map)[gotData.gameDataId[3]][gotData.gameDataId];
+      _loadGameDataByCategory(gotData);
     }
-    final bool? isLoggedInAdmin =
-        Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
-    final bool? isLoggedInRumutaiStaff =
-        Provider.of<LocalData>(context, listen: false).isLoggedInRumutaiStaff;
+    final bool isLoggedInAdmin = ref.watch(isLoggedInAdminProvider);
+    final bool isLoggedInRumutaiStaff = ref.watch(isLoggedInRumutaiStaffProvider);
     return Scaffold(
-      appBar: AppBar(
-          title: const Text("詳細"),
-          actions: [MainPopUpMenu(place: gameData["place"])]),
+      appBar: AppBar(title: const Text("詳細"), actions: [MainPopUpMenu(place: _thisGameData["place"])]),
       floatingActionButton: _isLoading
           ? null
           : Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                /*
-                FloatingActionButton.extended(
-                  heroTag: "hero1",
-                  onPressed: () => Navigator.of(context).pushNamed(
-                    PredictScreen.routeName,
-                    arguments: DataToPassPredictScreen(
-                      gameId: gameData["gameId"],
-                      isReverse: isReverse,
-                      teamMap: gameData["team"],
-                      gameStatus: gameData["gameStatus"],
-                    ),
-                  ),
-                  icon: const Icon(Icons.ballot_outlined),
-                  label: const Text("予想"),
-                ),
-                if (isLoggedInRumutaiStaff == true) const SizedBox(height: 10),*/
-                if (isLoggedInRumutaiStaff == true)
+                if (isLoggedInRumutaiStaff || isLoggedInAdmin)
                   FloatingActionButton.extended(
                     heroTag: "hero1",
+                    backgroundColor: AppColors.accentColor,
                     onPressed: () => Navigator.of(context).pushNamed(
                       RumutaiStaffScreen.routeName,
-                      arguments: DataToPass(
+                      arguments: GameDataToPass(
                         classNumber: gotData.classNumber,
-                        gameDataId: gameData["gameId"],
+                        gameDataId: _thisGameData["gameId"],
                         isReverse: isReverse,
                       ),
                     ),
                     icon: const Icon(Icons.sports),
                     label: const Text("試合"),
                   ),
-                if (isLoggedInAdmin == true && isLoggedInRumutaiStaff == true)
-                  const SizedBox(height: 10),
-                if (isLoggedInAdmin == true)
+                if (isLoggedInAdmin) const SizedBox(height: 5),
+                if (isLoggedInAdmin)
                   FloatingActionButton.extended(
                     heroTag: "hero2",
-                    onPressed: () => Navigator.of(context).pushNamed(
-                        AdminEditScreen.routeName,
-                        arguments: GameDataToPassAdmin(
-                            gameData: gameData, isReverse: isReverse)),
+                    backgroundColor: AppColors.accentColor,
+                    onPressed: () => Navigator.of(context).pushNamed(AdminEditScreen.routeName, arguments: GameDataToPassAdmin(thisGameData: _thisGameData, isReverse: isReverse)),
                     icon: const Icon(Icons.edit),
-                    label: const Text("編集"),
+                    label: const Text("試合"),
                   ),
               ],
             ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? const Center(child: CircularProgressIndicator())
           : SizedBox(
               height: double.infinity,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Card(
+                  elevation: 1,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -343,7 +405,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 SizedBox(
                                   width: 60,
                                   child: Text(
-                                    gameData["team"][isReverse ? "1" : "0"],
+                                    _thisGameData["team"][isReverse ? "1" : "0"],
                                     style: const TextStyle(fontSize: 25),
                                     textAlign: TextAlign.center,
                                   ),
@@ -353,7 +415,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             SizedBox(
                               width: 90,
                               child: Text(
-                                gameData["score"][isReverse ? 1 : 0].toString(),
+                                _thisGameData["score"][isReverse ? 1 : 0].toString(),
                                 style: const TextStyle(fontSize: 45),
                                 textAlign: TextAlign.center,
                               ),
@@ -365,7 +427,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             SizedBox(
                               width: 90,
                               child: Text(
-                                gameData["score"][isReverse ? 0 : 1].toString(),
+                                _thisGameData["score"][isReverse ? 0 : 1].toString(),
                                 style: const TextStyle(fontSize: 45),
                                 textAlign: TextAlign.center,
                               ),
@@ -376,7 +438,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 SizedBox(
                                   width: 60,
                                   child: Text(
-                                    gameData["team"][isReverse ? "0" : "1"],
+                                    _thisGameData["team"][isReverse ? "0" : "1"],
                                     style: const TextStyle(fontSize: 25),
                                     textAlign: TextAlign.center,
                                   ),
@@ -386,118 +448,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        StatefulBuilder(
-                          builder:
-                              (BuildContext context, StateSetter setState) {
-                            return Column(
-                              children: [
-                                if (gameData["gameStatus"] == "after")
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    height: !_isExpanded ? 0 : 70,
-                                    curve: Curves.linearToEaseOut,
-                                    child: SingleChildScrollView(
-                                      child: _scoreDetailWidget(
-                                        gameData: gameData,
-                                        isReverse: isReverse,
-                                      ),
-                                    ),
-                                  ),
-                                if (gameData["gameStatus"] == "before")
-                                  const Text(
-                                    "試合前",
-                                    style: TextStyle(fontSize: 16),
-                                  )
-                                else if (gameData["gameStatus"] == "now")
-                                  Text(
-                                    "試合中",
-                                    style: TextStyle(
-                                      color: Colors.deepPurpleAccent.shade700,
-                                      fontSize: 16,
-                                    ),
-                                  )
-                                else if (gameData["gameStatus"] == "after")
-                                  Stack(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(
-                                                () =>
-                                                    _isExpanded = !_isExpanded,
-                                              );
-                                            },
-                                            padding: EdgeInsets.zero,
-                                            constraints: const BoxConstraints(),
-                                            icon: Icon(
-                                              _isExpanded
-                                                  ? Icons.expand_less
-                                                  : Icons.expand_more,
-                                            ),
-                                            color: Colors.grey.shade800,
-                                          ),
-                                          const SizedBox(width: 15),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          if (gameData["extraTime"] != "")
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  LableUtilities.extraTimeLable(
-                                                    gameData["sport"],
-                                                  ),
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    height: 1.0,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  gameData["extraTime"],
-                                                  style: const TextStyle(
-                                                    fontSize: 23,
-                                                    height: 1.0,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  " 勝利",
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          if (gameData["extraTime"] != "")
-                                            const SizedBox(height: 10),
-                                          const Center(
-                                            child: Text(
-                                              "試合終了",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
+                        _buildGameStatusWidget(isReverse),
                         const Divider(),
                         SizedBox(
                           width: double.infinity,
@@ -513,55 +464,40 @@ class _DetailScreenState extends State<DetailScreen> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                _lable("日時："),
+                                _label("日時："),
                                 Text(
-                                  "${gameData["startTime"]["date"]}",
-                                  style: const TextStyle(
-                                      fontSize: 25, height: 1.0),
+                                  "${_thisGameData["startTime"]["date"]}",
+                                  style: const TextStyle(fontSize: 25, height: 1),
                                 ),
-                                const Text("日目　",
-                                    style: TextStyle(fontSize: 16)),
+                                const Text("日目　", style: TextStyle(fontSize: 16, height: 1.25)),
                                 Text(
-                                  "${gameData["startTime"]["hour"]}:${gameData["startTime"]["minute"]}〜",
-                                  style: const TextStyle(
-                                      fontSize: 25, height: 1.0),
+                                  "${_thisGameData["startTime"]["hour"]}:${_thisGameData["startTime"]["minute"]}〜",
+                                  style: const TextStyle(fontSize: 25, height: 1.0),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                _lable("場所："),
-                                Text("${gameData["place"]}",
-                                    style: const TextStyle(fontSize: 20)),
+                                _label("場所："),
+                                Text("${_thisGameData["place"]}", style: const TextStyle(fontSize: 20)),
                               ],
                             ),
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                _lable("競技："),
-                                Text(_sport(gameData["sport"]),
-                                    style: const TextStyle(fontSize: 20)),
+                                _label("競技："),
+                                Text(_thisGameSport.asLongJapanse(), style: const TextStyle(fontSize: 20)),
                               ],
                             ),
                             const SizedBox(height: 35),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _lable("審判："),
-                                _refereesAsColumn(gameData),
+                                _label("審判："),
+                                _refereesAsColumn(),
                               ],
-                            ), /*
-                            if (gameData["rumutaiStaff"] != "")
-                              const SizedBox(height: 5),
-                            if (gameData["rumutaiStaff"] != "")
-                              Row(
-                                children: [
-                                  _lable("スタッフ："),
-                                  Text(gameData["rumutaiStaff"],
-                                      style: const TextStyle(fontSize: 20)),
-                                ],
-                              ),*/
+                            ),
                           ],
                         ),
                         const SizedBox(height: 25),

@@ -1,42 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rumutai_app/providers/init_data_provider.dart';
+
+import '../../themes/app_color.dart';
+
 import 'schedule_screen.dart';
 import '../../widgets/main_pop_up_menu.dart';
 
-//import '../providers/game_data.dart';
-//import 'package:provider/provider.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-
-class PickScheduleScreen extends StatelessWidget {
+class PickScheduleScreen extends ConsumerWidget {
   static const routeName = "/schedule-screen";
 
   const PickScheduleScreen({super.key});
 
-
-  Widget _scheduleButton({required context, required String classNumber}) {
+  Widget _buildScheduleButton({required context, required String classNumber}) {
     return SizedBox(
       width: double.infinity,
       height: 40,
       child: TextButton(
         style: TextButton.styleFrom(foregroundColor: Colors.black),
-        onPressed: () => Navigator.of(context)
-            .pushNamed(ScheduleScreen.routeName, arguments: classNumber),
+        onPressed: () => Navigator.of(context).pushNamed(ScheduleScreen.routeName, arguments: classNumber),
         child: Row(
           children: [
             Expanded(
               child: Text(
                 classNumber,
-                style: TextStyle(fontSize: 20, color: Colors.brown.shade900),
+                style: TextStyle(fontSize: 20, color: AppColors.themeColor.shade900),
                 textAlign: TextAlign.center,
               ),
             ),
-            Icon(Icons.navigate_next, size: 25, color: Colors.brown.shade900),
+            Icon(Icons.navigate_next, size: 25, color: AppColors.themeColor.shade900),
           ],
         ),
       ),
     );
   }
 
-  Widget _gradeLable(String text) {
+  Widget _gradeLabel(String text) {
     return SizedBox(
       width: double.infinity,
       child: Padding(
@@ -44,9 +43,47 @@ class PickScheduleScreen extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: Colors.brown.shade900,
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            color: AppColors.themeColor.shade900,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScheduleCard(BuildContext context, String grade) {
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        child: Card(
+          elevation: 1,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Column(children: [
+              _gradeLabel("$grade年"),
+              _buildScheduleButton(context: context, classNumber: "${grade}01"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}02"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}03"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}04"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}05"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}06"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}07"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}08"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}09"),
+              const Divider(height: 1),
+              _buildScheduleButton(context: context, classNumber: "${grade}10"),
+              const Divider(height: 1),
+            ]),
           ),
         ),
       ),
@@ -54,128 +91,19 @@ class PickScheduleScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    //Provider.of<GameData>(context, listen: false)
-    //  .loadGameData2(collection: "gameData");
-    // FirebaseFirestore.instance
-    //     .collection('refereesAndStaffs')
-    //     .doc("refereesAndStaffsDoc")
-    //     .set({"refereesAndStaffsList": mapToUpload});
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("スケジュール"),
         actions: const [MainPopUpMenu()],
       ),
-      backgroundColor: Colors.grey.shade100,
       body: Scrollbar(
         child: SingleChildScrollView(
           child: Column(children: [
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                child: Card(
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 15),
-                    child: Column(children: [
-                      _gradeLable("1年"),
-                      _scheduleButton(context: context, classNumber: "101"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "102"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "103"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "104"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "105"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "106"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "107"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "108"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "109"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "110"),
-                      const Divider(height: 1),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Card(
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 15),
-                    child: Column(children: [
-                      _gradeLable("2年"),
-                      _scheduleButton(context: context, classNumber: "201"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "202"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "203"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "204"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "205"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "206"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "207"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "208"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "209"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "210"),
-                      const Divider(height: 1),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Card(
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 15),
-                    child: Column(children: [
-                      _gradeLable("3年"),
-                      _scheduleButton(context: context, classNumber: "301"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "302"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "303"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "304"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "305"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "306"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "307"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "308"),
-                      const Divider(height: 1),
-                      _scheduleButton(context: context, classNumber: "309"),
-                      const Divider(height: 1),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
+            _buildScheduleCard(context, "1"),
+            _buildScheduleCard(context, "2"),
+            if (ref.watch(show3rdGradeProvider)) _buildScheduleCard(context, "3"),
+            const SizedBox(height: 50),
           ]),
         ),
       ),

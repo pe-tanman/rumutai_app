@@ -1,14 +1,12 @@
 import 'dart:async';
-
 import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rumutai_app/providers/sign_in_data_provider.dart';
 
 import '../home_screen.dart';
-import 'package:provider/provider.dart';
-import '../../providers/local_data.dart';
 
 class TimelineDataToPass {
   final Map data;
@@ -20,16 +18,16 @@ class TimelineDataToPass {
   });
 }
 
-class TimelineScreen extends StatefulWidget {
+class TimelineScreen extends ConsumerStatefulWidget {
   static const routeName = "/timeline-screen";
 
   const TimelineScreen({super.key});
 
   @override
-  State<TimelineScreen> createState() => _TimelineScreenState();
+  ConsumerState<TimelineScreen> createState() => _TimelineScreenState();
 }
 
-class _TimelineScreenState extends State<TimelineScreen> {
+class _TimelineScreenState extends ConsumerState<TimelineScreen> {
   bool _isLoading = false;
   bool _isInit = true;
   final List<Map> _timelines = [];
@@ -38,6 +36,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
     setState(() {
       _isLoading = true;
     });
+
+    debugPrint("loadedDataForTimeLineScreen");
     var gotData = await FirebaseFirestore.instance.collection("Timeline").get();
     for (var data in gotData.docs) {
       final d = data.data();
@@ -194,14 +194,14 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool? isLoggedInAdmin = Provider.of<LocalData>(context, listen: false).isLoggedInAdmin;
+    final bool isLoggedInAdmin = ref.watch(isLoggedInAdminProvider);
 
     if (_isInit) {
       _loadData();
       _isInit = false;
     }
     return Scaffold(
-      appBar: AppBar(title: const Text("開始終了時刻")),
+      appBar: AppBar(title: const Text("タイムライン")),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Scrollbar(

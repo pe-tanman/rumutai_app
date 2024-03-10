@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rumutai_app/providers/init_data_provider.dart';
 
 import '../screens/detail_screen.dart';
-import '../providers/game_data.dart';
+import '../providers/game_data_provider.dart';
 
-import '../providers/local_data.dart';
-import '../utilities/local_notification.dart';
+import '../local_data.dart';
+import '../notification_manager.dart';
 
-class MyGameWidget extends StatefulWidget {
+class MyGameWidget extends ConsumerStatefulWidget {
   final Map gameData;
   final bool isReverse;
   const MyGameWidget({
@@ -16,10 +18,10 @@ class MyGameWidget extends StatefulWidget {
   });
 
   @override
-  State<MyGameWidget> createState() => _MyGameWidgetState();
+  ConsumerState<MyGameWidget> createState() => _MyGameWidgetState();
 }
 
-class _MyGameWidgetState extends State<MyGameWidget> {
+class _MyGameWidgetState extends ConsumerState<MyGameWidget> {
   bool _notify = false;
   bool _gameIsDone = false;
 
@@ -51,7 +53,7 @@ class _MyGameWidgetState extends State<MyGameWidget> {
         child: InkWell(
           onTap: () => Navigator.of(context).pushNamed(
             DetailScreen.routeName,
-            arguments: DataToPass(
+            arguments: GameDataToPass(
               gameDataId: widget.gameData["gameId"],
               isMyGame: true,
             ),
@@ -113,10 +115,11 @@ class _MyGameWidgetState extends State<MyGameWidget> {
                                 _notify = !_notify;
                                 if (_notify) {
                                   //通知予約
-                                  LocalNotification.registerLocNotification(
+                                  NotificationManager.registerLocNotification(
+                                    ref: ref,
                                     place: widget.gameData["place"],
                                     gameId: widget.gameData["gameId"],
-                                    sport: widget.gameData["sport"],
+                                    sportsType: SportsType.values.byName(widget.gameData["sport"]),
                                     day: widget.gameData["startTime"]["date"],
                                     hour: widget.gameData["startTime"]["hour"],
                                     minute: widget.gameData["startTime"]["minute"],
@@ -132,7 +135,7 @@ class _MyGameWidgetState extends State<MyGameWidget> {
                                     );
                                   });
                                 } else {
-                                  LocalNotification.cancelLocNotification(
+                                  NotificationManager.cancelLocNotification(
                                     widget.gameData["gameId"],
                                   ).then((_) {
                                     ScaffoldMessenger.of(context).hideCurrentSnackBar();

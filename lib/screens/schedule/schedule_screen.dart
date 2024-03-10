@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../themes/app_color.dart';
 import '../../widgets/schedule_widget.dart';
 
-import 'package:provider/provider.dart';
-
-import '../../providers/game_data.dart';
+import '../../providers/game_data_provider.dart';
 import '../../widgets/main_pop_up_menu.dart';
+import '../../utilities/label_utilities.dart';
 
-class ScheduleScreen extends StatefulWidget {
+class ScheduleScreen extends ConsumerStatefulWidget {
   static const routeName = "/schedule-detail-screen";
 
   const ScheduleScreen({super.key});
 
   @override
-  State<ScheduleScreen> createState() => _ScheduleScreenState();
+  ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> {
+class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   bool _isInit = true;
   bool _isLoading = false;
-  late Map _gameData;
+  late Map _gameDataForThisClass;
 
   Future _loadData(String classNumber) async {
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
-      await Provider.of<GameData>(context, listen: false).loadGameDataForSchedule(classNumber: classNumber);
+      _gameDataForThisClass = await GameDataManager.getGameDataByClassNumber(
+        classNumber: classNumber,
+        ref: ref,
+        load: true, //毎回ロードする
+      );
       setState(() {
         _isLoading = false;
       });
@@ -44,21 +49,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               width: 40,
               child: Divider(
                 thickness: 1,
-                color: Colors.brown.shade800,
+                color: AppColors.themeColor.shade800,
               )),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
             child: Text(
               text,
               style: TextStyle(
-                color: Colors.brown.shade800,
+                color: AppColors.themeColor.shade800,
               ),
             ),
           ),
           Expanded(
             child: Divider(
               thickness: 1,
-              color: Colors.brown.shade800,
+              color: AppColors.themeColor.shade800,
             ),
           ),
         ],
@@ -79,7 +84,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 20,
-              color: Colors.brown.shade900,
+              color: AppColors.themeColor.shade900,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -92,7 +97,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     List day2sortedGameData = [];
     gameData.forEach((gameId, data) {
       if (data["startTime"]["date"] == "1") {
-        print(gameId);
         day1sortedGameData.add({
           "createdAt": DateTime(
             2023,
@@ -126,7 +130,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 20,
-              color: Colors.brown.shade900,
+              color: AppColors.themeColor.shade900,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -144,7 +148,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           "※タップで詳細を確認できます。",
           textAlign: TextAlign.start,
           style: TextStyle(
-            color: Colors.brown.shade700,
+            color: AppColors.themeColor.shade700,
             fontWeight: FontWeight.w300,
           ),
         ),
@@ -179,14 +183,23 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return scheduleList;
   }
 
-//not flexible
   List<String> _tabStrings(String classNumber) {
+    final String sport1d = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.d1);
+    final String sport1j = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.j1);
+    final String sport1k = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.k1);
+    final String sport2d = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.d2);
+    final String sport2j = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.j2);
+    final String sport2k = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.k2);
+    final String sport3d = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.d3);
+    final String sport3j = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.j3);
+    final String sport3k = LabelUtilities.gameDataCategoryToSportLabel(ref, GameDataCategory.k3);
+
     if (classNumber[0] == "1") {
-      return ["フットサル", "バレーボール", "ドッジボール"];
+      return [sport1d, sport1j, sport1k, "全体"];
     } else if (classNumber[0] == "2") {
-      return ["フットサル", "バスケットボール", "バレーボール"];
+      return [sport2d, sport2j, sport2k, "全体"];
     } else if (classNumber[0] == "3") {
-      return ["フットサル", "ドッジビー", "バレーボール"];
+      return [sport3d, sport3j, sport3k, "全体"];
     }
     return ["", "", ""];
   }
@@ -194,28 +207,31 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final String classNumber = ModalRoute.of(context)!.settings.arguments as String;
+
+    ref.watch(gameDataForResultProvider); //データの変更を監視
+
     _loadData(classNumber);
     final List<String> tabStrings = _tabStrings(classNumber);
-//    Provider.of<GameData>(context, listen: false)
-    //      .loadGameData2(collection: "gameData");
-
-    if (!_isLoading) {
-      _gameData = Provider.of<GameData>(context).getGameDataForSchedule(classNumber: classNumber) as Map;
-    }
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("$classNumber　スケジュール"),
+          title: Text("$classNumber スケジュール"),
           actions: const [MainPopUpMenu()],
-          bottom: TabBar(indicatorColor: Colors.white, tabs: [
-            Tab(text: tabStrings[0]),
-            Tab(text: tabStrings[1]),
-            Tab(text: tabStrings[2]),
-          ]),
+          bottom: TabBar(
+            indicatorSize: TabBarIndicatorSize.tab,
+            unselectedLabelColor: AppColors.lightText1.withOpacity(0.5),
+            labelColor: AppColors.lightText1,
+            isScrollable: true,
+            tabs: [
+              Tab(text: tabStrings[0]),
+              Tab(text: tabStrings[1]),
+              Tab(text: tabStrings[2]),
+              Tab(text: tabStrings[3]),
+            ],
+          ),
         ),
-        backgroundColor: Colors.grey.shade100,
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : TabBarView(
@@ -223,21 +239,34 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
-                        children: _scheduleList(classNumber: classNumber, gameData: _gameData["d"]),
+                        children: _scheduleList(classNumber: classNumber, gameData: _gameDataForThisClass["d"]),
                       ),
                     ),
                   ),
                   Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
-                        children: _scheduleList(classNumber: classNumber, gameData: _gameData["j"]),
+                        children: _scheduleList(classNumber: classNumber, gameData: _gameDataForThisClass["j"]),
                       ),
                     ),
                   ),
                   Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
-                        children: _scheduleList(classNumber: classNumber, gameData: _gameData["k"]),
+                        children: _scheduleList(classNumber: classNumber, gameData: _gameDataForThisClass["k"]),
+                      ),
+                    ),
+                  ),
+                  Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: _scheduleList(
+                          classNumber: classNumber,
+                          gameData: {}
+                            ..addAll(_gameDataForThisClass["d"] ?? {})
+                            ..addAll(_gameDataForThisClass["j"] ?? {})
+                            ..addAll(_gameDataForThisClass["k"] ?? {}),
+                        ),
                       ),
                     ),
                   ),

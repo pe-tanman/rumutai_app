@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
+import 'package:rumutai_app/providers/picked_person_data_provider.dart';
+import 'package:rumutai_app/themes/app_color.dart';
+
+import '../providers/init_data_provider.dart';
 
 import '../widgets/my_game_widget.dart';
 import '../widgets/main_pop_up_menu.dart';
 
-import '../providers/local_data.dart';
+import '../local_data.dart';
 
-class MyGameScreen extends StatefulWidget {
+class MyGameScreen extends ConsumerStatefulWidget {
   static const routeName = "/my-game-screen";
 
   const MyGameScreen({super.key});
 
   @override
-  State<MyGameScreen> createState() => _MyGameScreenState();
+  ConsumerState<MyGameScreen> createState() => _MyGameScreenState();
 }
 
-class _MyGameScreenState extends State<MyGameScreen> {
+class _MyGameScreenState extends ConsumerState<MyGameScreen> {
   bool _isInit = true;
   bool _isLoading = false;
-  //bool _dialogIsLoading = false;
-  //bool _dialogIsInit = true;
   bool _isDirty = false;
   List<Map> _gameDataList = [];
 
@@ -29,15 +31,9 @@ class _MyGameScreenState extends State<MyGameScreen> {
 
   final TextEditingController _targetPersonController = TextEditingController();
 
-  //String? _pickedPersonInDialog;
-  //String? _wasPickedPersonInDialog;
-
-  //final List<String> _nameList = [];
-  // List<String> _searchedNames = [];
-
   Future _loadData() async {
     if (_isInit) {
-      _targetPerson = Provider.of<LocalData>(context, listen: false).pickedPersonForMyGame;
+      _targetPerson = ref.read(pickedPersonForMyGameProvider);
     }
     if (_targetPerson == "") {
       _targetPerson = null;
@@ -47,12 +43,11 @@ class _MyGameScreenState extends State<MyGameScreen> {
         _isLoading = true;
       });
       _gameDataList = [];
-      await FirebaseFirestore.instance.collection('gameData2').where('referee', arrayContains: _targetPerson).get().then((QuerySnapshot querySnapshot) {
-        for (var doc in querySnapshot.docs) {
-          _gameDataList.add(doc.data() as Map);
-        }
-      });
-      await FirebaseFirestore.instance.collection('gameData2').where('rumutaiStaff', isEqualTo: _targetPerson).get().then((QuerySnapshot querySnapshot) {
+
+      final String collection = ref.read(semesterProvider) == Semester.zenki ? "gameDataZenki" : "gameDataKouki";
+
+      debugPrint("loadedMyGameData");
+      await FirebaseFirestore.instance.collection(collection).where('referee', arrayContains: _targetPerson).get().then((QuerySnapshot querySnapshot) {
         for (var doc in querySnapshot.docs) {
           _gameDataList.add(doc.data() as Map);
         }
@@ -65,27 +60,6 @@ class _MyGameScreenState extends State<MyGameScreen> {
     }
   }
 
-/*
-  Future _loadNameList(void Function(void Function()) setStateInDialog) async {
-    if (_dialogIsInit) {
-      setStateInDialog(() {
-        _dialogIsLoading = true;
-      });
-      await FirebaseFirestore.instance
-          .collection('refereesAndStaffs')
-          .doc('refereesAndStaffsDoc')
-          .get()
-          .then((DocumentSnapshot documentSnapshot) {
-        documentSnapshot["refereesAndStaffsList"]
-            .forEach((name) => _nameList.add(name));
-      });
-      setStateInDialog(() {
-        _dialogIsLoading = false;
-      });
-      _dialogIsInit = false;
-    }
-  }*/
-
   Widget _dividerWithText(String text) {
     return Container(
       width: double.infinity,
@@ -96,21 +70,21 @@ class _MyGameScreenState extends State<MyGameScreen> {
               width: 40,
               child: Divider(
                 thickness: 1,
-                color: Colors.brown.shade800,
+                color: AppColors.themeColor.shade800,
               )),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
             child: Text(
               text,
               style: TextStyle(
-                color: Colors.brown.shade800,
+                color: AppColors.themeColor.shade800,
               ),
             ),
           ),
           Expanded(
             child: Divider(
               thickness: 1,
-              color: Colors.brown.shade800,
+              color: AppColors.themeColor.shade800,
             ),
           ),
         ],
@@ -156,7 +130,7 @@ class _MyGameScreenState extends State<MyGameScreen> {
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 20,
-              color: Colors.brown.shade900,
+              color: AppColors.themeColor.shade900,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -175,7 +149,7 @@ class _MyGameScreenState extends State<MyGameScreen> {
           "※タップで詳細を確認できます。",
           textAlign: TextAlign.start,
           style: TextStyle(
-            color: Colors.brown.shade700,
+            color: AppColors.themeColor.shade700,
             fontWeight: FontWeight.w300,
           ),
         ),
@@ -206,10 +180,7 @@ class _MyGameScreenState extends State<MyGameScreen> {
           final FocusScopeNode currentScope = FocusScope.of(context);
           if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
             FocusManager.instance.primaryFocus!.unfocus();
-          } /*
-            setStateInDialog(() {
-              _pickedPersonInDialog = null;
-            });*/
+          }
         },
         child: AlertDialog(
           insetPadding: const EdgeInsets.all(10),
@@ -222,12 +193,9 @@ class _MyGameScreenState extends State<MyGameScreen> {
                   height: 55,
                   child: TextField(
                     controller: _targetPersonController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
+                    decoration: const InputDecoration(
                       hintText: "例：20634",
-                      label: const Text("入力"),
+                      label: Text("入力"),
                     ),
                     onChanged: (text) {
                       setStateInDialog(() {});
@@ -254,8 +222,6 @@ class _MyGameScreenState extends State<MyGameScreen> {
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(foregroundColor: Colors.black),
                 onPressed: () {
-                  // _searchedNames = [];
-                  // _pickedPersonInDialog = null;
                   Navigator.pop(context);
                 },
                 child: const Text("キャンセル"),
@@ -265,43 +231,19 @@ class _MyGameScreenState extends State<MyGameScreen> {
               width: 140,
               height: 40,
               child: FilledButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                ),
                 onPressed: currentTargetPerson == _targetPersonController.text
                     ? null
                     : () async {
-                        /*
-                            String pickedPersonInDialog =
-                                _pickedPersonInDialog == null
-                                    ? ""
-                                    : _pickedPersonInDialog!;*/
-
                         await LocalData.saveLocalData<String>("pickedPersonForMyGame", _targetPersonController.text);
 
                         if (!mounted) return;
-                        await Provider.of<LocalData>(context, listen: false).setDataFromLocal();
+                        await PickedPersonDataManager.setPickedPersonDataFromLocal(ref);
                         setState(() {
                           _targetPerson = _targetPersonController.text;
                           if (_targetPerson != "") {
                             _isDirty = true;
                           }
-                          /*
-                              if (pickedPersonInDialog != "") {
-                                _targetPerson = pickedPersonInDialog;
-                                _isDirty = true;
-                              } else {
-                                _targetPerson = null;
-                                _gameDataList = [];
-                              }*/
                         });
-                        // _wasPickedPersonInDialog = null;
-                        //  _searchedNames = [];
-                        //   _pickedPersonInDialog = null;
                         if (!mounted) return;
                         Navigator.pop(context);
                       },
@@ -314,10 +256,105 @@ class _MyGameScreenState extends State<MyGameScreen> {
     });
   }
 
+  Widget _buildTopSection() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        color: AppColors.themeColor.shade100,
+        border: const Border(
+          bottom: BorderSide(
+            color: AppColors.themeColor,
+            width: 2,
+          ),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          _targetPerson == null ? "HR番号：" : "HR番号：$_targetPerson",
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMiddleSection() {
+    return SizedBox(
+      width: double.infinity,
+      child: Scrollbar(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: _targetPerson == null
+                  ? [
+                      const SizedBox(height: 50),
+                      FittedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Text(
+                            "審判は自分が担当の試合を\n確認できます。\n\nHR番号を入力してください。",
+                            style: TextStyle(
+                              color: AppColors.themeColor.shade900,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                  : _myGameListWidget(gameDataList: _gameDataList),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSection() {
+    return BottomAppBar(
+      height: 60,
+      padding: EdgeInsets.zero,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.themeColor.shade100,
+          border: Border(
+            top: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 2,
+            ),
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        child: FilledButton.icon(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) {
+                return _dialog();
+              },
+            );
+          },
+          icon: const Icon(Icons.person_search_outlined),
+          label: Text(
+            _targetPerson == null ? "HR番号を入力" : "HR番号を変更",
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _loadData();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("担当の試合"),
@@ -325,103 +362,11 @@ class _MyGameScreenState extends State<MyGameScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.brown.shade100,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _targetPerson == null ? "HR番号：" : "HR番号：$_targetPerson",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Scrollbar(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          children: _targetPerson == null
-                              ? [
-                                  const SizedBox(height: 50),
-                                  FittedBox(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                                      child: Text(
-                                        "審判は自分が担当の試合を\n確認できます。\n\nHR番号を入力してください。",
-                                        style: TextStyle(
-                                          color: Colors.brown.shade900,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ]
-                              : _myGameListWidget(
-                                  gameDataList: _gameDataList,
-                                ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 60,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.brown.shade100,
-            border: Border(
-              top: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2,
-              ),
-            ),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          child: FilledButton.icon(
-            onPressed: () {
-              /*
-                      if (_targetPerson != null) {
-                        _pickedPersonInDialog = _targetPerson;
-                        _wasPickedPersonInDialog = _targetPerson;
-                      }*/
-              showDialog(
-                context: context,
-                builder: (_) {
-                  return _dialog();
-                },
-              );
-            },
-            icon: const Icon(Icons.person_search_outlined),
-            label: Text(
-              _targetPerson == null ? "HR番号を入力" : "HR番号を変更",
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ),
-      ),
+          : Column(children: [
+              _buildTopSection(),
+              _buildMiddleSection(),
+            ]),
+      bottomNavigationBar: _buildBottomSection(),
     );
   }
 }

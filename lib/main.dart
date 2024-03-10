@@ -39,7 +39,6 @@ import 'screens/omikuji/make_omikuji_screen.dart';
 import 'screens/schedule/schedule_screen.dart';
 import 'screens/schedule/pick_schedule_screen.dart';
 //staff/
-import 'screens/staff/dashboard_screen.dart';
 import 'screens/staff/timeline_screen.dart';
 import 'screens/staff/my_place_game_screen.dart';
 //admin/
@@ -114,7 +113,6 @@ class MyApp extends StatelessWidget {
         ScheduleScreen.routeName: (ctx) => const ScheduleScreen(),
         PickScheduleScreen.routeName: (ctx) => const PickScheduleScreen(),
         //staff
-        DashboardScreen.routeName: (ctx) => const DashboardScreen(),
         MyPlaceGameScreen.routeName: (ctx) => const MyPlaceGameScreen(),
         TimelineScreen.routeName: (ctx) => const TimelineScreen(),
       },
